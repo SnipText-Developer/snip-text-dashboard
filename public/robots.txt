@@ -1,0 +1,6 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow:
+
+Sitemap: https://j93.es/sitemap.xml
+#DaumWebMasterTool:5fb313ffcd2873cb4f6ae4967e5fecd88ccc6223449c624a53ff8119b83fb647:rcPFrxuM9HwIimffKp/8Ow==

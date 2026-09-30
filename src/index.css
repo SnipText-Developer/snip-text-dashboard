@@ -1,0 +1,79 @@
+@import "./normalize.css";
+
+:root {
+  --color: #0d1117;
+  --bg-color: #f5f8ff;
+  --underline-color: #dadce0;
+  --border-color: #dadce0;
+  --link-color: #0066cc;
+  --logo-to-body-distance: 2.28rem;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--color);
+  margin: 0;
+  width: 100%;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+code,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  line-height: 130%;
+}
+
+li {
+  line-height: 160%;
+}
+
+span {
+  line-height: 130%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+table,
+th,
+td {
+  border: 0.0625rem solid var(--border-color);
+}
+th {
+  border-bottom: 0.1625rem solid var(--border-color);
+}
+
+th,
+td {
+  padding: 0.5em;
+  text-align: left;
+}
+
+p {
+  line-height: 160%;
+  margin: 1em 0 0.625em 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 1.625em 0 1em 0;
+}
+
+.hidden {
+  visibility: hidden;
+}

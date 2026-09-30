@@ -1,0 +1,23 @@
+body {
+  background-color: #f5f8ff;
+  color: #0d1117;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  text-align: center;
+  min-height: 100dvh;
+  min-width: 18.75rem;
+  width: 100%;
+}
+
+a {
+  display: inline-block;
+}
+
+main {
+  padding: 0 5% 0 5%;
+}

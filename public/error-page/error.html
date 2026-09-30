@@ -1,0 +1,89 @@
+<!doctype html>
+<html xmlns="https://www.w3.org/2000/svg" lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="content-language" content="ko" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- title start -->
+    <title>error 페이지/title>
+    <meta property="og:title" content="error 페이지" />
+    <meta name="apple-mobile-web-app-title" content="error 페이지" />
+    <meta name="twitter:title" content="error 페이지" />
+    <!-- title end -->
+
+    <!-- description start -->
+    <meta name="description" content="에러가 발생하였습니다. 홈페이지로 리디렉트됩니다." />
+    <meta property="og:description" content="에러가 발생하였습니다. 홈페이지로 리디렉트됩니다." />
+    <meta name="twitter:description" content="에러가 발생하였습니다. 홈페이지로 리디렉트됩니다." />
+    <!-- description end -->
+
+    <!-- icon start -->
+    <link rel="icon" href="/logo/favicon.ico" />
+    <link rel="apple-touch-icon" href="/logo/logo192.png" />
+    <meta name="apple-touch-icon" content="/logo/logo192.png" />
+    <meta property="og:image" content="/logo/logo192.png" />
+    <meta name="msapplication-TileImage" content="/logo/logo192.png" />
+    <meta name="twitter:image" content="/logo/logo192.png" />
+    <!-- icon end -->
+
+    <!-- image alt start -->
+    <meta property="og:image:alt" content="logo" />
+    <meta name="twitter:image:alt" content="logo" />
+    <!-- image alt end -->
+
+    <!-- web app start -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="manifest" href="/manifest.json" />
+    <!-- web app end -->
+
+    <!-- theme-color start -->
+    <meta name="theme-color" content="#f5f8ff" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#f5f8ff" />
+    <meta name="msapplication-TileColor" content="#f5f8ff" />
+    <meta name="msapplication-navbutton-color" content="#f5f8ff" />
+    <!-- theme-color end -->
+
+    <!-- site name start  -->
+    <meta name="application-name" content="{{ name }}" />
+    <meta property="og:site_name" content="{{ name }}" />
+    <!-- site name end -->
+
+    <!-- Open Graph start -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ url }}" />
+    <meta property="og:locale" content="ko_KR" />
+    <!-- Open Graph end -->
+
+    <!-- twitter card start -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- twitter card end -->
+
+    <!-- Font start -->
+    <link
+      rel="preconnect"
+      href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/static/pretendard.min.css"
+      as="style"
+      type="text/css"
+      crossorigin="anonymous" />
+    <!-- Font end -->
+
+    <script src="/error-page/error.js" defer></script>
+    <link rel="stylesheet" href="/error-page/error.css" type="text/css" />
+    <noscript>
+      <meta
+        http-equiv="refresh"
+        content="0; url=/noscript-page/noscript.html" />
+    </noscript>
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <h2>Ooops!</h2>
+      <h3>error 페이지</h3>
+      <p>에러가 발생하였습니다. 홈페이지로 리디렉트됩니다.</p>
+      <p id="redirectMsg">5초 후에 홈페이지로 이동합니다.</p>
+    </main>
+  </body>
+</html>

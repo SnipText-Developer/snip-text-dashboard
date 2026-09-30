@@ -1,0 +1,89 @@
+<!doctype html>
+<html xmlns="https://www.w3.org/2000/svg" lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="content-language" content="ko" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- title start -->
+    <title>{{title}}</title>
+    <meta property="og:title" content="{{title}}" />
+    <meta name="apple-mobile-web-app-title" content="{{title}}" />
+    <meta name="twitter:title" content="{{title}}" />
+    <template>
+      <div class="daum-wm-title">{{title}}</div>
+    </template>
+    <!-- title end -->
+
+    <!-- description start -->
+    <meta name="description" content="{{description}}" />
+    <meta property="og:description" content="{{description}}" />
+    <meta name="twitter:description" content="{{description}}" />
+    <template>
+      <div class="daum-wm-content">{{description}}</div>
+    </template>
+    <!-- description end -->
+
+    <!-- icon start -->
+    <link rel="icon" href="%PUBLIC_URL%/logo/favicon.ico" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo/logo192.png" />
+    <meta name="apple-touch-icon" content="%PUBLIC_URL%/logo/logo192.png" />
+    <meta property="og:image" content="%PUBLIC_URL%/logo/logo192.png" />
+    <meta
+      name="msapplication-TileImage"
+      content="%PUBLIC_URL%/logo/logo192.png" />
+    <meta name="twitter:image" content="%PUBLIC_URL%/logo/logo192.png" />
+    <!-- icon end -->
+
+    <!-- image alt start -->
+    <meta property="og:image:alt" content="logo" />
+    <meta name="twitter:image:alt" content="logo" />
+    <!-- image alt end -->
+
+    <!-- web app start -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!-- web app end -->
+
+    <!-- theme-color start -->
+    <meta name="theme-color" content="#f5f8ff" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#f5f8ff" />
+    <meta name="msapplication-TileColor" content="#f5f8ff" />
+    <meta name="msapplication-navbutton-color" content="#f5f8ff" />
+    <!-- theme-color end -->
+
+    <!-- site name start  -->
+    <meta name="application-name" content="{{name}}" />
+    <meta property="og:site_name" content="{{name}}" />
+    <!-- site name end -->
+
+    <!-- Open Graph start -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="%PUBLIC_URL%" />
+    <meta property="og:locale" content="ko_KR" />
+    <!-- Open Graph end -->
+
+    <!-- twitter card start -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- twitter card end -->
+
+    <!-- Font start -->
+    <link
+      rel="preconnect"
+      href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/static/pretendard.min.css"
+      as="style"
+      type="text/css"
+      crossorigin="anonymous" />
+    <!-- Font end -->
+
+    <noscript>
+      <meta
+        http-equiv="refresh"
+        content="0; url=/noscript-page/noscript.html" />
+    </noscript>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
