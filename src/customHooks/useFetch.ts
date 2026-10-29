@@ -14,6 +14,10 @@ interface FetchOptions {
   body?: BodyInit;
   responseType?: "json" | "text";
   callback?: (data: object | string) => void;
+  cache?: RequestCache;
+  credentials?: RequestCredentials;
+  enabled?: boolean;
+  redirectOnError?: boolean;
 }
 
 /**
@@ -34,6 +38,7 @@ const useFetch = <T>(
   const [error, setError] = useState<Error | FetchError | null>(null);
 
   useEffect(() => {
+    if (options?.enabled === false) return;
     const controller = new AbortController();
     const signal = controller.signal;
 
@@ -42,8 +47,17 @@ const useFetch = <T>(
         startLoading();
         setError(null); // 에러 초기화
 
-        const response = await fetch(url, { signal, ...options });
+        const { enabled, redirectOnError, responseType, callback, ...requestOptions } = options ?? {};
+        const response = await fetch(url, { ...requestOptions, signal });
         if (!response.ok) {
+          if (redirectOnError === false) {
+            const errorBody = await response.json().catch(() => null);
+            throw new FetchError(
+              response.status,
+              errorBody?.message || response.statusText,
+              errorBody?.code
+            );
+          }
           throw new FetchError(response.status, response.statusText);
         }
 
@@ -58,7 +72,7 @@ const useFetch = <T>(
         if (error?.name === "AbortError") return; // 요청 취소 시 에러 무시
         setError(error);
 
-        if (error instanceof FetchError) {
+        if (error instanceof FetchError && options?.redirectOnError !== false) {
           errorRedirect({
             statusCode: error.status || 1002,
             message:
