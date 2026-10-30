@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 
+import { testApiEnabled, testAccessToken } from "testApi/templates";
+import "./DashboardLayout.css";
+
 export default function DashboardLayout() {
   const [bannerVisible, setBannerVisible] = useState(true);
   const [query, setQuery] = useState("");
@@ -13,7 +16,7 @@ export default function DashboardLayout() {
         <NavLink to="/" className="brand"><span className="brand-mark" aria-hidden="true">S</span>SnipText</NavLink>
         <div className="workspace-label">WORKSPACE</div>
         <nav className="workspace-nav" aria-label="주 메뉴">
-          <NavLink to="/" end><span className="nav-icon" aria-hidden="true">▤</span>내 템플릿</NavLink>
+          <NavLink to="/templates" className={() => pathname === "/" || pathname === "/templates" ? "active" : ""}><span className="nav-icon" aria-hidden="true">▤</span>내 템플릿</NavLink>
           <NavLink to="/gallery"><span className="nav-icon" aria-hidden="true">▦</span>템플릿 갤러리</NavLink>
           <NavLink to="/ai-tone"><span className="nav-icon" aria-hidden="true">✧</span>AI 톤 교정<span className="pro-badge">PRO</span></NavLink>
         </nav>
@@ -40,12 +43,10 @@ export default function DashboardLayout() {
           <button type="button" className="install-button" disabled>Chrome에 추가</button>
           <button className="close-banner" aria-label="확장 프로그램 안내 닫기" onClick={() => setBannerVisible(false)}>×</button>
         </section>}
-        {(pathname === "/" || pathname === "/templates") && <div className="search-header"><div className="search-field"><span aria-hidden="true">⌕</span><input aria-label="템플릿 검색" placeholder="템플릿 검색" type="search" value={query} onChange={event => setQuery(event.target.value)} /></div></div>}
+        {(pathname === "/" || pathname === "/templates") && <div className="search-header templates-search"><div className="search-field"><span aria-hidden="true">⌕</span><input aria-label="템플릿 검색" placeholder="템플릿 검색" type="search" value={query} onChange={event => setQuery(event.target.value)} /></div></div>}
         </header>
-        <main key={pathname} id="main-content" className="page-content" tabIndex={-1}><Outlet context={{ query }} /></main>
-        <footer className="dashboard-footer">
-          <small>© {new Date().getFullYear()} SnipText</small>
-        </footer>
+        <main key={pathname} id="main-content" className="page-content" tabIndex={-1}><Outlet context={{ query, accessToken: testApiEnabled ? testAccessToken : "" }} /></main>
+
       </div>
 
     </div>

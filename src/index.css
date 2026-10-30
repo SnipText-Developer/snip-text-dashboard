@@ -9,6 +9,11 @@
   --logo-to-body-distance: 2.28rem;
 }
 
+:focus-visible {
+  outline: 1px solid #191919;
+  outline-offset: 2px;
+}
+
 body {
   background-color: var(--bg-color);
   color: var(--color);
@@ -37,6 +42,12 @@ li {
 
 span {
   line-height: 130%;
+  position: relative;
+  top: -1px;
+}
+
+span span {
+  top: 0;
 }
 
 table {

@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import useFetch from "customHooks/useFetch";
 import { Template } from "models/template";
 
@@ -27,11 +28,13 @@ export type TemplatesResponse =
     };
 
 const useTemplates = (accessToken: string, sort?: TemplateSort) => {
+  const [requestCount, setRequestCount] = useState(0);
+  const refetch = useCallback(() => setRequestCount(count => count + 1), []);
   const url = sort
     ? `/api/v1/templates?sort=${encodeURIComponent(sort)}`
     : "/api/v1/templates";
 
-  return useFetch<TemplatesResponse | null>(url, null, [accessToken, sort], {
+  const result = useFetch<TemplatesResponse | null>(url, null, [accessToken, sort, requestCount], {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -41,6 +44,7 @@ const useTemplates = (accessToken: string, sort?: TemplateSort) => {
     enabled: Boolean(accessToken),
     redirectOnError: false,
   });
+  return { ...result, refetch };
 };
 
 export default useTemplates;

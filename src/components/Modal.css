@@ -1,0 +1,125 @@
+.modal-close {
+  border: 0;
+  background: transparent;
+  color: #939ba8;
+  font-size: 24px !important;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.modal {
+  width: 560px;
+  max-width: calc(100% - 32px);
+  max-height: calc(100dvh - 48px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  color: #191f29;
+  background: white;
+  box-shadow: 0 24px 80px #0003;
+  overflow-y: auto;
+}
+
+.modal::backdrop {
+  background: #101724a6;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 26px 28px;
+  border-bottom: 1px solid #e2e3e5;
+}
+
+.modal-header p {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 23px;
+  letter-spacing: -.6px;
+}
+
+.modal-body {
+  padding: 26px 28px 30px;
+}
+
+.modal-body > p {
+  margin: 0 0 26px;
+  color: #626a79;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.modal-body label {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.modal-body input, .modal-body textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 13px 14px;
+  background: white;
+  color: inherit;
+  font-weight: 400;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 20px 28px;
+  background: #f0f0f0;
+}
+
+.modal-cancel {
+  border: 0;
+  padding: 12px 8px;
+  background: transparent;
+  color: #626a79;
+  font-weight: 700 !important;
+}
+
+.modal-submit {
+  border: 0;
+  border-radius: 10px;
+  padding: 14px 18px;
+  background: #050505;
+  color: white;
+  font-weight: 700 !important;
+}
+
+@media (max-width: 700px) {
+  .modal-header, .modal-body {
+    padding: 22px 20px;
+  }
+
+  .modal-header h2 {
+    font-size: 21px;
+  }
+
+  .modal-footer {
+    padding: 16px 20px;
+  }
+
+  .modal-body input, .modal-body textarea {
+    font-size: 16px;
+  }
+}
+
+.modal-body textarea {
+  resize: vertical;
+}
+

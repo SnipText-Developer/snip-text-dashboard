@@ -12,6 +12,9 @@ import usePromiseRejectionErrorHandler from "customHooks/usePromiseRejectionErro
 import ErrorBoundary from "components/ErrorBoundary";
 
 import "index.css";
+import { installTemplatesTestApi, testApiEnabled } from "testApi/templates";
+
+if (testApiEnabled) installTemplatesTestApi();
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,

@@ -22,9 +22,9 @@ export type TemplateDetailResponse =
  * HTTP 오류는 error로 반환하며 FetchError의 status, code, message를 유지합니다.
  * 토큰이나 templateId가 변경되면 재조회하고 이전 요청은 취소합니다.
  */
-const useTemplateDetail = (accessToken: string, templateId: number) => {
+const useTemplateDetail = (accessToken: string, templateId: number | null) => {
   return useFetch<TemplateDetailResponse | null>(
-    `/api/v1/templates/${encodeURIComponent(templateId)}`,
+    `/api/v1/templates/${encodeURIComponent(templateId ?? "")}`,
     null,
     [accessToken, templateId],
     {
@@ -34,7 +34,7 @@ const useTemplateDetail = (accessToken: string, templateId: number) => {
         "Content-Type": "application/json",
       },
       cache: "no-store",
-      enabled: Boolean(accessToken),
+      enabled: Boolean(accessToken) && templateId !== null,
       redirectOnError: false,
     },
   );
