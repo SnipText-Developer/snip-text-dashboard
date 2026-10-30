@@ -76,7 +76,7 @@ export default function TemplateEditor({ initialDraft, saving, onClose, onSave }
       </section>
       {!addingVariable && <button type="button" className="template-editor-add-variable" onClick={openVariableInput}>변수 추가</button>}
       {addingVariable && <div className="template-editor-variable-input">
-        <label>변수명<input autoFocus placeholder="예: 이름, 회사명" value={variableName} onChange={event => setVariableName(event.target.value)} onKeyDown={event => {
+        <label><span className="template-editor-variable-label">변수명</span><input autoFocus placeholder="예: 이름, 회사명" value={variableName} onChange={event => setVariableName(event.target.value)} onKeyDown={event => {
           if (event.key === "Enter" && !event.nativeEvent.isComposing) {
             event.preventDefault();
             addVariable();

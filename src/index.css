@@ -9,7 +9,9 @@
   --logo-to-body-distance: 2.28rem;
 }
 
-:focus-visible {
+input:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
   outline: 1px solid #191919;
   outline-offset: 2px;
 }
