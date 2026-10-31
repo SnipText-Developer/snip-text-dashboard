@@ -4,7 +4,7 @@ import { Template } from "models/template";
 import Modal from "components/modal/Modal";
 
 interface TemplateCopyDialogProps {
-  template: Template;
+  template: Pick<Template, "title" | "content" | "variables">;
   onClose: () => void;
   onCopy: (content: string) => Promise<boolean>;
 }

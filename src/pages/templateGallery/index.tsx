@@ -1,3 +1,27 @@
+import Notice from "components/Notice";
+import TemplateCopyDialog from "pages/templates/components/TemplateCopyDialog";
+import TemplateGallery from "./components/TemplateGallery";
+import useTemplateGalleryPage from "./hooks/useTemplateGalleryPage";
+import sampleGalleryTemplates from "./sampleGalleryTemplates";
+
 export default function TemplateGalleryPage() {
-  return <section className="page-entry"><div className="eyebrow">TEMPLATE GALLERY</div><h1>템플릿 갤러리</h1><p className="page-description">바로 가져다 쓸 수 있는 템플릿을 찾고 내 템플릿에 저장하여 사용하세요.</p></section>;
+  const page = useTemplateGalleryPage();
+
+  // TODO: API 연동 시 useGalleryTemplates 데이터를 연결합니다.
+  return (
+    <>
+      <TemplateGallery
+        templates={sampleGalleryTemplates}
+        saving={page.saving}
+        onCopy={page.onCopy}
+        onAddToMyTemplates={page.onAddToMyTemplates}
+      />
+      {page.copyingTemplate && <TemplateCopyDialog
+        key={page.copyingTemplate.galleryTemplateId}
+        template={page.copyingTemplate}
+        {...page.copyDialogProps}
+      />}
+      <Notice {...page.noticeProps} />
+    </>
+  );
 }
