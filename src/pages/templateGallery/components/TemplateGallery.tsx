@@ -1,3 +1,5 @@
+import "components/template/TemplateSideList.css";
+import TemplateEmptyMessage from "components/template/TemplateEmptyMessage";
 import "./TemplateGallery.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import GalleryTemplateCard from "./GalleryTemplateCard";
@@ -93,14 +95,13 @@ export default function TemplateGallery({
   const renderList = () => {
     if (filteredTemplates.length === 0) {
       return (
-        <div className="template-gallery__empty">
-          <p className="template-gallery__empty-title">
-            검색된 템플릿이 없어요
-          </p>
-          <p className="template-gallery__empty-description">
-            제목, 본문, 단축어를 입력해보세요
-          </p>
-        </div>
+        <TemplateEmptyMessage
+          className="template-gallery__empty"
+          titleClassName="template-gallery__empty-title"
+          descriptionClassName="template-gallery__empty-description"
+          title="검색된 템플릿이 없어요"
+          description="제목, 본문, 단축어를 입력해보세요"
+        />
       );
     }
 

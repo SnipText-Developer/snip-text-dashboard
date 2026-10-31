@@ -1,3 +1,4 @@
+import TemplateDetail from "components/template/TemplateDetail";
 import "./TemplatePreview.css";
 import { FormEvent, useState } from "react";
 import { Template } from "models/template";
@@ -31,12 +32,20 @@ export default function TemplatePreview({ template, error, saving, onClose, onSa
   }
 
   return (
-    <aside className="template-preview" aria-label="템플릿 미리보기">
-      <div className="preview-top">
-        <button type="button" className="preview-close" aria-label="미리보기 닫기" disabled={saving} onClick={onClose}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m15 3-9 9 9 9" /></svg>
-        </button>
-        {template && draft && <div className="preview-tools">
+    <TemplateDetail
+      className="template-preview"
+      label="템플릿 미리보기"
+      backLabel="미리보기 닫기"
+      onBack={onClose}
+      saving={saving}
+      editable
+      title={draft?.title}
+      shortcut={draft?.shortcut}
+      content={draft?.content}
+      variables={variables}
+      onChange={(field, value) => setDraft(current => current ? { ...current, [field]: value } : current)}
+      onSubmit={submit}
+      tools={template && draft && <div className="preview-tools">
           <button type="button" aria-label="템플릿 복사" onClick={() => onCopy({ ...template, ...draft, templateId: template.templateId, variables })}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><rect x="7" y="7" width="14" height="15" rx="1" /><path d="M18 3H3v16" /></svg>
           </button>
@@ -45,23 +54,11 @@ export default function TemplatePreview({ template, error, saving, onClose, onSa
             {menuOpen && <div className="template-menu"><button type="button" disabled={saving} onClick={() => onDelete(template.templateId)}>삭제하기</button></div>}
           </div>
         </div>}
-      </div>
-      {draft ? <form className="preview-form" onSubmit={submit}>
-        <fieldset disabled={saving}>
-          <div className="preview-fields">
-            <label>제목<input required value={draft.title} onChange={event => setDraft({ ...draft, title: event.target.value })} /></label>
-            <label>/단축어<input required pattern="/?[^\s/]+" value={draft.shortcut} onChange={event => setDraft({ ...draft, shortcut: event.target.value })} /></label>
-          </div>
-          <label className="preview-content">내용<textarea required value={draft.content} onChange={event => setDraft({ ...draft, content: event.target.value })} /></label>
-          <div className="preview-variables" aria-label="사용 중인 변수" aria-live="polite">
-            {variables.map(variable => <span key={variable}>{`{{${variable}}}`}</span>)}
-          </div>
-        </fieldset>
-        <div className="preview-actions">
-          <button type="button" disabled={saving || !changed} onClick={() => setDraft(baseline)}>초기화</button>
-          <button type="submit" disabled={saving || !changed}>{saving ? "저장 중…" : "저장"}</button>
-        </div>
-      </form> : <p role={error ? "alert" : "status"}>{error || "템플릿을 불러오고 있어요."}</p>}
-    </aside>
+      status={!draft ? <p role={error ? "alert" : "status"}>{error || "템플릿을 불러오고 있어요."}</p> : undefined}
+      actions={<>
+        <button type="button" disabled={saving || !changed} onClick={() => setDraft(baseline)}>초기화</button>
+        <button type="submit" disabled={saving || !changed}>{saving ? "저장 중…" : "저장"}</button>
+      </>}
+    />
   );
 }

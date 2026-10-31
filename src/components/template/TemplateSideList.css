@@ -1,0 +1,25 @@
+/* Only constrain lists displayed beside a template detail panel. */
+.has-preview .template-list,
+.template-gallery__side-list {
+  max-height: min(660px, 70dvh);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+  padding-right: 4px;
+  align-content: start;
+}
+
+/* Flex cards keep their height when the gallery list overflows. */
+.template-gallery__side-list > .gallery-card {
+  flex-shrink: 0;
+}
+
+@media (max-width: 850px) {
+  .has-preview .template-list {
+    max-height: none;
+    overflow-y: hidden;
+    overscroll-behavior-y: auto;
+    scrollbar-gutter: auto;
+    padding-right: 0;
+  }
+}

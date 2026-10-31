@@ -198,6 +198,18 @@
   }
 
   .template-gallery__side-list {
-    display: none;
+    flex-direction: row;
+    min-width: 0;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    overscroll-behavior-y: auto;
+    scrollbar-gutter: auto;
+    padding: 0 0 4px;
+  }
+
+  .template-gallery__side-list > .gallery-card {
+    flex: 0 0 240px;
   }
 }
