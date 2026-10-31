@@ -1,7 +1,6 @@
 import { FormEventHandler, ReactNode, useEffect, useId, useRef } from "react";
-import TemplateBackButton from "./TemplateBackButton";
+import TemplateDetailFrame from "./TemplateDetailFrame";
 import TemplateVariables from "./TemplateVariables";
-import "./TemplateDetail.css";
 
 interface TemplateDetailProps {
   title?: string;
@@ -32,12 +31,18 @@ export default function TemplateDetail({ title, shortcut, content, variables, la
   }, [focusTitle]);
 
   return (
-    <section className={`template-detail ${className}`} aria-label={label}>
-      <header className="template-detail__header">
-        <TemplateBackButton className="template-detail__back" aria-label={backLabel} disabled={saving} onClick={onBack} />
-        {tools}
-      </header>
-      {status || <form className="template-detail__form" onSubmit={event => { event.preventDefault(); onSubmit?.(event); }}>
+    <TemplateDetailFrame
+      label={label}
+      backLabel={backLabel}
+      onBack={onBack}
+      saving={saving}
+      className={className}
+      tools={tools}
+      status={status}
+      actions={actions}
+      hint={hint}
+      onSubmit={onSubmit}
+    >
         <fieldset disabled={saving}>
           <div className="template-detail__fields">
             {editable ? <>
@@ -51,11 +56,6 @@ export default function TemplateDetail({ title, shortcut, content, variables, la
           </label>
           {variables.length > 0 && <TemplateVariables className="template-detail__variables" variables={variables} />}
         </fieldset>
-        <footer className="template-detail__footer">
-          {hint && <p>{hint}</p>}
-          <div className="template-detail__actions">{actions}</div>
-        </footer>
-      </form>}
-    </section>
+    </TemplateDetailFrame>
   );
 }

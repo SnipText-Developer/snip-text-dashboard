@@ -10,6 +10,36 @@
   align-content: start;
 }
 
+/* Both detail pages fill the available space down to the plan card baseline. */
+@media (min-width: 851px) {
+  .page-content:has(.template-gallery__detail-layout) {
+    display: flex;
+  }
+
+  .has-preview .templates-main,
+  .template-gallery:has(.template-gallery__detail-layout) {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    padding-bottom: var(--dashboard-bottom-gap);
+  }
+
+  .has-preview .templates-browser,
+  .template-gallery__detail-layout {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .has-preview .template-list,
+  .template-gallery__side-list {
+    height: 0;
+    min-height: 100%;
+    max-height: none;
+    align-self: stretch;
+  }
+}
+
 /* Flex cards keep their height when the gallery list overflows. */
 .template-gallery__side-list > .gallery-card {
   flex-shrink: 0;
