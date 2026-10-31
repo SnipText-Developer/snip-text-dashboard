@@ -30,8 +30,9 @@ export function createTemplatesTestApi(): typeof fetch {
     if (galleryMatch && request.method === "POST") {
       const source = sampleGalleryTemplates.find(item => item.galleryTemplateId === Number(galleryMatch[1]));
       if (!source) return json(404, "GALLERY404_1", null, "갤러리 템플릿을 찾을 수 없습니다.");
+      const usedShortcuts = new Set(templates.map(item => item.shortcut));
       let shortcut = source.shortcut;
-      for (let number = 2; templates.some(item => item.shortcut === shortcut); number++) shortcut = `${source.shortcut}${number}`;
+      for (let number = 2; usedShortcuts.has(shortcut); number++) shortcut = `${source.shortcut}${number}`;
       const now = new Date().toISOString();
       const saved: Template = { templateId: nextId++, title: source.title, shortcut, content: source.content, variables: variablesOf(source.content), lastUsedAt: null, createdAt: now, editedAt: now };
       templates = [...templates, saved];

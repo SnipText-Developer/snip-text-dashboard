@@ -62,20 +62,20 @@ test("detail view swaps templates, emits handlers and returns to the list", asyn
 
   await click(container.querySelector(".gallery-card__detail-button")!);
   expect(container.querySelector(".template-gallery__toolbar")).toBeNull();
-  expect(container.querySelector(".gallery-detail__title")?.textContent).toBe("Meeting 요청");
-  expect(container.querySelector(".gallery-detail__variables")).toBeNull();
-  expect(document.activeElement).toBe(container.querySelector(".gallery-detail__title"));
+  expect(container.querySelector(".template-detail__fields h2")?.textContent).toBe("Meeting 요청");
+  expect(container.querySelector(".template-detail__variables")).toBeNull();
+  expect(document.activeElement).toBe(container.querySelector(".template-detail__fields h2"));
 
   // 왼쪽 목록에서 템플릿을 바꿀 때는 제목으로 포커스를 다시 옮기지 않습니다.
   (document.activeElement as HTMLElement).blur();
   const sideCards = container.querySelectorAll(".gallery-card--compact");
   await click(sideCards[0]);
   expect(document.activeElement).toBe(document.body);
-  expect(container.querySelector(".gallery-detail__title")?.textContent).toBe("프로젝트 견적 안내");
-  expect(texts(".gallery-detail__variable")).toEqual(["{{고객명}}"]);
+  expect(container.querySelector(".template-detail__fields h2")?.textContent).toBe("프로젝트 견적 안내");
+  expect(texts(".template-detail__variables > span")).toEqual(["{{고객명}}"]);
   expect(container.querySelector(".gallery-card--compact.is-selected .gallery-card__title")?.textContent).toBe("프로젝트 견적 안내");
 
-  const [copyButton, addButton] = Array.from(container.querySelectorAll(".gallery-detail__button"));
+  const [copyButton, addButton] = Array.from(container.querySelectorAll(".template-detail__actions > button"));
   await click(copyButton);
   await click(addButton);
   expect(onCopy).toHaveBeenCalledWith(templates[0]);
@@ -83,11 +83,11 @@ test("detail view swaps templates, emits handlers and returns to the list", asyn
 
   // 저장 중에는 같은 템플릿이 중복 생성되지 않도록 추가 버튼만 비활성화합니다.
   await render({ onCopy, onAddToMyTemplates, saving: true });
-  expect(container.querySelectorAll<HTMLButtonElement>(".gallery-detail__button")[0].disabled).toBe(false);
-  expect(container.querySelectorAll<HTMLButtonElement>(".gallery-detail__button")[1].disabled).toBe(true);
+  expect(container.querySelectorAll<HTMLButtonElement>(".template-detail__actions > button")[0].disabled).toBe(false);
+  expect(container.querySelectorAll<HTMLButtonElement>(".template-detail__actions > button")[1].disabled).toBe(true);
 
-  await click(container.querySelector(".gallery-detail__back")!);
-  expect(container.querySelector(".gallery-detail")).toBeNull();
+  await click(container.querySelector(".template-detail__back")!);
+  expect(container.querySelector(".template-detail")).toBeNull();
   expect(container.querySelector(".template-gallery__toolbar")).not.toBeNull();
   // 목록으로 돌아오면 마지막으로 본 템플릿 카드의 "상세 보기" 버튼으로 포커스가 돌아옵니다.
   expect(document.activeElement?.getAttribute("aria-label")).toBe("프로젝트 견적 안내 상세 보기");

@@ -1,6 +1,6 @@
 import "./Modal.css";
 import { FormEventHandler, ReactNode, useEffect, useId, useRef, useState } from "react";
-import Notice from "components/Notice";
+import Notice from "components/notice/Notice";
 
 interface ModalProps {
   className?: string;

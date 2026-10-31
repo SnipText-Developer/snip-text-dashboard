@@ -1,3 +1,4 @@
+import "components/template/TemplateSideList.css";
 import "./TemplateList.css";
 import { useState } from "react";
 import { Template } from "models/template";

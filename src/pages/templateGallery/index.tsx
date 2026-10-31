@@ -1,5 +1,5 @@
-import Notice from "components/Notice";
-import TemplateCopyDialog from "pages/templates/components/TemplateCopyDialog";
+import Notice from "components/notice/Notice";
+import TemplateCopyDialog from "components/template/TemplateCopyDialog";
 import TemplateGallery from "./components/TemplateGallery";
 import useTemplateGalleryPage from "./hooks/useTemplateGalleryPage";
 import sampleGalleryTemplates from "./sampleGalleryTemplates";
