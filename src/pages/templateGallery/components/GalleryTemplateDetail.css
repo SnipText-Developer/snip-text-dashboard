@@ -1,0 +1,145 @@
+.gallery-detail {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 23px 23px;
+  border: 1px solid var(--gallery-line);
+  border-radius: 12px;
+  background-color: #fff;
+}
+
+.gallery-detail__back {
+  display: flex;
+  align-self: flex-start;
+  padding: 6px;
+  border: none;
+  border-radius: 24px;
+  background-color: var(--gallery-surface);
+}
+
+.gallery-detail__title {
+  margin-top: 39px;
+  color: var(--gallery-text-title);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* 포커스 이동용(tabIndex=-1) 제목이라 포커스 테두리를 표시하지 않습니다. */
+.gallery-detail__title:focus {
+  outline: none;
+}
+
+.template-gallery .gallery-detail__label {
+  margin: 28px 0 0 4px;
+  color: var(--gallery-text-label);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.template-gallery .gallery-detail__content {
+  overflow-y: auto;
+  height: 264px;
+  margin-top: 8px;
+  padding: 15px;
+  border: 1px solid #aaa;
+  border-radius: 8px;
+  background-color: var(--gallery-surface);
+  color: var(--gallery-text-body);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.gallery-detail__variables {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin-top: 20px;
+}
+
+.gallery-detail__variables-label {
+  padding: 2px 4px;
+  color: var(--gallery-text-label);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.gallery-detail__variable-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.template-gallery .gallery-detail__variable {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 28px;
+  border-radius: 8px;
+  background-color: #f2efff;
+  box-shadow: inset -0.5px -0.5px 1px 0 #fff,
+    inset 0.5px 0.5px 1px 0 rgba(0, 0, 0, 0.1);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.gallery-detail__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 17px;
+}
+
+.gallery-detail__hint {
+  padding-left: 4px;
+  color: #9ea4af;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.gallery-detail__buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.template-gallery .gallery-detail__button {
+  padding: 8px 18px;
+  border: 1px solid var(--gallery-line);
+  border-radius: 8px;
+  background-color: #fff;
+  color: #767676;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: background-color 0.1s ease, color 0.1s ease, transform 0.1s ease;
+}
+
+/* 저장 중에도 누른 모양을 유지해 버튼 모양과 커서가 깜빡이지 않게 합니다. */
+.template-gallery .gallery-detail__button:active,
+.template-gallery .gallery-detail__button:disabled {
+  background-color: #d9d9d9;
+  color: #555;
+  transform: scale(0.95);
+}
+
+.template-gallery .gallery-detail__button:disabled {
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .gallery-detail {
+    position: static;
+  }
+}

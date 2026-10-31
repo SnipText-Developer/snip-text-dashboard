@@ -1,0 +1,203 @@
+.template-gallery {
+  --gallery-blue: #0A74FF;
+  --gallery-line: #e5e7eb;
+  --gallery-text-title: #1f1f1f;
+  --gallery-text-body: #101010;
+  --gallery-text-sub: #565656;
+  --gallery-text-muted: #848991;
+  --gallery-text-label: #404040;
+  --gallery-surface: #f7f7fa;
+  --gallery-search-bg: #ebebf1;
+  --gallery-inset-shadow: inset -1px -1px 1px 0 #fff,
+    inset 1px 1px 1px 0 rgba(0, 0, 0, 0.1);
+
+  box-sizing: border-box;
+  padding: 34px 30px 40px;
+  color: #000;
+  letter-spacing: -0.025em;
+}
+
+.template-gallery *,
+.template-gallery *::before,
+.template-gallery *::after {
+  box-sizing: border-box;
+}
+
+/* :where()로 클래스 1개 수준의 우선순위를 유지해 각 컴포넌트 클래스 값이 적용되게 합니다. */
+.template-gallery :where(p, h1, h2, h3, ul) {
+  margin: 0;
+}
+
+.template-gallery :where(button) {
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+/* 전역 index.css의 span 위치 보정(top: -1px)을 갤러리에서는 적용하지 않습니다. */
+.template-gallery :where(span) {
+  top: 0;
+}
+
+/* 대시보드 레이아웃 안에서는 상위 여백 대신 갤러리 여백(피그마 기준)을 사용합니다. */
+.page-content:has(.template-gallery) {
+  padding: 0;
+}
+
+/* Header */
+.template-gallery__header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 28px;
+}
+
+.template-gallery__title {
+  color: var(--gallery-text-title);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.template-gallery__description {
+  color: var(--gallery-text-sub);
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+/* 툴바: category tabs (GAL-01) + search (GAL-02) */
+.template-gallery__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.template-gallery__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* .dashboard button의 font: inherit보다 우선하도록 .template-gallery를 붙입니다. */
+.template-gallery .template-gallery__tab {
+  padding: 6px 10px;
+  border: 1px solid var(--gallery-line);
+  border-radius: 8px;
+  background: none;
+  color: #9097a3;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.template-gallery__tab.is-active {
+  background-color: var(--gallery-blue);
+  color: #fff;
+}
+
+.template-gallery__search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 210px;
+  height: 34px;
+  padding: 0 13px;
+  border-radius: 8px;
+  background-color: var(--gallery-search-bg);
+  box-shadow: var(--gallery-inset-shadow);
+}
+
+.template-gallery .template-gallery__search-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--gallery-text-body);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.template-gallery .template-gallery__search-input::placeholder {
+  color: #767676;
+}
+
+/* Category sections (GAL-03) */
+.template-gallery__sections {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.template-gallery__section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.template-gallery__section-title {
+  padding: 6px 10px 6px 4px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.template-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+/* Empty view (2-1) */
+.template-gallery__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 60px 0;
+  text-align: center;
+}
+
+.template-gallery__empty-title {
+  color: var(--gallery-text-title);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.template-gallery__empty-description {
+  color: var(--gallery-text-sub);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Detail layout (GAL-06) */
+.template-gallery__detail-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+}
+
+.template-gallery__side-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .template-gallery__detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .template-gallery__side-list {
+    display: none;
+  }
+}
