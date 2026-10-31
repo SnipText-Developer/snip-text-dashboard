@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useOutletContext } from "react-router-dom";
 
 import useTemplates from "customHooks/template/useTemplates";
 import useTemplateDetail from "customHooks/template/useTemplateDetail";
@@ -13,13 +13,27 @@ export default function useTemplatesPage() {
   const { query = "", accessToken = "" } = useOutletContext<{ query: string; accessToken?: string }>();
   const { data, error, refetch } = useTemplates(accessToken);
   const templates = accessToken && !error && data?.isSuccess ? data.result.templates : [];
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { templateId } = useParams();
+  const selectedId = templateId && /^\d+$/.test(templateId) && Number.isSafeInteger(Number(templateId)) ? Number(templateId) : null;
+  const creating = location.pathname === "/templates/new";
+  const editingRoute = location.pathname.endsWith("/edit");
+  const open = (path: string) => navigate(path, { state: { templatesOrigin: location.pathname } });
+  const close = () => {
+    if (saving) return;
+    const origin = location.state?.templatesOrigin;
+    if (typeof origin === "string" && (origin === "/" || origin === "/templates" || /^\/templates\/\d+$/.test(origin))) navigate(-1);
+    else navigate("/templates", { replace: true });
+  };
   const detail = useTemplateDetail(accessToken, selectedId);
   const [saving, setSaving] = useState(false);
-  const [editing, setEditing] = useState<TemplateDraft | null>(null);
   const [copyingTemplate, setCopyingTemplate] = useState<Template | null>(null);
   const [notice, setNotice] = useState("");
   const selected = accessToken && !detail.error && detail.data?.isSuccess && detail.data.result.templateId === selectedId ? detail.data.result : undefined;
+  const editing: TemplateDraft | null = creating
+    ? { templateId: null, title: "", shortcut: "", content: "" }
+    : editingRoute && selected ? selected : null;
   const filtered = templates.filter(template => `${template.title} ${template.shortcut} ${template.content}`.toLowerCase().includes(query.toLowerCase()));
 
   function copy(template: Template) {
@@ -39,22 +53,23 @@ export default function useTemplatesPage() {
       return false;
     }
   }
-  async function save(draft: TemplateDraft) {
-    if (saving || !accessToken) return;
+  async function save(draft: TemplateDraft, keepPreview = false): Promise<boolean> {
+    if (saving || !accessToken) return false;
     setSaving(true);
     try {
       const input = { title: draft.title, shortcut: `/${draft.shortcut.trim().replace(/^\/+/, "")}`, content: draft.content };
       const response = draft.templateId === null
         ? await createTemplate(accessToken, input)
         : await updateTemplate(accessToken, draft.templateId, input);
-      if (!response.isSuccess) { setNotice(response.message); return; }
-      // Close stale detail before selecting the saved item again.
-      setSelectedId(null);
-      setEditing(null);
+      if (!response.isSuccess) { setNotice(response.message); return false; }
+      if (keepPreview) detail.refetch();
+      else navigate("/templates", { replace: true });
       refetch();
       setNotice("템플릿을 저장했어요.");
+      return true;
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "템플릿을 저장하지 못했어요.");
+      return false;
     } finally { setSaving(false); }
   }
   async function remove(templateId: number) {
@@ -63,7 +78,7 @@ export default function useTemplatesPage() {
     try {
       const response = await deleteTemplate(accessToken, templateId);
       if (!response.isSuccess) { setNotice(response.message); return; }
-      if (selectedId === templateId) setSelectedId(null);
+      if (selectedId === templateId) navigate("/templates", { replace: true });
       refetch();
       setNotice("템플릿을 휴지통으로 옮겼어요.");
     } catch (error) {
@@ -71,7 +86,7 @@ export default function useTemplatesPage() {
     } finally { setSaving(false); }
   }
   return {
-    hasPreview: Boolean(selected),
+    hasPreview: selectedId !== null,
     editing,
     copyingTemplate,
     copyDialogProps: {
@@ -81,7 +96,7 @@ export default function useTemplatesPage() {
     headerProps: {
       count: data?.isSuccess && accessToken && !error ? data.result.totalCount : 0,
       disabled: !accessToken || saving,
-      onCreate: () => setEditing({ templateId: null, title: "", shortcut: "/", content: "" }),
+      onCreate: () => open("/templates/new"),
     },
     listProps: {
       templates: filtered,
@@ -91,9 +106,9 @@ export default function useTemplatesPage() {
       loading: !data,
       error: error?.message || (data?.isSuccess === false ? data.message : undefined),
       query,
-      onSelect: setSelectedId,
+      onSelect: (id: number) => open(`/templates/${id}`),
       onCopy: copy,
-      onEdit: setEditing,
+      onEdit: (template: Template) => open(`/templates/${template.templateId}/edit`),
       onDelete: remove,
       onRetry: refetch,
     },
@@ -101,11 +116,13 @@ export default function useTemplatesPage() {
     previewProps: {
       template: selected,
       error: detail.error?.message || (detail.data?.isSuccess === false ? detail.data.message : undefined),
-      onClose: () => setSelectedId(null),
-      onEdit: setEditing,
+      onClose: close,
+      saving,
+      onSave: (draft: TemplateDraft) => save(draft, true),
+      onDelete: remove,
       onCopy: copy,
     },
     noticeProps: { message: notice, onClose: () => setNotice("") },
-    editorProps: { saving, onClose: () => setEditing(null), onSave: save },
+    editorProps: { saving, onClose: close, onSave: async (draft: TemplateDraft) => { await save(draft); } },
   };
 }

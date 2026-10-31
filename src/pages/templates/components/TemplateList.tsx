@@ -34,12 +34,12 @@ export default function TemplateList({ templates, selectedId, saving, authentica
             <span className="shortcut-pill">{template.shortcut}</span>
             <span className="template-info">
               <strong>{template.title}</strong>
-              <span className="variable-tags">{template.variables.map(variable => <span key={variable}>{`{{${variable}}}`}</span>)}</span>
+              <span className="template-excerpt">{template.content}</span>
             </span>
           </button>
-          <button className="row-copy" onClick={() => onCopy(template)} aria-label={`${template.title} 복사`}>복사</button>
+          <button className="row-copy" onClick={() => onCopy(template)} aria-label={`${template.title} 복사`}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><rect x="8" y="7" width="12" height="14" rx="1" /><path d="M16 3H4v14" /></svg>복사</button>
           <div className="template-more">
-            <button className="more-button" aria-label={`${template.title} 더 보기`} aria-expanded={menuId === template.templateId} onClick={() => setMenuId(menuId === template.templateId ? null : template.templateId)}>⋮</button>
+            <button className="more-button" aria-label={`${template.title} 더 보기`} aria-expanded={menuId === template.templateId} onClick={() => setMenuId(menuId === template.templateId ? null : template.templateId)}>⋯</button>
             {menuId === template.templateId && (
               <div className="template-menu">
                 <button onClick={() => { onEdit(template); setMenuId(null); }}>편집하기</button>
