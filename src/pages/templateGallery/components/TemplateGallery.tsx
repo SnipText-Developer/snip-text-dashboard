@@ -2,6 +2,7 @@ import "components/template/TemplateSideList.css";
 import TemplateEmptyMessage from "components/template/TemplateEmptyMessage";
 import "./TemplateGallery.css";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import GalleryTemplateCard from "./GalleryTemplateCard";
 import GalleryTemplateDetail from "./GalleryTemplateDetail";
 import {
@@ -38,8 +39,19 @@ export default function TemplateGallery({
   const [category, setCategory] = useState<GalleryCategoryFilter>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [selectedTemplate, setSelectedTemplate] =
-    useState<GalleryTemplate | null>(null);
+  // 상세 화면도 브라우저 뒤로가기를 따르도록 URL에 둡니다.
+  // DashboardLayout이 pathname 단위로 다시 마운트하므로 필터가 유지되도록 쿼리를 사용합니다.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const selectedParam = searchParams.get("template");
+  const selectedTemplate = useMemo(
+    () =>
+      templates.find(
+        (template) => String(template.galleryTemplateId) === selectedParam
+      ) ?? null,
+    [templates, selectedParam]
+  );
   const sentinelRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   // 목록으로 돌아올 때 포커스를 되돌릴 템플릿 ID
@@ -75,8 +87,12 @@ export default function TemplateGallery({
 
   // 목록으로 돌아오면 마지막으로 본 템플릿 카드의 "상세 보기" 버튼으로 포커스를 되돌립니다.
   useEffect(() => {
+    if (selectedTemplate) {
+      returnFocusIdRef.current = selectedTemplate.galleryTemplateId;
+      return;
+    }
     const templateId = returnFocusIdRef.current;
-    if (selectedTemplate || templateId === null) return;
+    if (templateId === null) return;
     returnFocusIdRef.current = null;
     rootRef.current
       ?.querySelector<HTMLButtonElement>(
@@ -85,9 +101,19 @@ export default function TemplateGallery({
       ?.focus();
   }, [selectedTemplate]);
 
+  // 상세에서 템플릿을 바꿀 때는 히스토리를 쌓지 않아 뒤로가기 한 번으로 목록에 돌아옵니다.
+  const openDetail = (template: GalleryTemplate) => {
+    setSearchParams(
+      { template: String(template.galleryTemplateId) },
+      selectedTemplate
+        ? { replace: true, state }
+        : { state: { galleryListOrigin: true } }
+    );
+  };
+
   const closeDetail = () => {
-    returnFocusIdRef.current = selectedTemplate?.galleryTemplateId ?? null;
-    setSelectedTemplate(null);
+    if (state?.galleryListOrigin) navigate(-1);
+    else setSearchParams({}, { replace: true });
   };
 
   const sentinel = hasMore && <div ref={sentinelRef} aria-hidden="true" />;
@@ -115,7 +141,7 @@ export default function TemplateGallery({
                 <GalleryTemplateCard
                   key={template.galleryTemplateId}
                   template={template}
-                  onOpen={setSelectedTemplate}
+                  onOpen={openDetail}
                 />
               ))}
             </div>
@@ -147,7 +173,7 @@ export default function TemplateGallery({
                   template.galleryTemplateId ===
                   selectedTemplate.galleryTemplateId
                 }
-                onOpen={setSelectedTemplate}
+                onOpen={openDetail}
               />
             ))}
             {sentinel}
