@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation, useNavigate, useParams, useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams, useOutletContext } from "react-router-dom";
 
 import useTemplates from "customHooks/template/useTemplates";
 import useTemplateDetail from "customHooks/template/useTemplateDetail";
@@ -15,16 +15,22 @@ export default function useTemplatesPage() {
   const templates = accessToken && !error && data?.isSuccess ? data.result.templates : [];
   const navigate = useNavigate();
   const location = useLocation();
-  const { templateId } = useParams();
+  const { templateId: editingTemplateId } = useParams();
+  const [searchParams] = useSearchParams();
+  const templateId = location.pathname.endsWith("/edit") ? editingTemplateId : searchParams.get("template");
   const selectedId = templateId && /^\d+$/.test(templateId) && Number.isSafeInteger(Number(templateId)) ? Number(templateId) : null;
   const creating = location.pathname === "/templates/new";
   const editingRoute = location.pathname.endsWith("/edit");
-  const open = (path: string) => navigate(path, { state: { templatesOrigin: location.pathname } });
+  const open = (path: string) => navigate(path, { state: { templatesOrigin: location.pathname + location.search } });
   const close = () => {
     if (saving) return;
     const origin = location.state?.templatesOrigin;
-    if (typeof origin === "string" && (origin === "/" || origin === "/templates" || /^\/templates\/\d+$/.test(origin))) navigate(-1);
-    else navigate("/templates", { replace: true });
+    if (typeof origin === "string" && (origin.split("?")[0] === "/" || origin.split("?")[0] === "/templates")) navigate(-1);
+    else if (!creating && !editingRoute) {
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete("template");
+      navigate({ pathname: location.pathname, search: nextParams.toString() }, { replace: true });
+    } else navigate("/templates", { replace: true });
   };
   const detail = useTemplateDetail(accessToken, selectedId);
   const [saving, setSaving] = useState(false);
@@ -106,7 +112,11 @@ export default function useTemplatesPage() {
       loading: !data,
       error: error?.message || (data?.isSuccess === false ? data.message : undefined),
       query,
-      onSelect: (id: number) => open(`/templates/${id}`),
+      onSelect: (id: number) => {
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.set("template", String(id));
+        open(`${location.pathname}?${nextParams.toString()}`);
+      },
       onCopy: copy,
       onEdit: (template: Template) => open(`/templates/${template.templateId}/edit`),
       onDelete: remove,

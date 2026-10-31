@@ -22,7 +22,6 @@ const App = () => {
         <Route index element={<TemplatesPage />} />
         <Route path="templates" element={<TemplatesPage />} />
         <Route path="templates/new" element={<TemplatesPage />} />
-        <Route path="templates/:templateId" element={<TemplatesPage />} />
         <Route path="templates/:templateId/edit" element={<TemplatesPage />} />
         <Route path="gallery" element={<TemplateGalleryPage />} />
         <Route path="ai-tone" element={<AiTonePage />} />

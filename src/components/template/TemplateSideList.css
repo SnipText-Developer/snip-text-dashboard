@@ -6,6 +6,7 @@
   overscroll-behavior-y: contain;
   scrollbar-gutter: stable;
   padding-right: 4px;
+  padding-bottom: 16px;
   align-content: start;
 }
 

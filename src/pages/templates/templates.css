@@ -43,4 +43,4 @@
 .has-preview .template-excerpt { display: block; min-height: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; line-height: 18px !important; }
 .has-preview .template-row .row-copy, .has-preview .template-row .template-more { display: none; }
 @media (max-width: 1100px) and (min-width: 701px) { .has-preview .templates-browser { grid-template-columns: 210px minmax(0, 1fr); } }
-@media (max-width: 850px) { .has-preview .templates-browser { grid-template-columns: minmax(0, 1fr); } .has-preview .template-list { display: flex; overflow-x: auto; padding-bottom: 4px; } .has-preview .template-row { flex: 0 0 240px; } }
+@media (max-width: 850px) { .has-preview .templates-browser { grid-template-columns: minmax(0, 1fr); } .has-preview .template-list { display: flex; overflow-x: auto; padding-bottom: 16px; } .has-preview .template-row { flex: 0 0 240px; } }
