@@ -1,8 +1,14 @@
 import { act } from "react";
 import { createRoot, Root } from "react-dom/client";
+import { MemoryRouter, useLocation, useNavigate } from "react-router-dom";
 import TemplateGallery from "./TemplateGallery";
 import { filterGalleryTemplates, groupGalleryTemplatesByCategory } from "../filterGalleryTemplates";
 import { GalleryTemplate } from "../types";
+
+jest.mock("react-router-dom", () => {
+  global.TextEncoder = require("util").TextEncoder;
+  return require(process.cwd() + "/node_modules/react-router/dist/development/index.js");
+});
 
 const templates: GalleryTemplate[] = [
   { galleryTemplateId: 1, category: "SALES", categoryName: "영업", title: "프로젝트 견적 안내", shortcut: "/견적", content: "안녕하세요, {{고객명}}님.", variables: ["고객명"] },
@@ -15,8 +21,14 @@ let container: HTMLDivElement;
 
 const click = async (element: Element) => act(async () => { element.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
 const texts = (selector: string) => Array.from(container.querySelectorAll(selector)).map((node) => node.textContent);
-const render = (props: Partial<React.ComponentProps<typeof TemplateGallery>> = {}) =>
-  act(async () => root.render(<TemplateGallery templates={templates} onCopy={jest.fn()} onAddToMyTemplates={jest.fn()} {...props} />));
+let navigate: ReturnType<typeof useNavigate>;
+let search: string;
+function RouterProbe() { navigate = useNavigate(); search = useLocation().search; return null; }
+const render = (props: Partial<React.ComponentProps<typeof TemplateGallery>> = {}, path = "/gallery") =>
+  act(async () => root.render(<MemoryRouter initialEntries={["/templates", path]} initialIndex={1}>
+    <RouterProbe />
+    <TemplateGallery templates={templates} onCopy={jest.fn()} onAddToMyTemplates={jest.fn()} {...props} />
+  </MemoryRouter>));
 const typeSearch = async (value: string) => {
   const input = container.querySelector<HTMLInputElement>(".template-gallery__search-input")!;
   const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!;
@@ -53,6 +65,38 @@ test("groups cards into category sections and shows content as preview", async (
 
   await typeSearch("없는 검색어");
   expect(container.querySelector(".template-gallery__empty-title")?.textContent).toBe("검색된 템플릿이 없어요");
+});
+
+test("browser back from the detail view returns to the gallery list with filters kept", async () => {
+  await render();
+  await click(container.querySelectorAll(".template-gallery__tab")[2]);
+  await click(container.querySelector(".gallery-card__detail-button")!);
+  expect(search).toBe("?template=1");
+
+  // 상세에서 템플릿을 바꿔도 뒤로가기 한 번이면 목록으로 돌아옵니다.
+  await click(container.querySelectorAll(".gallery-card--compact")[1]);
+  expect(search).toBe("?template=3");
+  await act(async () => navigate(-1));
+
+  expect(search).toBe("");
+  expect(container.querySelector(".template-detail")).toBeNull();
+  expect(texts('.template-gallery__tab[aria-pressed="true"]')).toEqual(["영업"]);
+  expect(document.activeElement?.getAttribute("aria-label")).toBe("재방문 감사 상세 보기");
+});
+
+test("back button on a directly opened detail stays in the gallery", async () => {
+  await render({}, "/gallery?template=2");
+  expect(container.querySelector(".template-detail__fields h2")?.textContent).toBe("Meeting 요청");
+
+  await click(container.querySelector(".template-detail__back")!);
+  expect(search).toBe("");
+  expect(container.querySelector(".template-gallery__toolbar")).not.toBeNull();
+});
+
+test("unknown template in the URL shows the list", async () => {
+  await render({}, "/gallery?template=999");
+  expect(container.querySelector(".template-detail")).toBeNull();
+  expect(container.querySelector(".template-gallery__toolbar")).not.toBeNull();
 });
 
 test("detail view swaps templates, emits handlers and returns to the list", async () => {
