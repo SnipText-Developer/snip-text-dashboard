@@ -1,0 +1,35 @@
+.page-content:has(.templates-workspace) {
+  padding: 0;
+  display: flex;
+}
+
+.templates-workspace {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.templates-main {
+  flex: 1;
+  min-width: 0;
+  padding: 32px;
+}
+
+@media (min-width: 1600px) {
+  .templates-main {
+    padding: 36px 40px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .templates-main {
+    padding: 28px 24px;
+  }
+}
+
+@media (max-width: 700px) {
+  .templates-main {
+    padding: 30px 20px;
+  }
+}

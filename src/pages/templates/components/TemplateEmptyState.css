@@ -1,0 +1,48 @@
+.template-search-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 340px;
+  padding: 48px 20px;
+  text-align: center;
+}
+
+.template-search-empty-mark {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  background: #ccc;
+  margin-bottom: 30px;
+}
+
+.template-search-empty h2 {
+  margin: 0;
+  color: #191f29;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -.5px;
+  line-height: 1.4;
+}
+
+.template-search-empty p {
+  margin: 16px 0 0;
+  color: #626a79;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+  .template-search-empty {
+    min-height: 300px;
+    padding: 36px 12px;
+  }
+
+  .template-search-empty h2 {
+    font-size: 20px;
+  }
+
+  .template-search-empty p {
+    font-size: 14px;
+  }
+}
