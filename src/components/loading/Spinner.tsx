@@ -3,7 +3,7 @@
 // External
 
 // Local
-import "components/Spinner.css";
+import "./Spinner.css";
 
 interface SpinnerProps {}
 

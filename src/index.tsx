@@ -9,7 +9,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "App";
 import { LoadingProvider } from "contexts/LoadingProvider";
 import usePromiseRejectionErrorHandler from "customHooks/usePromiseRejectionErrorHandler";
-import ErrorBoundary from "components/ErrorBoundary";
+import ErrorBoundary from "components/error/ErrorBoundary";
 
 import "index.css";
 import { installTemplatesTestApi, testApiEnabled } from "testApi/templates";

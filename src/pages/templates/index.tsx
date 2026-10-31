@@ -2,8 +2,8 @@ import TemplatesHeader from "./components/TemplatesHeader";
 import TemplateList from "./components/TemplateList";
 import TemplatePreview from "./components/TemplatePreview";
 import TemplateEditor from "./components/TemplateEditor";
-import TemplateCopyDialog from "./components/TemplateCopyDialog";
-import Notice from "components/Notice";
+import TemplateCopyDialog from "components/template/TemplateCopyDialog";
+import Notice from "components/notice/Notice";
 import useTemplatesPage from "./hooks/useTemplatesPage";
 import "./templates.css";
 

@@ -1,7 +1,7 @@
 import "./TemplateCopyDialog.css";
 import { FormEvent, useState } from "react";
 import { Template } from "models/template";
-import Modal from "components/Modal";
+import Modal from "components/modal/Modal";
 
 interface TemplateCopyDialogProps {
   template: Template;
