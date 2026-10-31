@@ -1,3 +1,4 @@
+import "./TemplateCopyDialog.css";
 import { FormEvent, useState } from "react";
 import { Template } from "models/template";
 import Modal from "components/Modal";
@@ -28,6 +29,7 @@ export default function TemplateCopyDialog({ template, onClose, onCopy }: Templa
 
   return (
     <Modal
+      className="template-copy-dialog"
       eyebrow={template.title}
       title="변수를 채워주세요"
       description="필수 항목을 모두 입력하면 완성된 문구를 복사할 수 있어요."
@@ -37,7 +39,7 @@ export default function TemplateCopyDialog({ template, onClose, onCopy }: Templa
       onSubmit={submit}
     >
       {variables.map((variable, index) => <label key={variable}>
-        {variable}
+        <span className="copy-variable-label">{`{{${variable}}}`}</span>
         <input autoFocus={index === 0} required placeholder={`${variable} 입력`} value={values[variable] ?? ""} onChange={event => setValues(current => ({ ...current, [variable]: event.target.value }))} />
       </label>)}
     </Modal>

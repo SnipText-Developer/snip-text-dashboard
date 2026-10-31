@@ -1,0 +1,18 @@
+.template-copy-dialog { box-sizing: border-box; border: 1px solid #e0e3e9; border-radius: 12px; background: #f9fafb; color: #242424; box-shadow: 0 16px 48px #28374d26; }
+.template-copy-dialog *, .template-copy-dialog *::before, .template-copy-dialog *::after { box-sizing: border-box; }
+.template-copy-dialog::backdrop { background: #28374d52; }
+.template-copy-dialog .modal-header { border-color: #e0e3e9; background: white; }
+.template-copy-dialog .modal-header p { width: fit-content; max-width: 100%; padding: 5px 10px; border-radius: 8px; background: #e0efff; color: #0055ad; overflow-wrap: anywhere; }
+.template-copy-dialog .modal-header h2 { color: #242424; }
+.template-copy-dialog .modal-close { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%; background: #f6f6f9; color: #929aa8; }
+.template-copy-dialog .modal-body > p { color: #606060; }
+.template-copy-dialog .modal-body label { gap: 8px; font-weight: 400; }
+.template-copy-dialog .copy-variable-label { width: fit-content; max-width: 100%; padding: 6px 12px; border-radius: 8px; background: #f1eeff; color: #333; overflow-wrap: anywhere; }
+.template-copy-dialog .modal-body input { min-height: 40px; padding: 10px 14px; border: 1px solid #aaa; border-radius: 8px; background: #f7f7fa; color: #111; }
+.template-copy-dialog .modal-body input:focus-visible { border-color: #0877ff; outline: 2px solid #0877ff33; outline-offset: 2px; }
+.template-copy-dialog .modal-footer { gap: 8px; border-top: 1px solid #e0e3e9; background: white; }
+.template-copy-dialog .modal-cancel, .template-copy-dialog .modal-submit { min-height: 40px; padding: 10px 18px; border-radius: 8px; }
+.template-copy-dialog .modal-cancel { border: 1px solid #dfe3eb; background: white; color: #555; }
+.template-copy-dialog .modal-submit { background: #0877ff; color: white; }
+.template-copy-dialog .modal-submit:disabled { cursor: default; background: #e0e5fc; color: #727c9b; opacity: 1; }
+@media (max-width: 700px) { .template-copy-dialog .modal-footer { flex-wrap: wrap; } }

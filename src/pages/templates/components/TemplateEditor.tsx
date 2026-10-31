@@ -1,7 +1,6 @@
 import "./TemplateEditor.css";
 import { FormEvent, useLayoutEffect, useRef, useState } from "react";
 import { TemplateDraft } from "../types";
-import Modal from "components/Modal";
 
 interface TemplateEditorProps {
   initialDraft: TemplateDraft;
@@ -36,10 +35,12 @@ export default function TemplateEditor({ initialDraft, saving, onClose, onSave }
     setAddingVariable(true);
   }
 
-  function addVariable() {
-    const name = variableName.trim();
+  function addVariable(preset?: string) {
+    const name = (preset ?? variableName).trim();
     if (!name || /[{}\r\n]/.test(name)) return;
-    const { start, end } = insertionRangeRef.current;
+    const { start, end } = preset && contentRef.current
+      ? { start: contentRef.current.selectionStart, end: contentRef.current.selectionEnd }
+      : insertionRangeRef.current;
     const variable = `{{${name}}}`;
     variableSelectionRef.current = start + variable.length;
     setDraft(current => ({
@@ -52,29 +53,30 @@ export default function TemplateEditor({ initialDraft, saving, onClose, onSave }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    onSave(draft);
+    if (!saving) onSave(draft);
   }
 
   return (
-    <Modal
-      eyebrow="내 템플릿"
-      title={draft.templateId === null ? "새 템플릿" : "템플릿 편집"}
-      description="자주 쓰는 문구를 저장하고 단축어로 바로 불러오세요."
-      submitLabel={saving ? "저장 중…" : "저장하기"}
-      submitDisabled={saving}
-      onClose={onClose}
-      onSubmit={submit}
-    >
-      <label>제목<input autoFocus required placeholder="제목 입력" value={draft.title} onChange={event => setDraft({ ...draft, title: event.target.value })} /></label>
-      <label>단축어<input required pattern="/?[^\s/]+" placeholder="/단축어" value={draft.shortcut} onChange={event => setDraft({ ...draft, shortcut: event.target.value })} /></label>
-      <label>내용<textarea ref={contentRef} required rows={5} placeholder="템플릿 내용 입력" value={draft.content} onChange={event => setDraft({ ...draft, content: event.target.value })} /></label>
-      <section className="template-editor-variables" aria-label="사용 중인 변수" aria-live="polite">
-        <strong>사용 중인 변수 {variables.length}개</strong>
-        {variables.length > 0 ? <ul>
-          {variables.map(variable => <li key={variable}>{`{{${variable}}}`}</li>)}
-        </ul> : <p>사용 중인 변수가 없어요.</p>}
-      </section>
-      {!addingVariable && <button type="button" className="template-editor-add-variable" onClick={openVariableInput}>변수 추가</button>}
+    <section className="template-editor-page" aria-labelledby="template-editor-heading">
+      <button type="button" className="template-editor-back" disabled={saving} onClick={onClose} aria-label="뒤로가기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m15 3-9 9 9 9" /></svg>
+        뒤로가기
+      </button>
+      <h1 id="template-editor-heading">{draft.templateId === null ? "새 템플릿" : "템플릿 편집"}</h1>
+      <p className="page-description">자주 사용하는 문장을 저장하고 단축어로 빠르게 불러오세요.</p>
+      <form className="template-editor-form" onSubmit={submit}>
+        <fieldset disabled={saving}>
+        <div className="template-editor-fields">
+      <label>제목<input autoFocus required placeholder="템플릿 제작 중입니다." value={draft.title} onChange={event => setDraft({ ...draft, title: event.target.value })} /></label>
+      <label>/단축어<input required pattern="/?[^\s/]+" placeholder="/ㄷㅊㅇ" value={draft.shortcut} onChange={event => setDraft({ ...draft, shortcut: event.target.value })} /></label>
+        </div>
+      <label className="template-editor-content">내용<textarea ref={contentRef} required rows={5} placeholder="안녕하세요." value={draft.content} onChange={event => setDraft({ ...draft, content: event.target.value })} /></label>
+      <div className="template-editor-variables" aria-label="변수 삽입">
+        <button type="button" className="template-editor-add-variable" onClick={openVariableInput}>변수 삽입 ＋</button>
+        {Array.from(new Set(["날짜", "이름", ...variables])).map(variable => (
+          <button type="button" className="template-editor-variable-chip" key={variable} onClick={() => addVariable(variable)}>{`{{${variable}}}`}</button>
+        ))}
+      </div>
       {addingVariable && <div className="template-editor-variable-input">
         <label><span className="template-editor-variable-label">변수명</span><input autoFocus placeholder="예: 이름, 회사명" value={variableName} onChange={event => setVariableName(event.target.value)} onKeyDown={event => {
           if (event.key === "Enter" && !event.nativeEvent.isComposing) {
@@ -83,10 +85,16 @@ export default function TemplateEditor({ initialDraft, saving, onClose, onSave }
           }
         }} /></label>
         <div className="template-editor-variable-actions">
-          <button type="button" className="template-editor-add-variable" disabled={!variableName.trim() || /[{}\r\n]/.test(variableName)} onClick={addVariable}>추가</button>
+          <button type="button" className="template-editor-add-variable" disabled={!variableName.trim() || /[{}\r\n]/.test(variableName)} onClick={() => addVariable()}>추가</button>
           <button type="button" className="modal-cancel" onClick={() => { setAddingVariable(false); setVariableName(""); contentRef.current?.focus(); }}>취소</button>
         </div>
       </div>}
-    </Modal>
+        </fieldset>
+        <div className="template-editor-actions">
+          <button type="button" disabled={saving} onClick={onClose}>취소</button>
+          <button type="submit" disabled={saving || !draft.title.trim() || !draft.shortcut.trim().replace(/^\/+/, "") || !draft.content.trim()}>{saving ? "저장 중…" : "저장하기"}</button>
+        </div>
+      </form>
+    </section>
   );
 }

@@ -13,21 +13,25 @@ export default function TemplatesPage() {
   return (
     <section className={`templates-workspace ${page.hasPreview ? "has-preview" : ""}`} aria-label="내 템플릿">
       <div className="templates-main">
+        {page.editing ? <TemplateEditor
+          key={page.editing.templateId ?? "new"}
+          initialDraft={page.editing}
+          {...page.editorProps}
+        /> : <>
         <TemplatesHeader {...page.headerProps} />
-        <TemplateList {...page.listProps} />
+        <div className="templates-browser">
+          <TemplateList {...page.listProps} />
+          {page.previewVisible && <TemplatePreview key={page.previewProps.template?.templateId ?? "loading"} {...page.previewProps} />}
+        </div>
+        </>}
       </div>
-      {page.previewVisible && <TemplatePreview {...page.previewProps} />}
       {page.copyingTemplate && <TemplateCopyDialog
         key={page.copyingTemplate.templateId}
         template={page.copyingTemplate}
         {...page.copyDialogProps}
       />}
       <Notice {...page.noticeProps} />
-      {page.editing && <TemplateEditor
-        key={page.editing.templateId ?? "new"}
-        initialDraft={page.editing}
-        {...page.editorProps}
-      />}
+
     </section>
   );
 }
