@@ -14,6 +14,8 @@ const PAGE_SIZE = 20;
 
 interface TemplateGalleryProps {
   templates: GalleryTemplate[];
+  // 내 템플릿에 저장하는 중이면 추가 버튼을 비활성화합니다.
+  saving?: boolean;
   // 변수 입력 후 복사합니다. 변수 입력 모달과 클립보드 복사는 상위에서 연결합니다.
   onCopy: (template: GalleryTemplate) => void;
   // {{변수명}}을 치환하지 않고 그대로 내 템플릿에 추가합니다.
@@ -27,6 +29,7 @@ interface TemplateGalleryProps {
  */
 export default function TemplateGallery({
   templates,
+  saving = false,
   onCopy,
   onAddToMyTemplates,
 }: TemplateGalleryProps) {
@@ -150,6 +153,7 @@ export default function TemplateGallery({
           </div>
           <GalleryTemplateDetail
             template={selectedTemplate}
+            saving={saving}
             onBack={closeDetail}
             onCopy={onCopy}
             onAddToMyTemplates={onAddToMyTemplates}

@@ -67,7 +67,7 @@
   letter-spacing: 0;
 }
 
-/* Toolbar: category tabs (GAL-01) + search (GAL-02) */
+/* 툴바: category tabs (GAL-01) + search (GAL-02) */
 .template-gallery__toolbar {
   display: flex;
   flex-wrap: wrap;

@@ -3,7 +3,6 @@ import { GalleryTemplate } from "./types";
 /**
  * 템플릿 갤러리 UI 개발 및 테스트용 임시 데이터
  * TODO: API 연동 시 useGalleryTemplates로 대체하고 제거할 것
- * 실제 서비스에서는 사용하지 않음
  */
 const samples: [GalleryTemplate["category"], string, string, string, string][] = [
   ["WORK", "업무", "회의 일정 조율", "/회의", "안녕하세요, {{이름}}님. 다음 주 {{날짜}}에 회의 가능하실까요? 편하신 시간을 알려주시면 일정 맞춰보겠습니다."],

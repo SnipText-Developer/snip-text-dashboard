@@ -81,6 +81,11 @@ test("detail view swaps templates, emits handlers and returns to the list", asyn
   expect(onCopy).toHaveBeenCalledWith(templates[0]);
   expect(onAddToMyTemplates).toHaveBeenCalledWith(templates[0]);
 
+  // 저장 중에는 같은 템플릿이 중복 생성되지 않도록 추가 버튼만 비활성화합니다.
+  await render({ onCopy, onAddToMyTemplates, saving: true });
+  expect(container.querySelectorAll<HTMLButtonElement>(".gallery-detail__button")[0].disabled).toBe(false);
+  expect(container.querySelectorAll<HTMLButtonElement>(".gallery-detail__button")[1].disabled).toBe(true);
+
   await click(container.querySelector(".gallery-detail__back")!);
   expect(container.querySelector(".gallery-detail")).toBeNull();
   expect(container.querySelector(".template-gallery__toolbar")).not.toBeNull();

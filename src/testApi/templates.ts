@@ -1,4 +1,5 @@
 import { Template } from "models/template";
+import sampleGalleryTemplates from "pages/templateGallery/sampleGalleryTemplates";
 
 // Set REACT_APP_USE_TEST_API=false to connect development builds to the real API.
 export const testApiEnabled = process.env.NODE_ENV === "development" && process.env.REACT_APP_USE_TEST_API !== "false";
@@ -12,6 +13,7 @@ const seed = [
   ["프로젝트 견적 안내", "/견적", "안녕하세요, {{고객명}}님. 요청 주신 프로젝트의 예상 견적은 {{금액}}원이며, 작업 기간은 {{기간}}입니다. 검토 후 편하게 회신 부탁드립니다."],
   ["간단한 자기소개", "/소개", "안녕하세요. {{회사명}}에서 {{직무}}를 맡고 있는 {{이름}}입니다. 만나 뵙게 되어 반갑습니다."],
 ];
+const galleryTemplateSavePath = /^\/api\/v1\/gallery\/templates\/(\d+)\/save$/;
 const variablesOf = (content: string) => Array.from(new Set(Array.from(content.matchAll(/\{\{\s*([^{}]+?)\s*\}\}/g), match => match[1])));
 const json = (status: number, code: string, result: unknown, message = "요청을 처리했습니다.") => new Response(JSON.stringify({ isSuccess: status < 400, code, message, result }), { status, headers: { "Content-Type": "application/json" } });
 
@@ -24,6 +26,17 @@ export function createTemplatesTestApi(): typeof fetch {
     if (request.signal.aborted) throw new DOMException("요청이 취소되었습니다.", "AbortError");
     if (request.headers.get("Authorization") !== `Bearer ${testAccessToken}`) return json(401, "AUTH401_1", null, "로그인이 필요합니다.");
     const url = new URL(request.url);
+    const galleryMatch = url.pathname.match(galleryTemplateSavePath);
+    if (galleryMatch && request.method === "POST") {
+      const source = sampleGalleryTemplates.find(item => item.galleryTemplateId === Number(galleryMatch[1]));
+      if (!source) return json(404, "GALLERY404_1", null, "갤러리 템플릿을 찾을 수 없습니다.");
+      let shortcut = source.shortcut;
+      for (let number = 2; templates.some(item => item.shortcut === shortcut); number++) shortcut = `${source.shortcut}${number}`;
+      const now = new Date().toISOString();
+      const saved: Template = { templateId: nextId++, title: source.title, shortcut, content: source.content, variables: variablesOf(source.content), lastUsedAt: null, createdAt: now, editedAt: now };
+      templates = [...templates, saved];
+      return json(201, "GALLERY201_1", { templateId: saved.templateId, title: saved.title, shortcut, originalShortcut: source.shortcut, shortcutChanged: shortcut !== source.shortcut });
+    }
     const match = url.pathname.match(/^\/api\/v1\/templates(?:\/(\d+))?$/);
     if (!match) return json(404, "NOT_FOUND", null, "테스트 API가 없는 경로입니다.");
     const id = match[1] ? Number(match[1]) : null;
@@ -60,6 +73,6 @@ export function installTemplatesTestApi() {
   const testFetch = createTemplatesTestApi();
   window.fetch = (input, init) => {
     const url = new URL(typeof input === "string" ? input : input instanceof URL ? input.href : input.url, window.location.origin);
-    return url.origin === window.location.origin && /^\/api\/v1\/templates(?:\/\d+)?$/.test(url.pathname) ? testFetch(input, init) : originalFetch(input, init);
+    return url.origin === window.location.origin && (/^\/api\/v1\/templates(?:\/\d+)?$/.test(url.pathname) || galleryTemplateSavePath.test(url.pathname)) ? testFetch(input, init) : originalFetch(input, init);
   };
 }

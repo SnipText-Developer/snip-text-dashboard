@@ -123,6 +123,19 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 1.4;
+  transition: background-color 0.1s ease, color 0.1s ease, transform 0.1s ease;
+}
+
+/* 저장 중에도 누른 모양을 유지해 버튼 모양과 커서가 깜빡이지 않게 합니다. */
+.template-gallery .gallery-detail__button:active,
+.template-gallery .gallery-detail__button:disabled {
+  background-color: #d9d9d9;
+  color: #555;
+  transform: scale(0.95);
+}
+
+.template-gallery .gallery-detail__button:disabled {
+  cursor: pointer;
 }
 
 @media (max-width: 900px) {

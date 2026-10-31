@@ -5,6 +5,7 @@ import arrowLeftIcon from "assets/icons/arrow-left.svg";
 
 interface GalleryTemplateDetailProps {
   template: GalleryTemplate;
+  saving: boolean;
   onBack: () => void;
   onCopy: (template: GalleryTemplate) => void;
   onAddToMyTemplates: (template: GalleryTemplate) => void;
@@ -16,6 +17,7 @@ interface GalleryTemplateDetailProps {
  */
 export default function GalleryTemplateDetail({
   template,
+  saving,
   onBack,
   onCopy,
   onAddToMyTemplates,
@@ -79,6 +81,7 @@ export default function GalleryTemplateDetail({
           <button
             type="button"
             className="gallery-detail__button"
+            disabled={saving}
             onClick={() => onAddToMyTemplates(template)}
           >
             내 템플릿에 추가
