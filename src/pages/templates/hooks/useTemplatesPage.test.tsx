@@ -14,13 +14,14 @@ let root: Root;
 let container: HTMLDivElement;
 let navigate: ReturnType<typeof useNavigate>;
 let pathname: string;
-function Probe() { page = useTemplatesPage(); navigate = useNavigate(); pathname = useLocation().pathname; return null; }
+let search: string;
+function Probe() { page = useTemplatesPage(); navigate = useNavigate(); pathname = useLocation().pathname; search = useLocation().search; return null; }
 async function setup(path = "/templates") {
   await act(async () => root.render(<MemoryRouter initialEntries={[path]}><Routes>
     <Route element={<Outlet context={{ query: "", accessToken: "token" }} />}>
       <Route path="/templates" element={<Probe />} />
       <Route path="/templates/new" element={<Probe />} />
-      <Route path="/templates/:templateId" element={<Probe />} />
+      <Route path="/" element={<Probe />} />
       <Route path="/templates/:templateId/edit" element={<Probe />} />
     </Route>
   </Routes></MemoryRouter>));
@@ -35,7 +36,8 @@ test("new and detail views follow browser back and forward", async () => {
   await act(async () => page.editorProps.onClose());
   expect(pathname).toBe("/templates");
   await act(async () => page.listProps.onSelect(12));
-  expect(pathname).toBe("/templates/12");
+  expect(pathname).toBe("/templates");
+  expect(search).toBe("?template=12");
   expect(page.previewVisible).toBe(true);
   await act(async () => navigate(-1));
   expect(page.previewVisible).toBe(false);
@@ -45,7 +47,28 @@ test("new and detail views follow browser back and forward", async () => {
   expect(pathname).toBe("/templates");
 });
 test("direct detail access closes to the list without leaving the app", async () => {
-  await setup("/templates/12");
+  await setup("/templates?template=12");
   await act(async () => page.previewProps.onClose());
   expect(pathname).toBe("/templates");
+});
+
+test("detail selection keeps the current path and other query parameters", async () => {
+  await setup("/?sort=recent");
+  await act(async () => page.listProps.onSelect(12));
+  expect(pathname).toBe("/");
+  expect(search).toBe("?sort=recent&template=12");
+  await act(async () => page.previewProps.onClose());
+  expect(search).toBe("?sort=recent");
+  expect(page.previewVisible).toBe(false);
+});
+test("direct detail close preserves other query parameters", async () => {
+  await setup("/templates?sort=recent&template=12");
+  expect(page.listProps.selectedId).toBe(12);
+  await act(async () => page.previewProps.onClose());
+  expect(search).toBe("?sort=recent");
+  expect(page.previewVisible).toBe(false);
+});
+test.each(["abc", "1.5", "9007199254740992"])("invalid detail id %s does not open preview", async id => {
+  await setup(`/templates?template=${id}`);
+  expect(page.previewVisible).toBe(false);
 });
