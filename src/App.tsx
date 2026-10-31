@@ -21,6 +21,9 @@ const App = () => {
       <Route element={<DashboardLayout />}>
         <Route index element={<TemplatesPage />} />
         <Route path="templates" element={<TemplatesPage />} />
+        <Route path="templates/new" element={<TemplatesPage />} />
+        <Route path="templates/:templateId" element={<TemplatesPage />} />
+        <Route path="templates/:templateId/edit" element={<TemplatesPage />} />
         <Route path="gallery" element={<TemplateGalleryPage />} />
         <Route path="ai-tone" element={<AiTonePage />} />
         <Route path="*" element={<section className="page-entry"><h1>페이지를 찾을 수 없어요</h1></section>} />

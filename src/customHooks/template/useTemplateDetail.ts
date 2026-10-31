@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import useFetch from "customHooks/useFetch";
 import { Template } from "models/template";
 
@@ -23,10 +24,12 @@ export type TemplateDetailResponse =
  * 토큰이나 templateId가 변경되면 재조회하고 이전 요청은 취소합니다.
  */
 const useTemplateDetail = (accessToken: string, templateId: number | null) => {
-  return useFetch<TemplateDetailResponse | null>(
+  const [requestCount, setRequestCount] = useState(0);
+  const refetch = useCallback(() => setRequestCount(count => count + 1), []);
+  const result = useFetch<TemplateDetailResponse | null>(
     `/api/v1/templates/${encodeURIComponent(templateId ?? "")}`,
     null,
-    [accessToken, templateId],
+    [accessToken, templateId, requestCount],
     {
       method: "GET",
       headers: {
@@ -38,6 +41,7 @@ const useTemplateDetail = (accessToken: string, templateId: number | null) => {
       redirectOnError: false,
     },
   );
+  return { ...result, refetch };
 };
 
 export default useTemplateDetail;

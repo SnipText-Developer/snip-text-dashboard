@@ -13,7 +13,7 @@ export default function TemplateSearch({
         <span aria-hidden="true">⌕</span>
         <input
           aria-label="템플릿 검색"
-          placeholder="템플릿 검색"
+          placeholder="전체 검색"
           type="search"
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}

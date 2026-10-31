@@ -3,6 +3,7 @@ import { FormEventHandler, ReactNode, useEffect, useId, useRef, useState } from 
 import Notice from "components/Notice";
 
 interface ModalProps {
+  className?: string;
   eyebrow: string;
   title: string;
   description: string;
@@ -13,7 +14,7 @@ interface ModalProps {
   onSubmit: FormEventHandler<HTMLFormElement>;
 }
 
-export default function Modal({ eyebrow, title, description, children, submitLabel, submitDisabled, onClose, onSubmit }: ModalProps) {
+export default function Modal({ className = "", eyebrow, title, description, children, submitLabel, submitDisabled, onClose, onSubmit }: ModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const descriptionId = useId();
@@ -26,7 +27,7 @@ export default function Modal({ eyebrow, title, description, children, submitLab
   }, []);
 
   return (
-    <dialog ref={dialogRef} className="modal" aria-labelledby={titleId} aria-describedby={descriptionId} onCancel={onClose}>
+    <dialog ref={dialogRef} className={`modal ${className}`} aria-labelledby={titleId} aria-describedby={descriptionId} onCancel={onClose}>
       <form onSubmit={onSubmit} onInput={() => setValidationMessage("")} onInvalid={event => {
         event.preventDefault();
         const field = event.target as HTMLInputElement | HTMLTextAreaElement;
