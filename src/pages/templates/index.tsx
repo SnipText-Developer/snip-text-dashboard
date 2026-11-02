@@ -1,9 +1,5 @@
-import TemplatesHeader from "./components/TemplatesHeader";
-import TemplateList from "./components/TemplateList";
-import TemplatePreview from "./components/TemplatePreview";
-import TemplateEditor from "./components/TemplateEditor";
-import TemplateCopyDialog from "components/template/TemplateCopyDialog";
-import Notice from "components/notice/Notice";
+import TemplatesContent from "./components/TemplatesContent";
+import TemplatesFeedback from "./components/TemplatesFeedback";
 import useTemplatesPage from "./hooks/useTemplatesPage";
 import "./templates.css";
 
@@ -12,26 +8,19 @@ export default function TemplatesPage() {
 
   return (
     <section className={`templates-workspace ${page.hasPreview ? "has-preview" : ""}`} aria-label="내 템플릿">
-      <div className="templates-main">
-        {page.editing ? <TemplateEditor
-          key={page.editing.templateId ?? "new"}
-          initialDraft={page.editing}
-          {...page.editorProps}
-        /> : <>
-        <TemplatesHeader {...page.headerProps} />
-        <div className="templates-browser">
-          <TemplateList {...page.listProps} />
-          {page.previewVisible && <TemplatePreview key={page.previewProps.template?.templateId ?? "loading"} {...page.previewProps} />}
-        </div>
-        </>}
-      </div>
-      {page.copyingTemplate && <TemplateCopyDialog
-        key={page.copyingTemplate.templateId}
-        template={page.copyingTemplate}
-        {...page.copyDialogProps}
-      />}
-      <Notice {...page.noticeProps} />
-
+      <TemplatesContent
+        editing={page.editing}
+        editorProps={page.editorProps}
+        headerProps={page.headerProps}
+        listProps={page.listProps}
+        previewVisible={page.previewVisible}
+        previewProps={page.previewProps}
+      />
+      <TemplatesFeedback
+        copyingTemplate={page.copyingTemplate}
+        copyDialogProps={page.copyDialogProps}
+        noticeProps={page.noticeProps}
+      />
     </section>
   );
 }
