@@ -1,0 +1,33 @@
+.page-content:has(.ai-tone) { padding: 36px 30px; }
+.ai-tone { max-width: 1200px; margin: 0 auto; }
+.ai-tone h1 { margin: 0; color: #222; font-size: 36px; line-height: 1.4; letter-spacing: -1px; }
+.ai-tone-description { margin: 10px 0 30px; color: #555; font-size: 16px; }
+.ai-tone-styles { display: flex; align-items: center; gap: 22px; padding: 0; margin: 0 0 42px; border: 0; min-width: 0; }
+.ai-tone-styles legend { float: left; padding: 8px 0; font-weight: 600; }
+.ai-tone-styles > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.ai-tone button { border: 1px solid #e0e3eb; border-radius: 8px; background: white; color: #707070; padding: 10px 18px; line-height: 1.4; }
+.ai-tone-styles button { padding: 7px 10px; color: #8791a2; background: transparent; }
+.ai-tone-styles button[aria-pressed="true"] { background: #087cff; border-color: #087cff; color: white; }
+.ai-tone-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.ai-tone-panel { min-width: 0; }
+.ai-tone-label { display: flex; gap: 24px; align-items: center; min-height: 26px; margin-bottom: 24px; }
+.ai-tone-label label { font-weight: 600; }
+.ai-tone-label span { color: #777; }
+.ai-tone-panel textarea { display: block; width: 100%; min-height: 264px; padding: 15px; border: 1px solid #aaa; border-radius: 8px; resize: vertical; color: #111; background: #f7f7f9; line-height: 1.9; word-break: normal; overflow-wrap: anywhere; }
+.ai-tone-panel-footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 16px; color: #777; }
+.ai-tone-panel-footer > span { padding-top: 0; white-space: nowrap; }
+.ai-tone-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 6px; }
+.ai-tone-result-footer { justify-content: flex-end; }
+.ai-tone-message { color: #737b89; font-size: 13px; margin-top: 20px; }
+.ai-tone-error { color: #b42318; }
+.ai-tone-warning { padding: 12px 16px; border: 1px solid #e6c573; border-radius: 8px; background: #fffaeb; color: #795500; }
+.ai-tone-warning p { margin: 4px 0; }
+@media (max-width: 1000px) { .ai-tone-panel-footer { flex-wrap: wrap; } .ai-tone-actions { margin-left: auto; } }
+@media (max-width: 700px) {
+  .page-content:has(.ai-tone) { padding: 30px 20px; }
+  .ai-tone h1 { font-size: 28px; }
+  .ai-tone-description { font-size: 14px; }
+  .ai-tone-styles { flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+  .ai-tone-columns { grid-template-columns: 1fr; gap: 30px; }
+  .ai-tone-label { margin-bottom: 12px; }
+}
