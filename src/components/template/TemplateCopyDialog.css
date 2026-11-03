@@ -1,18 +1,82 @@
-.template-copy-dialog { box-sizing: border-box; border: 1px solid #e0e3e9; border-radius: 12px; background: #f9fafb; color: #242424; box-shadow: 0 16px 48px #28374d26; }
-.template-copy-dialog *, .template-copy-dialog *::before, .template-copy-dialog *::after { box-sizing: border-box; }
+.template-copy-dialog {
+  box-sizing: border-box;
+  width: 520px;
+  border: 1px solid #7393e7;
+  border-radius: 24px;
+  background: #fff;
+  color: #191f29;
+  box-shadow: 0 16px 48px #28374d26;
+}
+.template-copy-dialog *,
+.template-copy-dialog *::before,
+.template-copy-dialog *::after { box-sizing: border-box; }
 .template-copy-dialog::backdrop { background: #28374d52; }
-.template-copy-dialog .modal-header { border-color: #e0e3e9; background: white; }
-.template-copy-dialog .modal-header p { width: fit-content; max-width: 100%; padding: 5px 10px; border-radius: 8px; background: #e0efff; color: #0055ad; overflow-wrap: anywhere; }
-.template-copy-dialog .modal-header h2 { color: #242424; }
-.template-copy-dialog .modal-close { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%; background: #f6f6f9; color: #929aa8; }
-.template-copy-dialog .modal-body > p { color: #606060; }
-.template-copy-dialog .modal-body label { gap: 8px; font-weight: 400; }
-.template-copy-dialog .copy-variable-label { width: fit-content; max-width: 100%; padding: 6px 12px; border-radius: 8px; background: #f1eeff; color: #333; overflow-wrap: anywhere; }
-.template-copy-dialog .modal-body input { min-height: 40px; padding: 10px 14px; border: 1px solid #aaa; border-radius: 8px; background: #f7f7fa; color: #111; }
-.template-copy-dialog .modal-body input:focus-visible { border-color: #0877ff; outline: 2px solid #0877ff33; outline-offset: 2px; }
-.template-copy-dialog .modal-footer { gap: 8px; border-top: 1px solid #e0e3e9; background: white; }
-.template-copy-dialog .modal-cancel, .template-copy-dialog .modal-submit { min-height: 40px; padding: 10px 18px; border-radius: 8px; }
-.template-copy-dialog .modal-cancel { border: 1px solid #dfe3eb; background: white; color: #555; }
-.template-copy-dialog .modal-submit { background: #0877ff; color: white; }
-.template-copy-dialog .modal-submit:disabled { cursor: default; background: #e0e5fc; color: #727c9b; opacity: 1; }
-@media (max-width: 700px) { .template-copy-dialog .modal-footer { flex-wrap: wrap; } }
+.template-copy-dialog .modal-header {
+  justify-content: center;
+  padding: 24px 24px 0;
+  border: 0;
+  text-align: center;
+}
+.template-copy-dialog .modal-header p,
+.template-copy-dialog .modal-close { display: none; }
+.template-copy-dialog .modal-header h2 {
+  color: #191f29;
+  font-size: 20px;
+  line-height: 1.5;
+}
+.template-copy-dialog .modal-body { padding: 8px 24px 0; }
+.template-copy-dialog .modal-body > p {
+  margin: 0 0 36px;
+  color: #707d90;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.6;
+}
+.template-copy-dialog .modal-body label {
+  gap: 8px;
+  margin-top: 16px;
+  color: #515d70;
+  font-size: 13px;
+  font-weight: 500;
+}
+.template-copy-dialog .copy-variable-label { overflow-wrap: anywhere; }
+.template-copy-dialog .modal-body input {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid #d1d5dd;
+  border-radius: 8px;
+  background: #fff;
+  color: #191f29;
+  font-size: 15px;
+}
+.template-copy-dialog .modal-body input::placeholder { color: #8c97a7; }
+.template-copy-dialog .modal-body input:focus-visible {
+  border-color: #7393e7;
+  outline: 2px solid #7393e733;
+  outline-offset: 2px;
+}
+.template-copy-dialog .modal-footer {
+  gap: 8px;
+  padding: 38px 24px 24px;
+  border: 0;
+  background: #fff;
+}
+.template-copy-dialog .modal-cancel,
+.template-copy-dialog .modal-submit {
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 1px solid #d1d5dd;
+  border-radius: 8px;
+  background: #fff;
+  color: #515d70;
+  font-size: 15px;
+  font-weight: 500 !important;
+}
+.template-copy-dialog .modal-submit { order: -1; }
+.template-copy-dialog .modal-submit:disabled { cursor: default; opacity: .6; }
+@media (max-width: 700px) {
+  .template-copy-dialog .modal-header { padding: 24px 20px 0; }
+  .template-copy-dialog .modal-body { padding: 8px 20px 0; }
+  .template-copy-dialog .modal-body input { font-size: 16px; }
+  .template-copy-dialog .modal-footer { padding: 28px 20px 24px; flex-wrap: wrap; }
+}
