@@ -2,6 +2,9 @@ import { act } from "react";
 import { createRoot, Root } from "react-dom/client";
 import { MemoryRouter, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import useTemplatesPage from "./useTemplatesPage";
+import deleteTemplate from "api/template/deleteTemplate";
+
+jest.mock("api/template/deleteTemplate", () => ({ __esModule: true, default: jest.fn() }));
 
 jest.mock("react-router-dom", () => {
   global.TextEncoder = require("util").TextEncoder;
@@ -71,4 +74,21 @@ test("direct detail close preserves other query parameters", async () => {
 test.each(["abc", "1.5", "9007199254740992"])("invalid detail id %s does not open preview", async id => {
   await setup(`/templates?template=${id}`);
   expect(page.previewVisible).toBe(false);
+});
+
+test("deletion waits for confirmation and can be cancelled", async () => {
+  const remove = deleteTemplate as jest.Mock;
+  remove.mockReset();
+  await setup();
+  await act(async () => page.listProps.onDelete(12));
+  expect(page.deleteDialogProps).not.toBeNull();
+  expect(remove).not.toHaveBeenCalled();
+  await act(async () => page.deleteDialogProps?.onClose());
+  expect(page.deleteDialogProps).toBeNull();
+  expect(remove).not.toHaveBeenCalled();
+  remove.mockResolvedValue({ isSuccess: true });
+  await act(async () => page.previewProps.onDelete(12));
+  await act(async () => page.deleteDialogProps?.onDelete());
+  expect(remove).toHaveBeenCalledWith("token", 12);
+  expect(page.deleteDialogProps).toBeNull();
 });

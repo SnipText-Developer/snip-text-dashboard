@@ -35,6 +35,7 @@ export default function useTemplatesPage() {
   const detail = useTemplateDetail(accessToken, selectedId);
   const [saving, setSaving] = useState(false);
   const [copyingTemplate, setCopyingTemplate] = useState<Template | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [notice, setNotice] = useState("");
   const selected = accessToken && !detail.error && detail.data?.isSuccess && detail.data.result.templateId === selectedId ? detail.data.result : undefined;
   const editing: TemplateDraft | null = creating
@@ -87,6 +88,7 @@ export default function useTemplatesPage() {
       if (selectedId === templateId) navigate("/templates", { replace: true });
       refetch();
       setNotice("템플릿을 휴지통으로 옮겼어요.");
+      setDeletingId(null);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "템플릿을 삭제하지 못했어요.");
     } finally { setSaving(false); }
@@ -95,6 +97,11 @@ export default function useTemplatesPage() {
     hasPreview: selectedId !== null,
     editing,
     copyingTemplate,
+    deleteDialogProps: deletingId === null ? null : {
+      saving,
+      onClose: () => { if (!saving) setDeletingId(null); },
+      onDelete: () => remove(deletingId),
+    },
     copyDialogProps: {
       onClose: () => setCopyingTemplate(null),
       onCopy: (content: string) => copyingTemplate ? copyContent(copyingTemplate.title, content) : Promise.resolve(false),
@@ -119,7 +126,7 @@ export default function useTemplatesPage() {
       },
       onCopy: copy,
       onEdit: (template: Template) => open(`/templates/${template.templateId}/edit`),
-      onDelete: remove,
+      onDelete: async (id: number) => { if (!saving) setDeletingId(id); },
       onRetry: refetch,
     },
     previewVisible: selectedId !== null,
@@ -129,7 +136,7 @@ export default function useTemplatesPage() {
       onClose: close,
       saving,
       onSave: (draft: TemplateDraft) => save(draft, true),
-      onDelete: remove,
+      onDelete: async (id: number) => { if (!saving) setDeletingId(id); },
       onCopy: copy,
     },
     noticeProps: { message: notice, onClose: () => setNotice("") },

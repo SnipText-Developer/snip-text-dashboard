@@ -19,6 +19,7 @@ export default function TemplatesPage() {
       <TemplatesFeedback
         copyingTemplate={page.copyingTemplate}
         copyDialogProps={page.copyDialogProps}
+        deleteDialogProps={page.deleteDialogProps}
         noticeProps={page.noticeProps}
       />
     </section>
