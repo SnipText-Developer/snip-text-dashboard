@@ -12,7 +12,7 @@ export default function DashboardHeader({ query, onQueryChange }: DashboardHeade
   return (
     <header className="dashboard-header">
       <NavLink to="/" className="brand">SNIP TEXT</NavLink>
-      {(pathname === "/" || pathname === "/templates" || pathname.startsWith("/templates/")) && (
+      {(pathname === "/" || pathname === "/templates" || pathname.startsWith("/templates/") || pathname === "/gallery") && (
         <TemplateSearch query={query} onQueryChange={onQueryChange} />
       )}
       <div className="header-actions">

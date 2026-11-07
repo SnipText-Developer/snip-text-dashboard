@@ -13,6 +13,7 @@ export default function TemplateGalleryPage() {
       <TemplateGallery
         templates={sampleGalleryTemplates}
         saving={page.saving}
+        searchQuery={page.searchQuery}
         onCopy={page.onCopy}
         onAddToMyTemplates={page.onAddToMyTemplates}
       />

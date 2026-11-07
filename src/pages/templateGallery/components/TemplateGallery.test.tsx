@@ -29,11 +29,6 @@ const render = (props: Partial<React.ComponentProps<typeof TemplateGallery>> = {
     <RouterProbe />
     <TemplateGallery templates={templates} onCopy={jest.fn()} onAddToMyTemplates={jest.fn()} {...props} />
   </MemoryRouter>));
-const typeSearch = async (value: string) => {
-  const input = container.querySelector<HTMLInputElement>(".template-gallery__search-input")!;
-  const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!;
-  await act(async () => { setValue.call(input, value); input.dispatchEvent(new Event("input", { bubbles: true })); });
-};
 
 beforeEach(() => {
   (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
@@ -59,12 +54,49 @@ test("groups cards into category sections and shows content as preview", async (
   await click(container.querySelectorAll(".template-gallery__tab")[2]);
   expect(texts(".template-gallery__section-title")).toEqual(["영업"]);
   expect(texts('.template-gallery__tab[aria-pressed="true"]')).toEqual(["영업"]);
+  expect(container.querySelector(".template-gallery__search-input")).toBeNull();
+});
 
-  await typeSearch("감사");
+test("search switches the list to gallery-only results", async () => {
+  await render();
+  await click(container.querySelectorAll(".template-gallery__tab")[1]);
+
+  // 검색 결과는 선택한 카테고리와 관계없이 찾습니다.
+  await render({ searchQuery: " 견적 " });
+  expect(container.querySelector(".template-gallery__toolbar")).toBeNull();
+  expect(container.querySelector(".template-row")).toBeNull();
+  expect(texts(".template-gallery__section-title")).toEqual(["템플릿 갤러리"]);
+  expect(texts(".gallery-card__title")).toEqual(["프로젝트 견적 안내"]);
+
+  await render({ searchQuery: "없는 검색어" });
+  expect(container.querySelector(".template-search-empty h2")?.textContent).toBe("검색된 템플릿이 없어요");
+
+  // 검색어를 지우면 이전 목록 화면(선택한 카테고리)으로 돌아옵니다.
+  await render({ searchQuery: "" });
+  expect(texts('.template-gallery__tab[aria-pressed="true"]')).toEqual(["업무"]);
+  expect(texts(".template-gallery__section-title")).toEqual(["업무"]);
+});
+
+test("gallery search result opens the detail and back returns to the results", async () => {
+  await render({ searchQuery: "감사" });
+  await click(container.querySelector(".gallery-card__detail-button")!);
+  expect(search).toBe("?template=3");
+  expect(container.querySelector(".template-detail__fields h2")?.textContent).toBe("재방문 감사");
+  expect(texts(".gallery-card--compact .gallery-card__title")).toEqual(["재방문 감사"]);
+
+  await click(container.querySelector(".template-detail__back")!);
+  expect(search).toBe("");
+  expect(texts(".template-gallery__section-title")).toEqual(["템플릿 갤러리"]);
+});
+
+test("searching from a detail view shows results and clearing returns to that detail", async () => {
+  await render({}, "/gallery?template=2");
+  await render({ searchQuery: "감사" });
+  expect(container.querySelector(".template-detail")).toBeNull();
   expect(texts(".gallery-card__title")).toEqual(["재방문 감사"]);
 
-  await typeSearch("없는 검색어");
-  expect(container.querySelector(".template-gallery__empty-title")?.textContent).toBe("검색된 템플릿이 없어요");
+  await render({ searchQuery: "" });
+  expect(container.querySelector(".template-detail__fields h2")?.textContent).toBe("Meeting 요청");
 });
 
 test("browser back from the detail view returns to the gallery list with filters kept", async () => {
