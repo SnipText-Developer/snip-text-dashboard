@@ -7,7 +7,7 @@ import saveGalleryTemplate from "api/templateGallery/saveGalleryTemplate";
 import { GalleryTemplate } from "../types";
 
 export default function useTemplateGalleryPage() {
-  const { accessToken = "" } = useOutletContext<{ accessToken?: string }>();
+  const { query = "", accessToken = "" } = useOutletContext<{ query?: string; accessToken?: string }>();
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
   const { data, error: templatesError, refetch } = useTemplates(accessToken);
@@ -74,6 +74,7 @@ export default function useTemplateGalleryPage() {
 
   return {
     saving,
+    searchQuery: query,
     copyingTemplate,
     copyDialogProps: {
       onClose: () => setCopyingTemplate(null),

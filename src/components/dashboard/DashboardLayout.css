@@ -89,6 +89,9 @@
 .templates-search .search-field { height: 40px; padding: 0 14px; gap: 8px; border: 1px solid #e3e3ea; border-radius: 8px; background: #ebebf1; }
 .templates-search .search-field > span { font-size: 23px; }
 .templates-search .search-field input { padding: 10px 0; }
+.templates-search .search-field input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.templates-search .search-clear { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: #858b98; cursor: pointer; }
+.templates-search .search-clear:hover { color: #111; }
 .sidebar { width: 260px; height: calc(100dvh - 80px); top: 80px; align-self: start; padding: 34px 10px var(--dashboard-bottom-gap); border-right: 1px solid var(--line); }
 .workspace-nav { gap: 10px; }
 .workspace-nav a { min-height: 46px; border-radius: 28px; padding: 10px 20px; gap: 10px; font-weight: 400; color: #a5a5a5; }

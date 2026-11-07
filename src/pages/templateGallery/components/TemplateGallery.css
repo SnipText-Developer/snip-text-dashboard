@@ -7,9 +7,6 @@
   --gallery-text-muted: #848991;
   --gallery-text-label: #404040;
   --gallery-surface: #f7f7fa;
-  --gallery-search-bg: #ebebf1;
-  --gallery-inset-shadow: inset -1px -1px 1px 0 #fff,
-    inset 1px 1px 1px 0 rgba(0, 0, 0, 0.1);
 
   box-sizing: border-box;
   padding: 34px 30px 40px;
@@ -67,7 +64,7 @@
   letter-spacing: 0;
 }
 
-/* 툴바: category tabs (GAL-01) + search (GAL-02) */
+/* 툴바: category tabs (GAL-01) */
 .template-gallery__toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -99,35 +96,6 @@
 .template-gallery__tab.is-active {
   background-color: var(--gallery-blue);
   color: #fff;
-}
-
-.template-gallery__search {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 210px;
-  height: 34px;
-  padding: 0 13px;
-  border-radius: 8px;
-  background-color: var(--gallery-search-bg);
-  box-shadow: var(--gallery-inset-shadow);
-}
-
-.template-gallery .template-gallery__search-input {
-  flex: 1;
-  min-width: 0;
-  padding: 0;
-  border: none;
-  outline: none;
-  background: none;
-  color: var(--gallery-text-body);
-  font: inherit;
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.template-gallery .template-gallery__search-input::placeholder {
-  color: #767676;
 }
 
 /* Category sections (GAL-03) */

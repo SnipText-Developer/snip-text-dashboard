@@ -5,13 +5,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import GalleryTemplateCard from "./GalleryTemplateCard";
 import GalleryTemplateDetail from "./GalleryTemplateDetail";
+import TemplateEmptyState from "pages/templates/components/TemplateEmptyState";
 import {
   filterGalleryTemplates,
   galleryCategoryTabs,
   groupGalleryTemplatesByCategory,
 } from "../filterGalleryTemplates";
 import { GalleryCategoryFilter, GalleryTemplate } from "../types";
-import searchIcon from "assets/icons/search.svg";
 
 const PAGE_SIZE = 20;
 
@@ -19,6 +19,8 @@ interface TemplateGalleryProps {
   templates: GalleryTemplate[];
   // 내 템플릿에 저장하는 중이면 추가 버튼을 비활성화합니다.
   saving?: boolean;
+  // 헤더 검색어입니다. 값이 있으면 목록 대신 갤러리 검색 결과 화면을 보여줍니다.
+  searchQuery?: string;
   // 변수 입력 후 복사합니다. 변수 입력 모달과 클립보드 복사는 상위에서 연결합니다.
   onCopy: (template: GalleryTemplate) => void;
   // {{변수명}}을 치환하지 않고 그대로 내 템플릿에 추가합니다.
@@ -29,15 +31,16 @@ interface TemplateGalleryProps {
  * 템플릿 갤러리 화면(#tempgallery)의 UI 컴포넌트입니다.
  * 목록은 카테고리 섹션으로 묶어 보여주고, 상세 보기 시 왼쪽 목록 + 오른쪽 상세로 전환합니다.
  * 카테고리·검색 필터는 화면에서 적용하고 무한 스크롤로 나눠 렌더링합니다.
+ * 헤더 검색어가 있으면 갤러리 템플릿 검색 결과 화면으로 전환합니다.
  */
 export default function TemplateGallery({
   templates,
   saving = false,
+  searchQuery = "",
   onCopy,
   onAddToMyTemplates,
 }: TemplateGalleryProps) {
   const [category, setCategory] = useState<GalleryCategoryFilter>("ALL");
-  const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   // 상세 화면도 브라우저 뒤로가기를 따르도록 URL에 둡니다.
   // DashboardLayout이 pathname 단위로 다시 마운트하므로 필터가 유지되도록 쿼리를 사용합니다.
@@ -56,10 +59,14 @@ export default function TemplateGallery({
   const rootRef = useRef<HTMLDivElement>(null);
   // 목록으로 돌아올 때 포커스를 되돌릴 템플릿 ID
   const returnFocusIdRef = useRef<number | null>(null);
+  const searching = searchQuery.trim() !== "";
+  // 검색 결과에서 연 상세는 검색 중에도 상세를 보여주고, 뒤로가면 검색 결과로 돌아갑니다.
+  const showSearchResults = searching && !state?.gallerySearchOrigin;
 
+  // 검색 결과는 카테고리와 관계없이 갤러리 전체에서 찾습니다.
   const filteredTemplates = useMemo(
-    () => filterGalleryTemplates(templates, category, searchQuery),
-    [templates, category, searchQuery]
+    () => filterGalleryTemplates(templates, searching ? "ALL" : category, searchQuery),
+    [templates, category, searching, searchQuery]
   );
   const visibleTemplates = filteredTemplates.slice(0, visibleCount);
   const hasMore = visibleCount < filteredTemplates.length;
@@ -105,9 +112,9 @@ export default function TemplateGallery({
   const openDetail = (template: GalleryTemplate) => {
     setSearchParams(
       { template: String(template.galleryTemplateId) },
-      selectedTemplate
+      selectedTemplate && !showSearchResults
         ? { replace: true, state }
-        : { state: { galleryListOrigin: true } }
+        : { state: { galleryListOrigin: true, gallerySearchOrigin: showSearchResults } }
     );
   };
 
@@ -117,6 +124,30 @@ export default function TemplateGallery({
   };
 
   const sentinel = hasMore && <div ref={sentinelRef} aria-hidden="true" />;
+
+  const renderSearchResults = () => {
+    if (filteredTemplates.length === 0) {
+      return <TemplateEmptyState searching />;
+    }
+
+    return (
+      <div className="template-gallery__sections">
+        <section className="template-gallery__section">
+          <h2 className="template-gallery__section-title">템플릿 갤러리</h2>
+          <div className="template-gallery__grid">
+            {visibleTemplates.map((template) => (
+              <GalleryTemplateCard
+                key={template.galleryTemplateId}
+                template={template}
+                onOpen={openDetail}
+              />
+            ))}
+          </div>
+          {sentinel}
+        </section>
+      </div>
+    );
+  };
 
   const renderList = () => {
     if (filteredTemplates.length === 0) {
@@ -161,7 +192,9 @@ export default function TemplateGallery({
         </p>
       </header>
 
-      {selectedTemplate ? (
+      {showSearchResults ? (
+        renderSearchResults()
+      ) : selectedTemplate ? (
         <div className="template-gallery__detail-layout">
           <div className="template-gallery__side-list">
             {visibleTemplates.map((template) => (
@@ -209,17 +242,6 @@ export default function TemplateGallery({
                 </button>
               ))}
             </div>
-            <label className="template-gallery__search">
-              <img src={searchIcon} alt="" width={14} height={14} />
-              <input
-                type="search"
-                className="template-gallery__search-input"
-                placeholder="템플릿 검색"
-                aria-label="템플릿 검색"
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-              />
-            </label>
           </div>
           {renderList()}
         </>
