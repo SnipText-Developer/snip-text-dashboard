@@ -1,4 +1,5 @@
 import "./TemplatesHeader.css";
+import plusIcon from "assets/icons/plus.svg";
 interface TemplatesHeaderProps {
   count: number;
   disabled: boolean;
@@ -14,7 +15,7 @@ export default function TemplatesHeader({ disabled, onCreate }: TemplatesHeaderP
           <p className="page-description">저장한 문장을 확인하고 필요할 때 바로 사용하세요.</p>
         </div>
         <button className="new-template" disabled={disabled} onClick={onCreate}>
-          <span aria-hidden="true">＋</span> 새 템플릿
+          <img src={plusIcon} alt="" width={20} height={20} />새 템플릿
         </button>
       </div>
     </>

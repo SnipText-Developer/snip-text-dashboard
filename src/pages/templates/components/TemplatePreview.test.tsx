@@ -27,7 +27,7 @@ function button(text: string) { return Array.from(container.querySelectorAll("bu
 test("reset restores the saved values", async () => {
   await changeTitle("수정 제목");
   expect(button("저장").disabled).toBe(false);
-  await act(async () => button("초기화").click());
+  await act(async () => button("되돌리기").click());
   expect(container.querySelector("input")!.value).toBe(template.title);
   expect(button("저장").disabled).toBe(true);
 });
@@ -42,6 +42,6 @@ test("failed saves keep the draft and successful saves establish a new reset val
   expect(onSave).toHaveBeenLastCalledWith(expect.objectContaining({ templateId: 1, title: "수정 제목" }));
   expect(button("저장").disabled).toBe(true);
   await changeTitle("다른 제목");
-  await act(async () => button("초기화").click());
+  await act(async () => button("되돌리기").click());
   expect(container.querySelector("input")!.value).toBe("수정 제목");
 });

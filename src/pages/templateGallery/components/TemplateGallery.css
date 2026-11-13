@@ -1,17 +1,18 @@
 .template-gallery {
-  --gallery-blue: #0A74FF;
-  --gallery-line: #e5e7eb;
-  --gallery-text-title: #1f1f1f;
-  --gallery-text-body: #101010;
-  --gallery-text-sub: #565656;
-  --gallery-text-muted: #848991;
-  --gallery-text-label: #404040;
-  --gallery-surface: #f7f7fa;
+  --gallery-blue: #2456c7;
+  --gallery-line: #e5e8eb;
+  --gallery-selected-line: #6d8edb;
+  --gallery-text-title: #191f28;
+  --gallery-text-body: #191f28;
+  --gallery-text-sub: #4e5968;
+  --gallery-text-muted: #6b7684;
+  --gallery-text-label: #4e5968;
+  --gallery-surface: #f2f4f6;
 
   box-sizing: border-box;
-  padding: 34px 30px 40px;
-  color: #000;
-  letter-spacing: -0.025em;
+  padding: 40px 24px;
+  color: #191f28;
+  letter-spacing: 0;
 }
 
 .template-gallery *,
@@ -45,7 +46,7 @@
 .template-gallery__header {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   margin-bottom: 28px;
 }
 
@@ -53,14 +54,14 @@
   color: var(--gallery-text-title);
   font-size: 36px;
   font-weight: 700;
-  line-height: 1.5;
-  letter-spacing: 0;
+  line-height: 1.45;
+  letter-spacing: -0.72px;
 }
 
 .template-gallery__description {
   color: var(--gallery-text-sub);
   font-size: 17px;
-  line-height: 1.5;
+  line-height: 1.45;
   letter-spacing: 0;
 }
 
@@ -82,18 +83,20 @@
 
 /* .dashboard button의 font: inherit보다 우선하도록 .template-gallery를 붙입니다. */
 .template-gallery .template-gallery__tab {
-  padding: 6px 10px;
-  border: 1px solid var(--gallery-line);
+  height: 40px;
+  padding: 10px 16px;
+  border: 1px solid #d1d6db;
   border-radius: 8px;
-  background: none;
-  color: #9097a3;
-  font-size: 14px;
+  background: #fafbfc;
+  color: #8b95a1;
+  font-size: 15px;
   font-weight: 500;
   line-height: 1.4;
   letter-spacing: 0;
 }
 
-.template-gallery__tab.is-active {
+.template-gallery .template-gallery__tab.is-active {
+  border-color: var(--gallery-blue);
   background-color: var(--gallery-blue);
   color: #fff;
 }
@@ -108,19 +111,22 @@
 .template-gallery__section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .template-gallery__section-title {
-  padding: 6px 10px 6px 4px;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.2;
+  padding: 0;
+  color: var(--gallery-text-title);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.36px;
 }
 
 .template-gallery__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  /* 1440px 화면(스크롤바 자리 제외)에서 v2처럼 4열(268px 안팎)이 되도록 최소 폭을 둡니다. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
   gap: 20px;
 }
 /* Empty view (2-1) */
@@ -149,15 +155,31 @@
 /* Detail layout (GAL-06) */
 .template-gallery__detail-layout {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-columns: 268px minmax(0, 1fr);
   align-items: start;
-  gap: 12px;
+  gap: 20px;
+  /* 헤더 아래 28px과 합쳐 내 템플릿 상세와 같은 40px 간격을 둡니다. */
+  margin-top: 12px;
 }
 
 .template-gallery__side-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+}
+
+/* Gallery detail panel (v2 3_2): 읽기 전용 내용과 버튼 간격 */
+.gallery-template-detail .template-detail__content {
+  color: var(--gallery-text-label);
+  font-weight: 600;
+}
+
+.gallery-template-detail .template-detail__form textarea {
+  min-height: 307px;
+}
+
+.gallery-template-detail .template-detail__footer {
+  padding-top: 48px;
 }
 
 @media (max-width: 850px) {

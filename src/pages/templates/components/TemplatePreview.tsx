@@ -3,6 +3,8 @@ import "./TemplatePreview.css";
 import { FormEvent, useState } from "react";
 import { Template } from "models/template";
 import { TemplateDraft } from "../types";
+import copyIcon from "assets/icons/detail-copy.svg";
+import moreIcon from "assets/icons/detail-more.svg";
 
 interface TemplatePreviewProps {
   template?: Template;
@@ -47,16 +49,16 @@ export default function TemplatePreview({ template, error, saving, onClose, onSa
       onSubmit={submit}
       tools={template && draft && <div className="preview-tools">
           <button type="button" aria-label="템플릿 복사" onClick={() => onCopy({ ...template, ...draft, templateId: template.templateId, variables })}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><rect x="7" y="7" width="14" height="15" rx="1" /><path d="M18 3H3v16" /></svg>
+            <img src={copyIcon} alt="" width={32} height={32} />
           </button>
           <div className="preview-more">
-            <button type="button" aria-label="템플릿 더 보기" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>⋯</button>
+            <button type="button" aria-label="템플릿 더 보기" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><img src={moreIcon} alt="" width={32} height={32} /></button>
             {menuOpen && <div className="template-menu"><button type="button" disabled={saving} onClick={() => onDelete(template.templateId)}>삭제하기</button></div>}
           </div>
         </div>}
       status={!draft ? <p role={error ? "alert" : "status"}>{error || "템플릿을 불러오고 있어요."}</p> : undefined}
       actions={<>
-        <button type="button" disabled={saving || !changed} onClick={() => setDraft(baseline)}>초기화</button>
+        <button type="button" disabled={saving || !changed} onClick={() => setDraft(baseline)}>되돌리기</button>
         <button type="submit" disabled={saving || !changed}>{saving ? "저장 중…" : "저장"}</button>
       </>}
     />

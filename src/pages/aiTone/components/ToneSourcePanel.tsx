@@ -17,7 +17,7 @@ export default function ToneSourcePanel({ text, busy, authenticated, hasResult, 
           <div className="ai-tone-panel-footer"><span id="ai-tone-count">{text.length.toLocaleString()} / 1,000자</span>
             <div className="ai-tone-actions"><button type="button" disabled={busy || !text} onClick={onReset}>초기화</button>
               <button type="button" disabled={busy || !authenticated || !text.trim()} onClick={onCorrect}>
-                {busy ? "교정 중…" : hasResult ? "다시 교정하기" : "교정하기"}</button></div>
+                {busy ? "교정 중…" : hasResult ? "다시 교정하기" : "톤 교정하기"}</button></div>
           </div>
         </div>
   );

@@ -1,22 +1,27 @@
-.template-detail { min-width: 0; padding: 19px 23px; border: 1px solid #e0e3e9; border-radius: 12px; background: white; }
-.template-detail__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.template-detail__back { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: #f6f6f9; color: #929aa8; }
-.template-detail__form { display: flex; flex-direction: column; margin-top: 35px; min-height: 490px; }
+.template-detail { min-width: 0; padding: 23px; border: 1px solid #e5e8eb; border-radius: 24px; background: white; color: #191f28; }
+.template-detail__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 32px; }
+.template-detail__back { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 24px; background: transparent; }
+.template-detail__back > img { display: block; }
+.template-detail__form { display: flex; flex-direction: column; margin-top: 24px; }
 .template-detail__form fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
-.template-detail__fields { display: grid; grid-template-columns: 1.23fr 1fr; gap: 16px; }
-.template-detail__form label { display: flex; flex-direction: column; gap: 8px; min-width: 0; color: #444; font-size: 13px; }
-.template-detail__form input, .template-detail__form textarea { width: 100%; border: 1px solid #aaa; border-radius: 8px; background: #f7f7fa; color: #111; font-size: 16px; }
-.template-detail__form input { height: 40px; padding: 10px 15px; }
-.template-detail__content { margin-top: 25px; }
-.template-detail__form textarea { min-height: 264px; padding: 15px; resize: vertical; line-height: 1.85; }
-.template-detail__variables { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-.template-detail__variables > span { min-width: 102px; padding: 9px 14px; border-radius: 8px; background: #f1eeff; color: #111; text-align: center; }
-.template-detail__actions { display: flex; justify-content: flex-end; gap: 6px; }
-.template-detail__actions > button { min-height: 40px; padding: 9px 18px; border: 1px solid #dfe3eb; border-radius: 8px; background: white; color: #555; }
-.template-detail__actions > button[type="submit"]:enabled { background: #0877ff; border-color: #0877ff; color: white; }
-.template-detail__footer { margin-top: auto; padding-top: 20px; }
-.template-detail__footer > p { color: #858b98; margin: 0 0 12px; }
-.template-detail__fields h2 { grid-column: 1 / -1; margin: 0; font-size: 20px; }
+.template-detail__fields { display: grid; grid-template-columns: minmax(0, 508fr) minmax(0, 268fr); gap: 20px; }
+.template-detail__form label { display: flex; flex-direction: column; gap: 8px; min-width: 0; color: #191f28; font-size: 18px; font-weight: 500; line-height: 1.4; }
+.template-detail__form input, .template-detail__form textarea { width: 100%; border: 1px solid #d1d6db; border-radius: 8px; background: white; color: #191f28; font-size: 16px; font-weight: 500; line-height: 1.4; }
+.template-detail__form input::placeholder, .template-detail__form textarea::placeholder { color: #8b95a1; }
+.template-detail__form input { height: 44px; padding: 10px 16px; }
+.template-detail__content { margin-top: 20px; }
+.template-detail__form textarea { min-height: 366px; padding: 16px; resize: vertical; }
+.template-detail__variables { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.template-detail__variables::before { content: "포함된 변수"; flex: 0 0 64px; color: #4e5968; font-size: 13px; font-weight: 500; line-height: 1.4; }
+.template-detail__variables > span { display: inline-flex; align-items: center; height: 40px; padding: 8px 14px; border-radius: 8px; background: #f3f6ff; color: #2456c7; font-size: 15px; font-weight: 500; line-height: 1.4; }
+.template-detail__actions { display: flex; justify-content: flex-end; gap: 8px; }
+.template-detail__actions > button { height: 40px; padding: 0 16px; border: 1px solid #d1d6db; border-radius: 8px; background: white; color: #4e5968; font-size: 16px; font-weight: 500; line-height: 1.4; }
+.template-detail__footer { margin-top: auto; padding-top: 34px; }
+.template-detail__footer > p { color: #8b95a1; margin: 0 0 12px; }
+.template-detail__fields h2 { margin: 0; color: #191f28; font-size: 18px; font-weight: 600; line-height: 1.4; }
 .template-detail__fields h2:focus { outline: none; }
+.template-detail__shortcut { display: flex; flex-direction: column; gap: 8px; min-width: 0; line-height: 1.4; }
+.template-detail__shortcut > span { color: #4e5968; font-size: 18px; font-weight: 600; letter-spacing: -0.36px; }
+.template-detail__shortcut > strong { color: #2456c7; font-size: 17px; font-weight: 500; overflow-wrap: anywhere; }
 .template-detail__content textarea[readonly] { resize: none; }
-@media (max-width: 700px) { .template-detail { padding: 18px; } .template-detail__fields { grid-template-columns: 1fr; } .template-detail__form { margin-top: 24px; } }
+@media (max-width: 700px) { .template-detail { padding: 18px; } .template-detail__fields { grid-template-columns: 1fr; } .template-detail__form { margin-top: 24px; } .template-detail__form textarea { min-height: 264px; } }
