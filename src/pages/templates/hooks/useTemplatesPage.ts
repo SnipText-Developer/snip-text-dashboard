@@ -122,7 +122,10 @@ export default function useTemplatesPage() {
       onSelect: (id: number) => {
         const nextParams = new URLSearchParams(searchParams);
         nextParams.set("template", String(id));
-        open(`${location.pathname}?${nextParams.toString()}`);
+        const path = `${location.pathname}?${nextParams.toString()}`;
+        // 상세에서 다른 템플릿을 고를 때는 히스토리를 쌓지 않아 뒤로가기 한 번으로 목록에 돌아옵니다.
+        if (selectedId !== null) navigate(path, { replace: true, state: location.state });
+        else open(path);
       },
       onCopy: copy,
       onEdit: (template: Template) => open(`/templates/${template.templateId}/edit`),

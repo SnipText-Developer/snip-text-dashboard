@@ -49,6 +49,35 @@ test("new and detail views follow browser back and forward", async () => {
   await act(async () => page.previewProps.onClose());
   expect(pathname).toBe("/templates");
 });
+test("switching details does not stack history, so back returns straight to the list", async () => {
+  await setup();
+  await act(async () => page.listProps.onSelect(12));
+  await act(async () => page.listProps.onSelect(13));
+  await act(async () => page.listProps.onSelect(14));
+  expect(search).toBe("?template=14");
+  // 브라우저 뒤로가기
+  await act(async () => navigate(-1));
+  expect(pathname).toBe("/templates");
+  expect(search).toBe("");
+  expect(page.previewVisible).toBe(false);
+
+  // 상세창의 뒤로가기 버튼
+  await act(async () => page.listProps.onSelect(12));
+  await act(async () => page.listProps.onSelect(13));
+  await act(async () => page.previewProps.onClose());
+  expect(search).toBe("");
+  expect(page.previewVisible).toBe(false);
+  await act(async () => navigate(1));
+  expect(page.listProps.selectedId).toBe(13);
+});
+test("switching details from a directly opened detail still closes to the list", async () => {
+  await setup("/templates?template=12");
+  await act(async () => page.listProps.onSelect(13));
+  expect(search).toBe("?template=13");
+  await act(async () => page.previewProps.onClose());
+  expect(pathname).toBe("/templates");
+  expect(search).toBe("");
+});
 test("direct detail access closes to the list without leaving the app", async () => {
   await setup("/templates?template=12");
   await act(async () => page.previewProps.onClose());
