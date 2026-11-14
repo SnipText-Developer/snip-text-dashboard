@@ -48,7 +48,10 @@ export default function TemplateDetail({ title, shortcut, content, variables, la
             {editable ? <>
               <label>제목<input required value={title} onChange={event => onChange?.("title", event.target.value)} /></label>
               <label>/단축어<input required pattern="/?[^\s/]+" value={shortcut} onChange={event => onChange?.("shortcut", event.target.value)} /></label>
-            </> : <h2 ref={titleRef} id={titleId} tabIndex={-1}>{title}</h2>}
+            </> : <>
+              <h2 ref={titleRef} id={titleId} tabIndex={-1}>{title}</h2>
+              {shortcut && <p className="template-detail__shortcut"><span>단축어</span><strong>{shortcut}</strong></p>}
+            </>}
           </div>
           <label className="template-detail__content">내용
             {editable ? <textarea required value={content} onChange={event => onChange?.("content", event.target.value)} />

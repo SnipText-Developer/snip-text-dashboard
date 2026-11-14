@@ -13,19 +13,7 @@
 .templates-main {
   flex: 1;
   min-width: 0;
-  padding: 34px 30px;
-}
-
-@media (min-width: 1600px) {
-  .templates-main {
-    padding: 36px 40px;
-  }
-}
-
-@media (max-width: 1200px) {
-  .templates-main {
-    padding: 28px 24px;
-  }
+  padding: 40px 24px;
 }
 
 @media (max-width: 700px) {
@@ -35,12 +23,13 @@
 }
 
 .templates-browser { min-width: 0; }
-.has-preview .templates-browser { display: grid; grid-template-columns: 280px minmax(0, 1fr); align-items: start; gap: 12px; margin-top: 28px; }
-.has-preview .template-list { grid-template-columns: minmax(0, 1fr); gap: 8px; margin-top: 0; }
-.has-preview .template-row { min-height: 125px; padding: 15px; }
-.has-preview .template-info { margin-top: 24px; gap: 10px; }
-.has-preview .template-info > strong { font-size: 14px; }
-.has-preview .template-excerpt { display: block; min-height: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; line-height: 18px !important; }
+.has-preview .templates-browser { display: grid; grid-template-columns: 268px minmax(0, 1fr); align-items: start; gap: 20px; margin-top: 40px; }
+.has-preview .template-list { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 0; }
+.has-preview .template-row { flex-shrink: 0; height: 164px; min-height: 164px; padding: 23px 15px; background: #f2f4f6; }
+.has-preview .template-row.is-selected { background: white; }
+.has-preview .template-info { margin-top: 16px; gap: 12px; }
+.has-preview .template-info > strong { font-size: 15px; }
+.has-preview .template-excerpt { min-height: 0; font-size: 13px; letter-spacing: -0.325px; }
 .has-preview .template-row .row-copy, .has-preview .template-row .template-more { display: none; }
-@media (max-width: 1100px) and (min-width: 701px) { .has-preview .templates-browser { grid-template-columns: 210px minmax(0, 1fr); } }
+@media (max-width: 1100px) and (min-width: 701px) { .has-preview .templates-browser { grid-template-columns: 220px minmax(0, 1fr); } }
 @media (max-width: 850px) { .has-preview .templates-browser { grid-template-columns: minmax(0, 1fr); } .has-preview .template-list { display: flex; overflow-x: auto; padding-bottom: 16px; } .has-preview .template-row { flex: 0 0 240px; } }

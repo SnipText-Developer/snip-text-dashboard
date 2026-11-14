@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import searchIcon from "assets/icons/search-v2.svg";
 
 interface TemplateSearchProps {
   query: string;
@@ -14,11 +15,11 @@ export default function TemplateSearch({
   return (
     <div className="search-header templates-search">
       <div className="search-field">
-        <span aria-hidden="true">⌕</span>
+        <img className="search-icon" src={searchIcon} alt="" width={20} height={20} />
         <input
           ref={inputRef}
           aria-label="템플릿 검색"
-          placeholder="템플릿 검색"
+          placeholder="템플릿을 검색하세요."
           type="search"
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}

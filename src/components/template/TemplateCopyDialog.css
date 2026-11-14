@@ -1,10 +1,10 @@
 .template-copy-dialog {
   box-sizing: border-box;
   width: 520px;
-  border: 1px solid #7393e7;
+  border: 1px solid #6d8edb;
   border-radius: 24px;
   background: #fff;
-  color: #191f29;
+  color: #191f28;
   box-shadow: 0 16px 48px #28374d26;
 }
 .template-copy-dialog *,
@@ -20,39 +20,45 @@
 .template-copy-dialog .modal-header p,
 .template-copy-dialog .modal-close { display: none; }
 .template-copy-dialog .modal-header h2 {
-  color: #191f29;
+  color: #191f28;
   font-size: 20px;
-  line-height: 1.5;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
 }
 .template-copy-dialog .modal-body { padding: 8px 24px 0; }
 .template-copy-dialog .modal-body > p {
-  margin: 0 0 36px;
-  color: #707d90;
-  font-size: 14px;
+  margin: 0 0 22px;
+  color: #6b7684;
+  font-size: 15px;
   text-align: center;
-  line-height: 1.6;
+  line-height: 1.4;
+  letter-spacing: -0.3px;
 }
 .template-copy-dialog .modal-body label {
   gap: 8px;
   margin-top: 16px;
-  color: #515d70;
+  color: #4e5968;
   font-size: 13px;
   font-weight: 500;
+  line-height: 1.4;
 }
 .template-copy-dialog .copy-variable-label { overflow-wrap: anywhere; }
 .template-copy-dialog .modal-body input {
   min-height: 44px;
   padding: 10px 16px;
-  border: 1px solid #d1d5dd;
+  border: 1px solid #d1d6db;
   border-radius: 8px;
   background: #fff;
-  color: #191f29;
-  font-size: 15px;
+  color: #191f28;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
 }
-.template-copy-dialog .modal-body input::placeholder { color: #8c97a7; }
+.template-copy-dialog .modal-body input::placeholder { color: #8b95a1; }
 .template-copy-dialog .modal-body input:focus-visible {
-  border-color: #7393e7;
-  outline: 2px solid #7393e733;
+  border-color: #6d8edb;
+  outline: 2px solid #6d8edb33;
   outline-offset: 2px;
 }
 .template-copy-dialog .modal-footer {
@@ -64,13 +70,14 @@
 .template-copy-dialog .modal-cancel,
 .template-copy-dialog .modal-submit {
   min-height: 40px;
-  padding: 8px 16px;
-  border: 1px solid #d1d5dd;
+  padding: 0 16px;
+  border: 1px solid #d1d6db;
   border-radius: 8px;
   background: #fff;
-  color: #515d70;
-  font-size: 15px;
+  color: #4e5968;
+  font-size: 16px;
   font-weight: 500 !important;
+  line-height: 1.4;
 }
 .template-copy-dialog .modal-submit { order: -1; }
 .template-copy-dialog .modal-submit:disabled { cursor: default; opacity: .6; }

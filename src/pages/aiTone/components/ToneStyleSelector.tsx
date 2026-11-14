@@ -16,7 +16,7 @@ interface ToneStyleSelectorProps {
 export default function ToneStyleSelector({ style: selectedStyle, busy, onChange }: ToneStyleSelectorProps) {
   return (
     <fieldset className="ai-tone-styles" disabled={busy}>
-      <legend>원하는 스타일</legend>
+      <legend>변경할 톤을 선택하세요</legend>
       <div>{styles.map(style => (
         <button type="button" key={style.value} aria-pressed={selectedStyle === style.value}
           onClick={() => onChange(style.value)}>{style.label}</button>

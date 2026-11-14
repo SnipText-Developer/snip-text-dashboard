@@ -3,6 +3,8 @@ import "./TemplateList.css";
 import { useState } from "react";
 import { Template } from "models/template";
 import TemplateEmptyState from "./TemplateEmptyState";
+import copyIcon from "assets/icons/copy.svg";
+import moreIcon from "assets/icons/more.svg";
 
 interface TemplateListProps {
   templates: Template[];
@@ -38,9 +40,9 @@ export default function TemplateList({ templates, selectedId, saving, authentica
               <span className="template-excerpt">{template.content}</span>
             </span>
           </button>
-          <button className="row-copy" onClick={() => onCopy(template)} aria-label={`${template.title} 복사`}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><rect x="8" y="7" width="12" height="14" rx="1" /><path d="M16 3H4v14" /></svg>복사</button>
+          <button className="row-copy" onClick={() => onCopy(template)} aria-label={`${template.title} 복사`}><img src={copyIcon} alt="" width={20} height={20} />복사</button>
           <div className="template-more">
-            <button className="more-button" aria-label={`${template.title} 더 보기`} aria-expanded={menuId === template.templateId} onClick={() => setMenuId(menuId === template.templateId ? null : template.templateId)}>⋯</button>
+            <button className="more-button" aria-label={`${template.title} 더 보기`} aria-expanded={menuId === template.templateId} onClick={() => setMenuId(menuId === template.templateId ? null : template.templateId)}><img src={moreIcon} alt="" width={24} height={24} /></button>
             {menuId === template.templateId && (
               <div className="template-menu">
                 <button onClick={() => { onEdit(template); setMenuId(null); }}>편집하기</button>

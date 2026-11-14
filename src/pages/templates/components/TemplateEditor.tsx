@@ -67,12 +67,12 @@ export default function TemplateEditor({ initialDraft, saving, onClose, onSave }
       <form className="template-editor-form" onSubmit={submit}>
         <fieldset disabled={saving}>
         <div className="template-editor-fields">
-      <label>제목<input autoFocus required placeholder="템플릿 제작 중입니다." value={draft.title} onChange={event => setDraft({ ...draft, title: event.target.value })} /></label>
-      <label>/단축어<input required pattern="/?[^\s/]+" placeholder="/ㄷㅊㅇ" value={draft.shortcut} onChange={event => setDraft({ ...draft, shortcut: event.target.value })} /></label>
+      <label>제목<input autoFocus required placeholder="입력하세요." value={draft.title} onChange={event => setDraft({ ...draft, title: event.target.value })} /></label>
+      <label>단축어<input required pattern="/?[^\s/]+" placeholder="입력하세요." value={draft.shortcut} onChange={event => setDraft({ ...draft, shortcut: event.target.value })} /></label>
         </div>
-      <label className="template-editor-content">내용<textarea ref={contentRef} required rows={5} placeholder="안녕하세요." value={draft.content} onChange={event => setDraft({ ...draft, content: event.target.value })} /></label>
+      <label className="template-editor-content">내용<textarea ref={contentRef} required rows={5} placeholder="내용을 입력하세요." value={draft.content} onChange={event => setDraft({ ...draft, content: event.target.value })} /></label>
       <div className="template-editor-variables" aria-label="변수 삽입">
-        <button type="button" className="template-editor-add-variable" onClick={openVariableInput}>변수 삽입 ＋</button>
+        <button type="button" className="template-editor-add-variable" onClick={openVariableInput}>+ 변수 추가</button>
         {Array.from(new Set(["날짜", "이름", ...variables])).map(variable => (
           <button type="button" className="template-editor-variable-chip" key={variable} onClick={() => addVariable(variable)}>{`{{${variable}}}`}</button>
         ))}
@@ -92,7 +92,7 @@ export default function TemplateEditor({ initialDraft, saving, onClose, onSave }
         </fieldset>
         <div className="template-editor-actions">
           <button type="button" disabled={saving} onClick={onClose}>취소</button>
-          <button type="submit" disabled={saving || !draft.title.trim() || !draft.shortcut.trim().replace(/^\/+/, "") || !draft.content.trim()}>{saving ? "저장 중…" : "저장하기"}</button>
+          <button type="submit" disabled={saving || !draft.title.trim() || !draft.shortcut.trim().replace(/^\/+/, "") || !draft.content.trim()}>{saving ? "저장 중…" : draft.templateId === null ? "생성하기" : "저장하기"}</button>
         </div>
       </form>
     </section>
