@@ -29,7 +29,7 @@ test("preserves variables and numbers, returns usage and enforces the limit", as
 
 test.each([
   [{ style: "CASUAL", text: " " }, "AI400_1"],
-  [{ style: "CASUAL", text: "가".repeat(1001) }, "AI400_2"],
+  [{ style: "CASUAL", text: "가".repeat(3001) }, "AI400_2"],
   [{ style: "UNKNOWN", text: "원문" }, "AI400_3"],
 ])("rejects invalid input without consuming usage", async (input, code) => {
   const api = createAiTestApi({ limit: 1 });
