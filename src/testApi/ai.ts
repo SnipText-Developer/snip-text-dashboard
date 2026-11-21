@@ -41,7 +41,7 @@ export function createAiTestApi({ plan = "PRO", limit = 10 }: AiTestApiOptions =
     const body = await request.json().catch(() => null);
     if (request.signal.aborted) throw new DOMException("요청이 취소되었습니다.", "AbortError");
     if (typeof body?.text !== "string" || !body.text.trim()) return json(400, "AI400_1", null, "교정할 문장을 입력해 주세요.");
-    if (body.text.length > 1000) return json(400, "AI400_2", null, "원문은 1,000자 이내로 입력해 주세요.");
+    if (body.text.length > 3000) return json(400, "AI400_2", null, "원문은 3,000자 이내로 입력해 주세요.");
     if (typeof body.style !== "string" || !Object.prototype.hasOwnProperty.call(frames, body.style)) return json(400, "AI400_3", null, "지원하지 않는 스타일입니다.");
     if (plan !== "PRO") return json(403, "AI403_1", null, "AI 톤 교정은 Pro 플랜에서 이용할 수 있어요.");
     if (Date.now() >= Date.parse(resetAt)) { usedCount = 0; resetAt = nextReset(); }

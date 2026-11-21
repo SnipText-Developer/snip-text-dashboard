@@ -27,8 +27,17 @@ test("preset variable replaces selected text and submits the resulting content",
   await act(async () => { container.querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })); });
   expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ templateId: null, content: "안녕하세요 {{이름}}님" }));
 });
-test("cancel returns without saving", async () => {
-  await act(async () => button("취소").click());
-  expect(onClose).toHaveBeenCalledTimes(1);
+test("reset restores the initial draft without leaving or saving", async () => {
+  const input = container.querySelector("input")!;
+  expect(button("초기화").disabled).toBe(true);
+  await act(async () => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "바뀐 제목");
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  expect(button("초기화").disabled).toBe(false);
+  await act(async () => button("초기화").click());
+  expect(input.value).toBe("안내");
+  expect(button("초기화").disabled).toBe(true);
+  expect(onClose).not.toHaveBeenCalled();
   expect(onSave).not.toHaveBeenCalled();
 });

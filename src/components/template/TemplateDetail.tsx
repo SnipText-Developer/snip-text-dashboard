@@ -1,6 +1,7 @@
 import { FormEventHandler, ReactNode, useEffect, useId, useRef } from "react";
 import TemplateDetailFrame from "./TemplateDetailFrame";
 import TemplateVariables from "./TemplateVariables";
+import TemplateVariableInput, { useTemplateVariableInput } from "./TemplateVariableInput";
 
 interface TemplateDetailProps {
   title?: string;
@@ -26,6 +27,8 @@ interface TemplateDetailProps {
 export default function TemplateDetail({ title, shortcut, content, variables, label, backLabel, onBack, saving, editable, onChange, onSubmit, tools, actions, hint, status, focusTitle, className = "" }: TemplateDetailProps) {
   const titleId = useId();
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+  const variableInput = useTemplateVariableInput(contentRef, content ?? "", value => onChange?.("content", value));
   useEffect(() => {
     if (focusTitle) titleRef.current?.focus();
   }, [focusTitle]);
@@ -54,10 +57,13 @@ export default function TemplateDetail({ title, shortcut, content, variables, la
             </>}
           </div>
           <label className="template-detail__content">내용
-            {editable ? <textarea required value={content} onChange={event => onChange?.("content", event.target.value)} />
+            {editable ? <textarea ref={contentRef} required value={content} onChange={event => onChange?.("content", event.target.value)} />
               : <textarea readOnly value={content} />}
           </label>
-          {variables.length > 0 && <TemplateVariables className="template-detail__variables" variables={variables} />}
+          {(editable || variables.length > 0) && <TemplateVariables className="template-detail__variables" variables={variables}>
+            {editable && <button type="button" className="template-editor-add-variable" onClick={variableInput.open}>+ 변수 추가</button>}
+          </TemplateVariables>}
+          {editable && <TemplateVariableInput variable={variableInput} />}
         </fieldset>
     </TemplateDetailFrame>
   );
