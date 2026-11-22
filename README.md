@@ -65,3 +65,8 @@ Mac의 트랙패드 뒤로가기와 iPhone의 뒤로가기 제스처(이하 ‘�
 `REACT_APP_USE_TEST_API=false`로 테스트 API를 끌 수 있습니다. 다만 현재 레이아웃은 테스트 모드 외에는 빈 토큰을 전달하므로 실제 인증 토큰 연결이 별도로 필요합니다. 갤러리 목록은 테스트 API 설정과 관계없이 샘플 데이터를 사용합니다.
 
 API·훅·주요 UI 테스트 파일이 작성되어 있습니다. 이 문서 작성 시 테스트·빌드·브라우저 검증은 실행하지 않았습니다. 오류 리다이렉트 설정(`src/config.ts`)은 현재 `"url"` 임시 값입니다.
+
+
+## Chrome 확장 프로그램 템플릿 갱신
+
+로컬 `.env.local` 또는 운영 빌드 환경에서 `REACT_APP_CHROME_EXTENSION_ID`에 설치된 Snip Text 확장 프로그램의 ID를 설정합니다. 템플릿 관련 변경 요청이 성공하면 대시보드가 확장 프로그램 background에 `POST /template/refresh` 메시지를 보냅니다.

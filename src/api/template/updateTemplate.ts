@@ -1,3 +1,4 @@
+import fetchTemplateMutation from "api/fetchTemplateMutation";
 import { FetchError } from "models/errorType";
 import { Template } from "models/template";
 
@@ -48,7 +49,7 @@ const updateTemplate = async (
   input: UpdateTemplateRequest,
   signal?: AbortSignal
 ): Promise<UpdateTemplateResponse> => {
-  const response = await fetch(
+  const response = await fetchTemplateMutation(
     `/api/v1/templates/${encodeURIComponent(templateId)}`,
     {
       method: "PUT",

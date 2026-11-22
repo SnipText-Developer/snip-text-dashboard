@@ -1,3 +1,4 @@
+import fetchTemplateMutation from "api/fetchTemplateMutation";
 import { FetchError } from "models/errorType";
 
 export interface RestoreTemplateResult {
@@ -42,7 +43,7 @@ const restoreTemplate = async (
   templateId: number,
   signal?: AbortSignal
 ): Promise<RestoreTemplateResponse> => {
-  const response = await fetch(
+  const response = await fetchTemplateMutation(
     `/api/v1/trash/templates/${encodeURIComponent(templateId)}/restore`,
     {
       method: "POST",

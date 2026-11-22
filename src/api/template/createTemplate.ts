@@ -1,3 +1,4 @@
+import fetchTemplateMutation from "api/fetchTemplateMutation";
 import { FetchError } from "models/errorType";
 import { Template } from "models/template";
 
@@ -46,7 +47,7 @@ const createTemplate = async (
   input: CreateTemplateRequest,
   signal?: AbortSignal
 ): Promise<CreateTemplateResponse> => {
-  const response = await fetch("/api/v1/templates", {
+  const response = await fetchTemplateMutation("/api/v1/templates", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,

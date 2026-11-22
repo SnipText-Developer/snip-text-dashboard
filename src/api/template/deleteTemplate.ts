@@ -1,3 +1,4 @@
+import fetchTemplateMutation from "api/fetchTemplateMutation";
 import { FetchError } from "models/errorType";
 
 export interface DeleteTemplateResult {
@@ -34,7 +35,7 @@ const deleteTemplate = async (
   templateId: number,
   signal?: AbortSignal
 ): Promise<DeleteTemplateResponse> => {
-  const response = await fetch(
+  const response = await fetchTemplateMutation(
     `/api/v1/templates/${encodeURIComponent(templateId)}`,
     {
       method: "DELETE",

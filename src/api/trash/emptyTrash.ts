@@ -1,3 +1,4 @@
+import fetchTemplateMutation from "api/fetchTemplateMutation";
 import { FetchError } from "models/errorType";
 
 export interface EmptyTrashResult {
@@ -21,7 +22,7 @@ const emptyTrash = async (
   accessToken: string,
   signal?: AbortSignal
 ): Promise<EmptyTrashResponse> => {
-  const response = await fetch("/api/v1/trash/templates", {
+  const response = await fetchTemplateMutation("/api/v1/trash/templates", {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${accessToken}`,
