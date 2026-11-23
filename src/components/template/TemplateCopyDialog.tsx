@@ -37,8 +37,8 @@ export default function TemplateCopyDialog({ template, onClose, onCopy }: Templa
 
   return (
     <Modal
+      variant="variables"
       error={error}
-      eyebrow={template.title}
       title="변수 값을 입력해주세요"
       description="내용을 복사하려면 모든 변수 값을 입력해야 합니다."
       submitLabel={copying ? "복사 중…" : "입력하고 복사"}
