@@ -1,15 +1,13 @@
 import { requestExtensionTemplateRefresh } from "utils/extensionMessaging";
 import { clearExtensionAccessToken, sendAccessTokenToExtension } from "./extension";
 
-const extensionId = "abcdefghijklmnopabcdefghijklmnop";
+const extensionId = "deijpelidjmefllaonjkdcndkologogo";
 const sendMessage = jest.fn();
 const runtime: { sendMessage: typeof sendMessage; lastError?: { message: string } } = { sendMessage };
 const originalChrome = Object.getOwnPropertyDescriptor(window, "chrome");
-const originalId = process.env.REACT_APP_CHROME_EXTENSION_ID;
 
 beforeEach(() => {
   Object.defineProperty(window, "chrome", { configurable: true, value: { runtime } });
-  process.env.REACT_APP_CHROME_EXTENSION_ID = extensionId;
   sendMessage.mockReset().mockImplementation((_id, _message, callback) => callback({ statusCode: 200 }));
   delete runtime.lastError;
 });
@@ -17,8 +15,6 @@ beforeEach(() => {
 afterEach(() => {
   if (originalChrome) Object.defineProperty(window, "chrome", originalChrome);
   else Reflect.deleteProperty(window, "chrome");
-  if (originalId === undefined) delete process.env.REACT_APP_CHROME_EXTENSION_ID;
-  else process.env.REACT_APP_CHROME_EXTENSION_ID = originalId;
   jest.restoreAllMocks();
 });
 
@@ -33,10 +29,10 @@ it("sends the access token directly to the configured extension background", () 
   }, expect.any(Function));
 });
 
-it("skips sending when no extension ID is configured", () => {
-  delete process.env.REACT_APP_CHROME_EXTENSION_ID;
+it("reports messaging as unavailable when the Chrome runtime is missing", async () => {
+  Object.defineProperty(window, "chrome", { configurable: true, value: {} });
 
-  sendAccessTokenToExtension("access-token");
+  await expect(requestExtensionTemplateRefresh()).resolves.toBeUndefined();
   expect(sendMessage).not.toHaveBeenCalled();
 });
 

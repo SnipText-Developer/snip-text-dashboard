@@ -19,11 +19,12 @@ interface ExtensionRuntime {
   ): void;
 }
 
+const CHROME_EXTENSION_ID = "deijpelidjmefllaonjkdcndkologogo";
+
 // undefined means messaging is unavailable in this page, and null means sending failed.
 export function sendExtensionMessage(message: ExtensionMessage): Promise<ExtensionResponse | null | undefined> {
-  const extensionId = process.env.REACT_APP_CHROME_EXTENSION_ID?.trim();
   const runtime = (window as Window & { chrome?: { runtime?: ExtensionRuntime } }).chrome?.runtime;
-  if (!extensionId || !/^[a-p]{32}$/.test(extensionId) || !runtime?.sendMessage || window.top !== window) {
+  if (!runtime?.sendMessage || window.top !== window) {
     return Promise.resolve(undefined);
   }
 
@@ -35,7 +36,7 @@ export function sendExtensionMessage(message: ExtensionMessage): Promise<Extensi
     };
 
     try {
-      runtime.sendMessage(extensionId, message, response => {
+      runtime.sendMessage(CHROME_EXTENSION_ID, message, response => {
         finish(runtime.lastError ? null : response ?? null);
       });
     } catch {

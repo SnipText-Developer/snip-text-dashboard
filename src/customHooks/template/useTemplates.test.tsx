@@ -19,13 +19,13 @@ beforeEach(() => {
 afterEach(async () => { await act(async () => root.unmount()); container.remove(); });
 afterAll(() => { global.fetch = originalFetch; delete (globalThis as any).IS_REACT_ACT_ENVIRONMENT; });
 
-test("list waits for token and refetches on token and sort changes", async () => {
-  function Probe({ token, sort }: { token: string; sort?: "RECENT_EDITED" }) { useTemplates(token, sort); return null; }
+test("list waits for token and refetches on token changes", async () => {
+  function Probe({ token }: { token: string }) { useTemplates(token); return null; }
   await act(async () => root.render(<Probe token="" />));
   expect(fetchMock).not.toHaveBeenCalled();
   await act(async () => root.render(<Probe token="first" />));
   expect(fetchMock.mock.calls[0][0]).toBe("https://api.sniptext.kr/api/v1/templates");
-  await act(async () => root.render(<Probe token="second" sort="RECENT_EDITED" />));
-  expect(fetchMock.mock.calls[1][0]).toBe("https://api.sniptext.kr/api/v1/templates?sort=RECENT_EDITED");
+  await act(async () => root.render(<Probe token="second" />));
+  expect(fetchMock.mock.calls[1][0]).toBe("https://api.sniptext.kr/api/v1/templates");
   expect(fetchMock.mock.calls[1][1].headers.Authorization).toBe("Bearer second");
 });

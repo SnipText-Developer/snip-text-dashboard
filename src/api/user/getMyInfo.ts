@@ -7,7 +7,6 @@ export interface MyInfoResult {
   email: string;
   profileImageUrl: string | null;
   loginType: "GOOGLE";
-  templateSort?: "RECENT_USED" | "RECENT_EDITED";
 }
 
 export type GetMyInfoErrorCode = "USER404_1";

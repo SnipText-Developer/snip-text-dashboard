@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "tsc --noEmit && CI=true TSC_COMPILE_ON_ERROR=false DISABLE_ESLINT_PLUGIN=false GENERATE_SOURCEMAP=false react-scripts build",
     "dev": "node ./scripts/start.js",
     "test": "react-scripts test"
   },
