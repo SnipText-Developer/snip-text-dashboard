@@ -1,4 +1,6 @@
+import { apiFetch } from "api/auth/session";
 import { FetchError } from "models/errorType";
+import { requestExtensionTemplateRefresh } from "utils/extensionMessaging";
 
 export interface DeleteTemplateResult {
   templateId: number;
@@ -34,7 +36,7 @@ const deleteTemplate = async (
   templateId: number,
   signal?: AbortSignal
 ): Promise<DeleteTemplateResponse> => {
-  const response = await fetch(
+  const response = await apiFetch(
     `/api/v1/templates/${encodeURIComponent(templateId)}`,
     {
       method: "DELETE",
@@ -60,6 +62,7 @@ const deleteTemplate = async (
     typeof result?.deletedAt === "string" &&
     typeof result?.purgeAt === "string"
   ) {
+    void requestExtensionTemplateRefresh();
     return data;
   }
 

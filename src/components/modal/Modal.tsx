@@ -3,18 +3,24 @@ import { FormEventHandler, ReactNode, useEffect, useId, useRef, useState } from 
 import Notice from "components/notice/Notice";
 
 interface ModalProps {
-  className?: string;
-  eyebrow: string;
+  eyebrow?: string;
+  danger?: boolean;
+  variant?: "confirmation";
+  closeDisabled?: boolean;
+  error?: string;
   title: string;
   description: string;
-  children: ReactNode;
+  children?: ReactNode;
   submitLabel: string;
   submitDisabled: boolean;
   onClose: () => void;
   onSubmit: FormEventHandler<HTMLFormElement>;
 }
 
-export default function Modal({ className = "", eyebrow, title, description, children, submitLabel, submitDisabled, onClose, onSubmit }: ModalProps) {
+export default function Modal({
+  eyebrow, title, description, children, submitLabel, submitDisabled, onClose, onSubmit,
+  variant, danger = false, closeDisabled = false, error,
+}: ModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const descriptionId = useId();
@@ -27,7 +33,7 @@ export default function Modal({ className = "", eyebrow, title, description, chi
   }, []);
 
   return (
-    <dialog ref={dialogRef} className={`modal ${className}`} aria-labelledby={titleId} aria-describedby={descriptionId} onCancel={onClose}>
+    <dialog ref={dialogRef} className={variant ? "modal modal--confirmation" : "modal"} aria-labelledby={titleId} aria-describedby={descriptionId} onCancel={event => { event.preventDefault(); if (!closeDisabled) onClose(); }}>
       <form onSubmit={onSubmit} onInput={() => setValidationMessage("")} onInvalid={event => {
         event.preventDefault();
         const field = event.target as HTMLInputElement | HTMLTextAreaElement;
@@ -36,17 +42,18 @@ export default function Modal({ className = "", eyebrow, title, description, chi
         field.focus();
       }}>
         <header className="modal-header">
-          <div><p>{eyebrow}</p><h2 id={titleId}>{title}</h2></div>
-          <button type="button" className="modal-close" aria-label="입력 모달 닫기" onClick={onClose}>×</button>
+          <div>{eyebrow && <p>{eyebrow}</p>}<h2 id={titleId}>{title}</h2></div>
+          {!variant && <button type="button" className="modal-close" aria-label="모달 닫기" disabled={closeDisabled} onClick={onClose}>×</button>}
         </header>
         <div className="modal-body">
           <p id={descriptionId}>{description}</p>
           {children}
-          <Notice placement="inline" message={validationMessage} onClose={() => setValidationMessage("")} />
+          {error && <Notice placement="inline" tone="error" message={error} />}
+          <Notice placement="inline" tone="error" message={validationMessage} onClose={() => setValidationMessage("")} />
         </div>
         <footer className="modal-footer">
-          <button type="button" className="modal-cancel" onClick={onClose}>취소</button>
-          <button type="submit" className="modal-submit" disabled={submitDisabled}>{submitLabel}</button>
+          <button type="button" className="modal-cancel" disabled={closeDisabled} onClick={onClose}>취소</button>
+          <button type="submit" className={`modal-submit${danger ? " modal-submit--danger" : ""}`} disabled={submitDisabled}>{submitLabel}</button>
         </footer>
       </form>
     </dialog>

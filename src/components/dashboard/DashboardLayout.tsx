@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
-import { testApiEnabled, testAccessToken } from "testApi/templates";
+import { getSessionToken, subscribeToSession } from "api/auth/session";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardHeader from "./DashboardHeader";
 import "./DashboardLayout.css";
 
 export default function DashboardLayout() {
   const [query, setQuery] = useState("");
+  const accessToken = useSyncExternalStore(subscribeToSession, getSessionToken);
   const { pathname } = useLocation();
 
   return (
@@ -19,14 +20,14 @@ export default function DashboardLayout() {
       <DashboardSidebar />
       <div className="dashboard-main">
         <main
-          key={pathname}
+          key={`${pathname}:${Boolean(accessToken)}`}
           id="main-content"
           className="page-content"
           tabIndex={-1}>
           <Outlet
             context={{
               query,
-              accessToken: testApiEnabled ? testAccessToken : "",
+              accessToken,
             }}
           />
         </main>

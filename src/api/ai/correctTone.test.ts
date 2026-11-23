@@ -20,7 +20,7 @@ test.each([
   respond(200, body);
   const signal = new AbortController().signal;
   expect(await correctTone("token", input, signal)).toEqual(body);
-  expect(fetchMock).toHaveBeenCalledWith("/api/v1/ai/tone-corrections", {
+  expect(fetchMock).toHaveBeenCalledWith("https://api.sniptext.kr/api/v1/ai/tone-corrections", {
     method: "POST", headers: { Authorization: "Bearer token", "Content-Type": "application/json" },
     cache: "no-store", signal, body: JSON.stringify(input),
   });

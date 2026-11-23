@@ -1,3 +1,4 @@
+import { apiFetch } from "api/auth/session";
 import { FetchError } from "models/errorType";
 import { Template } from "models/template";
 
@@ -46,7 +47,7 @@ const createTemplate = async (
   input: CreateTemplateRequest,
   signal?: AbortSignal
 ): Promise<CreateTemplateResponse> => {
-  const response = await fetch("/api/v1/templates", {
+  const response = await apiFetch("/api/v1/templates", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,

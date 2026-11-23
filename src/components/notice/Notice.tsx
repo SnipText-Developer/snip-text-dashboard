@@ -1,12 +1,18 @@
 import "./Notice.css";
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 interface NoticeProps {
   placement?: "floating" | "inline";
   message: string;
-  onClose: () => void;
+  onClose?: () => void;
+  tone?: "info" | "warning" | "error";
+  autoDismiss?: boolean;
+  children?: ReactNode;
 }
 
-export default function Notice({ message, onClose, placement = "floating" }: NoticeProps) {
+export default function Notice({
+  message, onClose, placement = "floating", tone = "info", autoDismiss = Boolean(onClose), children,
+}: NoticeProps) {
   const [displayedMessage, setDisplayedMessage] = useState(message);
   const [closing, setClosing] = useState(false);
   const onCloseRef = useRef(onClose);
@@ -19,29 +25,34 @@ export default function Notice({ message, onClose, placement = "floating" }: Not
     }
     setDisplayedMessage(message);
     setClosing(false);
+    if (!autoDismiss) return;
     const timer = window.setTimeout(() => setClosing(true), 3000);
     return () => window.clearTimeout(timer);
-  }, [message]);
+  }, [message, autoDismiss]);
 
   useEffect(() => {
     if (!closing) return;
     const timer = window.setTimeout(() => {
       setDisplayedMessage("");
-      if (message) onCloseRef.current();
+      if (message) onCloseRef.current?.();
     }, 240);
     return () => window.clearTimeout(timer);
   }, [closing, message]);
 
   if (!displayedMessage) return null;
 
-  return (
+  const notice = (
     <div className={`notice-container notice-container--${placement}${closing ? " is-closing" : ""}`}>
       <div className="notice-clip">
-        <div className="notice" role="status">
-          <span>{displayedMessage}</span>
-          <button type="button" aria-label="알림 닫기" disabled={closing} onClick={() => setClosing(true)}>×</button>
+        <div className={`notice notice--${tone}`}>
+          <div className="notice-content" role={tone === "info" ? "status" : "alert"}>
+            <div>{displayedMessage}</div>
+            {children}
+          </div>
+          {onClose && <button type="button" className="notice-close" aria-label="알림 닫기" disabled={closing} onClick={() => setClosing(true)}>×</button>}
         </div>
       </div>
     </div>
   );
+  return placement === "floating" ? createPortal(notice, document.body) : notice;
 }

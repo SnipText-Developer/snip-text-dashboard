@@ -22,13 +22,13 @@ export default function useTemplateGalleryPage() {
     }
     copyContent(template.title, template.content);
   }
-  async function copyContent(title: string, content: string): Promise<boolean> {
+  async function copyContent(title: string, content: string, inDialog = false): Promise<boolean> {
     try {
       await navigator.clipboard.writeText(content);
       setNotice(`‘${title}’ 내용을 복사했어요.`);
       return true;
     } catch {
-      setNotice("복사하지 못했어요. 브라우저의 클립보드 권한을 확인해 주세요.");
+      if (!inDialog) setNotice("복사하지 못했어요. 브라우저의 클립보드 권한을 확인해 주세요.");
       return false;
     }
   }
@@ -78,7 +78,7 @@ export default function useTemplateGalleryPage() {
     copyingTemplate,
     copyDialogProps: {
       onClose: () => setCopyingTemplate(null),
-      onCopy: (content: string) => copyingTemplate ? copyContent(copyingTemplate.title, content) : Promise.resolve(false),
+      onCopy: (content: string) => copyingTemplate ? copyContent(copyingTemplate.title, content, true) : Promise.resolve(false),
     },
     onCopy: copy,
     onAddToMyTemplates: addToMyTemplates,

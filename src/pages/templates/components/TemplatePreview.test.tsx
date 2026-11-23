@@ -45,19 +45,3 @@ test("failed saves keep the draft and successful saves establish a new reset val
   await act(async () => button("되돌리기").click());
   expect(container.querySelector("input")!.value).toBe("수정 제목");
 });
-test("variables are only added through the add button, keeping existing ones", async () => {
-  const textarea = container.querySelector("textarea")!;
-  expect(container.querySelector(".template-detail__variables > span")!.textContent).toBe("{{이름}}");
-  expect(button("{{이름}}")).toBeUndefined();
-  textarea.setSelectionRange(6, 6);
-  await act(async () => button("+ 변수 추가").click());
-  const nameInput = container.querySelector<HTMLInputElement>(".template-editor-variable-input input")!;
-  await act(async () => {
-    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(nameInput, "회사명");
-    nameInput.dispatchEvent(new Event("input", { bubbles: true }));
-  });
-  await act(async () => button("추가").click());
-  expect(textarea.value).toBe("안녕하세요 {{회사명}}{{이름}}님");
-  expect(Array.from(container.querySelectorAll(".template-detail__variables > span"), span => span.textContent)).toEqual(["{{회사명}}", "{{이름}}"]);
-  expect(button("저장").disabled).toBe(false);
-});

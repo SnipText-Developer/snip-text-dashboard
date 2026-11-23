@@ -4,3 +4,6 @@
 .new-template { display: flex; align-items: center; justify-content: center; gap: 4px; height: 48px; padding: 0 20px; border: 0; border-radius: 8px; background: #2456c7; color: white; white-space: nowrap; font-size: 16px; font-weight: 500 !important; line-height: 1.4; }
 .new-template > img { display: block; }
 @media (max-width: 700px) { .templates-heading { flex-wrap: wrap; gap: 16px; } .templates-heading h1 { font-size: 28px; } .templates-heading .page-description { font-size: 14px; } }
+.templates-heading-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.templates-heading-actions a { padding: 10px 4px; color: #4e5968; text-decoration: none; }
+.templates-heading-actions a:hover { text-decoration: underline; }

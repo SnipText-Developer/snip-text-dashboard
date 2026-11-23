@@ -1,3 +1,4 @@
+import { apiFetch } from "api/auth/session";
 import { FetchError } from "models/errorType";
 
 export interface CheckShortcutAvailabilityRequest {
@@ -43,7 +44,7 @@ const checkShortcutAvailability = async (
     query.set("excludeTemplateId", String(input.excludeTemplateId));
   }
 
-  const response = await fetch(
+  const response = await apiFetch(
     `/api/v1/templates/shortcuts/availability?${query.toString()}`,
     {
       method: "GET",

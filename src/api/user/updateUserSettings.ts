@@ -1,12 +1,13 @@
+import { apiFetch } from "api/auth/session";
 import { FetchError } from "models/errorType";
-import type { MyInfoResult } from "./getMyInfo";
+import type { TemplateSort } from "customHooks/template/useTemplates";
 
 export interface UpdateUserSettingsRequest {
-  templateSort: MyInfoResult["templateSort"];
+  templateSort: TemplateSort;
 }
 
 export interface UpdateUserSettingsResult {
-  templateSort: MyInfoResult["templateSort"];
+  templateSort: TemplateSort;
 }
 
 export type UpdateUserSettingsErrorCode = "USER400_1";
@@ -36,7 +37,7 @@ const updateUserSettings = async (
   input: UpdateUserSettingsRequest,
   signal?: AbortSignal
 ): Promise<UpdateUserSettingsResponse> => {
-  const response = await fetch("/api/v1/users/me/settings", {
+  const response = await apiFetch("/api/v1/users/me/settings", {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${accessToken}`,

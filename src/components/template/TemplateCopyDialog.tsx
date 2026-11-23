@@ -1,4 +1,3 @@
-import "./TemplateCopyDialog.css";
 import { FormEvent, useState } from "react";
 import { Template } from "models/template";
 import Modal from "components/modal/Modal";
@@ -17,6 +16,7 @@ function variablePlaceholder(variable: string) {
 
 export default function TemplateCopyDialog({ template, onClose, onCopy }: TemplateCopyDialogProps) {
   const [values, setValues] = useState<Record<string, string>>({});
+  const [error, setError] = useState("");
   const [copying, setCopying] = useState(false);
   const variables = Array.from(new Set(template.variables));
   const complete = variables.every(variable => values[variable]?.trim());
@@ -27,15 +27,17 @@ export default function TemplateCopyDialog({ template, onClose, onCopy }: Templa
     const content = template.content.replace(/\{\{\s*([^{}]+?)\s*\}\}/g, (placeholder, name: string) =>
       Object.prototype.hasOwnProperty.call(values, name) ? values[name] : placeholder
     );
+    setError("");
     setCopying(true);
     try {
       if (await onCopy(content)) onClose();
+      else setError("복사하지 못했어요. 브라우저의 클립보드 권한을 확인해 주세요.");
     } finally { setCopying(false); }
   }
 
   return (
     <Modal
-      className="template-copy-dialog"
+      error={error}
       eyebrow={template.title}
       title="변수 값을 입력해주세요"
       description="내용을 복사하려면 모든 변수 값을 입력해야 합니다."
@@ -45,7 +47,7 @@ export default function TemplateCopyDialog({ template, onClose, onCopy }: Templa
       onSubmit={submit}
     >
       {variables.map((variable, index) => <label key={variable}>
-        <span className="copy-variable-label">{`*(${variable})`}</span>
+        <span>{`*(${variable})`}</span>
         <input autoFocus={index === 0} required placeholder={variablePlaceholder(variable)} value={values[variable] ?? ""} onChange={event => setValues(current => ({ ...current, [variable]: event.target.value }))} />
       </label>)}
     </Modal>

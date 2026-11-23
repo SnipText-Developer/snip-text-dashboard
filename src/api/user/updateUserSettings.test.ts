@@ -9,7 +9,7 @@ function respond(status: number, data: unknown) {
 beforeEach(() => { global.fetch = fetchMock; fetchMock.mockReset(); });
 afterAll(() => { global.fetch = originalFetch; });
 
-const item = { name: "settings", run: () => updateUserSettings("token", { templateSort: "RECENT_EDITED" }), method: "PATCH", url: "/api/v1/users/me/settings", status: 200, code: "USER200_3", result: { templateSort: "RECENT_EDITED" }, error: "USER400_1", errorStatus: 400 };
+const item = { name: "settings", run: () => updateUserSettings("token", { templateSort: "RECENT_EDITED" }), method: "PATCH", url: "https://api.sniptext.kr/api/v1/users/me/settings", status: 200, code: "USER200_3", result: { templateSort: "RECENT_EDITED" }, error: "USER400_1", errorStatus: 400 };
 
 describe(item.name + " API", () => {
   test("sends authenticated request and returns success", async () => {

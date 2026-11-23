@@ -1,3 +1,4 @@
+import { apiFetch } from "api/auth/session";
 import { FetchError } from "models/errorType";
 
 export interface SaveGalleryTemplateResult {
@@ -42,7 +43,7 @@ const saveGalleryTemplate = async (
   galleryTemplateId: number,
   signal?: AbortSignal
 ): Promise<SaveGalleryTemplateResponse> => {
-  const response = await fetch(
+  const response = await apiFetch(
     `/api/v1/gallery/templates/${encodeURIComponent(galleryTemplateId)}/save`,
     {
       method: "POST",

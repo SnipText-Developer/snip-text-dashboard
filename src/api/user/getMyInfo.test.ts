@@ -9,7 +9,7 @@ function respond(status: number, data: unknown) {
 beforeEach(() => { global.fetch = fetchMock; fetchMock.mockReset(); });
 afterAll(() => { global.fetch = originalFetch; });
 
-const item = { name: "profile", run: () => getMyInfo("token"), method: "GET", url: "/api/v1/users/me", status: 200, code: "USER200_1", result: { userId: 1, nickname: "닉", email: "test@example.com", profileImageUrl: null, loginType: "GOOGLE", templateSort: "RECENT_USED" }, error: "USER404_1", errorStatus: 404 };
+const item = { name: "profile", run: () => getMyInfo("token"), method: "GET", url: "https://api.sniptext.kr/api/v1/users/me", status: 200, code: "USER200_1", result: { userId: 1, nickname: "닉", email: "test@example.com", profileImageUrl: null, loginType: "GOOGLE" }, error: "USER404_1", errorStatus: 404 };
 
 describe(item.name + " API", () => {
   test("sends authenticated request and returns success", async () => {

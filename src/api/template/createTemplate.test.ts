@@ -11,7 +11,7 @@ function respond(status: number, data: unknown) {
 beforeEach(() => { global.fetch = fetchMock; fetchMock.mockReset(); });
 afterAll(() => { global.fetch = originalFetch; });
 
-const item = { name: "create", run: () => createTemplate("token", input), method: "POST", url: "/api/v1/templates", status: 201, code: "TEMPLATE201_1", result: template, error: "TEMPLATE409_1", errorStatus: 409 };
+const item = { name: "create", run: () => createTemplate("token", input), method: "POST", url: "https://api.sniptext.kr/api/v1/templates", status: 201, code: "TEMPLATE201_1", result: template, error: "TEMPLATE409_1", errorStatus: 409 };
 
 describe(item.name + " API", () => {
   test("sends authenticated request and returns success", async () => {

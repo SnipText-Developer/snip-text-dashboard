@@ -1,3 +1,4 @@
+import { apiFetch } from "api/auth/session";
 // React
 import { useEffect, useState } from "react";
 
@@ -48,7 +49,7 @@ const useFetch = <T>(
         setError(null); // 에러 초기화
 
         const { enabled, redirectOnError, responseType, callback, ...requestOptions } = options ?? {};
-        const response = await fetch(url, { ...requestOptions, signal });
+        const response = await apiFetch(url, { ...requestOptions, signal });
         if (!response.ok) {
           if (redirectOnError === false) {
             const errorBody = await response.json().catch(() => null);
