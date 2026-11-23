@@ -1,7 +1,6 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
-import useTemplates from "customHooks/template/useTemplates";
 import saveGalleryTemplate from "api/templateGallery/saveGalleryTemplate";
 
 import { GalleryTemplate } from "../types";
@@ -10,9 +9,6 @@ export default function useTemplateGalleryPage() {
   const { query = "", accessToken = "" } = useOutletContext<{ query?: string; accessToken?: string }>();
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
-  const { data, error: templatesError, refetch } = useTemplates(accessToken);
-  // 이 화면에서 추가한 갤러리 템플릿 ID. 내 템플릿 목록은 화면에 다시 들어올 때 새로 조회합니다.
-  const addedIdsRef = useRef(new Set<number>());
   const [copyingTemplate, setCopyingTemplate] = useState<GalleryTemplate | null>(null);
 
   function copy(template: GalleryTemplate) {
@@ -33,6 +29,7 @@ export default function useTemplateGalleryPage() {
     }
   }
 
+  // 같은 템플릿도 여러 번 저장할 수 있고(GAL-05) 단축어 중복은 서버가 번호를 붙여 처리합니다.
   // 호출할 때마다 새 템플릿이 생성되므로 저장 중에는 다시 요청하지 않습니다.
   async function addToMyTemplates(template: GalleryTemplate) {
     if (saving) return;
@@ -40,29 +37,14 @@ export default function useTemplateGalleryPage() {
       setNotice("로그인 후 내 템플릿에 추가할 수 있어요.");
       return;
     }
-    // 서버가 출처 정보를 주지 않아 내 템플릿과 내용이 같은지로 중복을 판단합니다.
-    if (addedIdsRef.current.has(template.galleryTemplateId)) {
-      setNotice("이미 추가한 템플릿입니다.");
-      return;
-    }
-    if (templatesError || data?.isSuccess === false) {
-      refetch();
-      setNotice("내 템플릿을 확인하지 못했어요. 잠시 후 다시 시도해 주세요.");
-      return;
-    }
-    if (!data) {
-      setNotice("내 템플릿을 확인하고 있어요. 잠시 후 다시 시도해 주세요.");
-      return;
-    }
-    if (data.result.templates.some(item => item.content === template.content)) {
-      setNotice("이미 추가한 템플릿입니다.");
-      return;
-    }
     setSaving(true);
     try {
       const response = await saveGalleryTemplate(accessToken, template.galleryTemplateId);
-      if (!response.isSuccess) { setNotice(response.message); return; }
-      addedIdsRef.current.add(template.galleryTemplateId);
+      if (!response.isSuccess) {
+        // 단축어 동시 충돌(TEMPLATE409_1)은 재시도로 해결되므로 명세의 안내 문구를 씁니다.
+        setNotice(response.code === "TEMPLATE409_1" ? "잠시 후 다시 시도해주세요" : response.message);
+        return;
+      }
       const { title, shortcut, originalShortcut, shortcutChanged } = response.result;
       setNotice(shortcutChanged
         ? `‘${title}’ 템플릿을 추가했어요. 이미 사용 중인 단축어라 ${originalShortcut} 대신 ${shortcut}로 저장했어요.`

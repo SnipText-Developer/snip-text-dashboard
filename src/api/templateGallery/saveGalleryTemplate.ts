@@ -11,6 +11,7 @@ export interface SaveGalleryTemplateResult {
 
 const saveGalleryTemplateErrorStatuses = {
   TEMPLATE403_1: 403,
+  TEMPLATE409_1: 409,
   TEMPLATE409_2: 409,
   GALLERY404_1: 404,
 } as const;
@@ -35,8 +36,8 @@ export type SaveGalleryTemplateResponse =
  * 갤러리 템플릿을 내 템플릿으로 복사 저장합니다. 호출할 때마다 새 템플릿을 생성합니다.
  * 한도 검사, 단축어 자동 번호 및 출처 기록은 서버에서 처리하며 원본과 동기화하지 않습니다.
  * 명세의 오류는 응답으로 반환하고 네트워크 오류와 명세 외 응답은 throw합니다.
- * 호출부에서 비로그인 사용자는 로그인으로 유도하고, TEMPLATE403_1은 한도 모달로 처리합니다.
- * 성공 후 갤러리에 머물며 사용량을 갱신하고 shortcutChanged에 따라 토스트를 표시합니다.
+ * 호출부에서 비로그인 사용자는 로그인으로 유도하고, 오류는 모달 없이 토스트로 안내합니다.
+ * 성공 후 갤러리에 머물며 shortcutChanged에 따라 토스트를 표시합니다.
  */
 const saveGalleryTemplate = async (
   accessToken: string,
