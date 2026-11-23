@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build && sudo node ./scripts/minify.js",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "dev": "node ./scripts/start.js",
     "test": "react-scripts test"
   },

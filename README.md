@@ -6,26 +6,7 @@
 
 ## 환경 설정 및 빌드
 
-Node.js 20 이상과 npm이 설치된 환경에서 프로젝트 루트로 이동합니다.
-
-1. 환경 변수 예제 파일을 `.env.local`로 복사합니다. `.env.local`이 이미 있으면 기존 파일을 열어 설정을 확인합니다.
-
-   ```sh
-   cp -n .env.example .env.local
-   ```
-
-2. Chrome 확장 프로그램과 로그인을 연동하려면 `chrome://extensions`에서 확장 프로그램 ID를 확인한 뒤 `.env.local`의 `REACT_APP_CHROME_EXTENSION_ID`에 입력합니다. 연동이 필요 없으면 값을 비워 둡니다.
-
-3. 의존성을 설치하고 운영용 번들을 생성합니다.
-
-   ```sh
-   npm ci
-   GENERATE_SOURCEMAP=false npm exec -- react-scripts build
-   ```
-
-   빌드 결과는 `build/`에 생성됩니다. `.env.local` 값을 변경하면 다시 빌드해야 반영됩니다.
-
-현재 `npm run build`는 번들 생성 후 `sudo`로 정적 안내 페이지의 압축 스크립트를 실행합니다. 압축에 필요한 `minify`, `try-to-catch`, `url-join`이 프로젝트 의존성에 등록되어 있지 않아, 위 절차에서는 `react-scripts build`를 직접 실행합니다. 정적 안내 페이지는 `public/`에서 `build/`로 복사됩니다.
+환경 변수 설정, 운영용 번들 생성, PEM 파일 준비는 [빌드 가이드](docs/build.md)를 참고하세요.
 
 ## 프로젝트 구조
 
@@ -112,12 +93,6 @@ curl -X POST 'https://api.sniptext.kr/api/v1/auth/dev-token' \
 
 
 ### Chrome 확장 프로그램 로그인 연결
-
-`chrome://extensions`에서 설치된 Snip Text 확장 프로그램의 ID를 확인합니다. 로컬 `.env.local` 또는 운영 빌드 환경에 아래 값을 설정한 뒤 개발 서버를 재시작하거나 운영 번들을 다시 빌드합니다.
-
-```dotenv
-REACT_APP_CHROME_EXTENSION_ID=설치된_확장_프로그램_ID
-```
 
 Chrome에서 로그인이나 신규 가입을 완료하거나 세션을 복원·갱신하면 대시보드가 확장 프로그램 background의 `PUT /auth/token`으로 최신 SnipText 접근 토큰을 전달합니다. 확장 프로그램 ID가 없거나 메시지가 실패해도 대시보드 로그인은 정상적으로 완료됩니다.
 
