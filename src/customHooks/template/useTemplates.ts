@@ -5,7 +5,7 @@ import { Template } from "models/template";
 export type TemplateSort = "RECENT_USED" | "RECENT_EDITED";
 
 export interface TemplatesResult {
-  sort: TemplateSort;
+  sort?: TemplateSort;
   totalCount: number;
   templates: Template[];
 }

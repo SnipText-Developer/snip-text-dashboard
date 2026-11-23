@@ -121,3 +121,19 @@ test("deletion waits for confirmation and can be cancelled", async () => {
   expect(remove).toHaveBeenCalledWith("token", 12);
   expect(page.deleteDialogProps).toBeNull();
 });
+
+
+test("deletion failure stays in the confirmation dialog until the next attempt", async () => {
+  const remove = jest.mocked(deleteTemplate);
+  remove.mockReset().mockResolvedValue({ isSuccess: false, code: "TEMPLATE404_1", message: "삭제에 실패했어요.", result: null });
+
+  await setup();
+  await act(async () => page.listProps.onDelete(12));
+  await act(async () => page.deleteDialogProps?.onDelete());
+  expect(page.deleteDialogProps?.error).toBe("삭제에 실패했어요.");
+  expect(page.noticeProps.message).toBe("");
+
+  await act(async () => page.deleteDialogProps?.onClose());
+  await act(async () => page.listProps.onDelete(13));
+  expect(page.deleteDialogProps?.error).toBe("");
+});

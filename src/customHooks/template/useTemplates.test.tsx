@@ -24,8 +24,8 @@ test("list waits for token and refetches on token and sort changes", async () =>
   await act(async () => root.render(<Probe token="" />));
   expect(fetchMock).not.toHaveBeenCalled();
   await act(async () => root.render(<Probe token="first" />));
-  expect(fetchMock.mock.calls[0][0]).toBe("/api/v1/templates");
+  expect(fetchMock.mock.calls[0][0]).toBe("https://api.sniptext.kr/api/v1/templates");
   await act(async () => root.render(<Probe token="second" sort="RECENT_EDITED" />));
-  expect(fetchMock.mock.calls[1][0]).toBe("/api/v1/templates?sort=RECENT_EDITED");
+  expect(fetchMock.mock.calls[1][0]).toBe("https://api.sniptext.kr/api/v1/templates?sort=RECENT_EDITED");
   expect(fetchMock.mock.calls[1][1].headers.Authorization).toBe("Bearer second");
 });

@@ -1,4 +1,7 @@
+import { requestExtensionTemplateRefresh } from "utils/extensionMessaging";
 import deleteTemplate from "./deleteTemplate";
+
+jest.mock("utils/extensionMessaging");
 
 const fetchMock = jest.fn();
 const originalFetch = global.fetch;
@@ -7,10 +10,10 @@ function respond(status: number, data: unknown) {
   fetchMock.mockResolvedValue({ status, ok: status < 400, statusText: "Error", json: async () => data });
 }
 
-beforeEach(() => { global.fetch = fetchMock; fetchMock.mockReset(); });
+beforeEach(() => { global.fetch = fetchMock; fetchMock.mockReset(); jest.clearAllMocks(); });
 afterAll(() => { global.fetch = originalFetch; });
 
-const item = { name: "delete", run: () => deleteTemplate("token", 12), method: "DELETE", url: "/api/v1/templates/12", status: 200, code: "TEMPLATE200_4", result: template, error: "TEMPLATE404_1", errorStatus: 404 };
+const item = { name: "delete", run: () => deleteTemplate("token", 12), method: "DELETE", url: "https://api.sniptext.kr/api/v1/templates/12", status: 200, code: "TEMPLATE200_4", result: template, error: "TEMPLATE404_1", errorStatus: 404 };
 
 describe(item.name + " API", () => {
   test("sends authenticated request and returns success", async () => {
@@ -20,12 +23,20 @@ describe(item.name + " API", () => {
     expect(fetchMock).toHaveBeenCalledWith(item.url, expect.objectContaining({ method: item.method, cache: "no-store", headers: { Authorization: "Bearer token", "Content-Type": "application/json" } }));
     const options = fetchMock.mock.calls[0][1];
     expect(options.body).toBeUndefined();
+    expect(requestExtensionTemplateRefresh).toHaveBeenCalledTimes(1);
   });
 
   test("returns documented error without throwing", async () => {
     const body = { isSuccess: false, code: item.error, message: "실패", result: null };
     respond(item.errorStatus, body);
     expect(await item.run()).toEqual(body);
+    expect(requestExtensionTemplateRefresh).not.toHaveBeenCalled();
+  });
+
+  test("does not refresh after an invalid success response", async () => {
+    respond(200, { isSuccess: true, code: item.code, result: null });
+    await expect(item.run()).rejects.toMatchObject({ status: 200 });
+    expect(requestExtensionTemplateRefresh).not.toHaveBeenCalled();
   });
 
   test("preserves common errors", async () => {

@@ -11,7 +11,7 @@ function respond(status: number, data: unknown) {
 beforeEach(() => { global.fetch = fetchMock; fetchMock.mockReset(); });
 afterAll(() => { global.fetch = originalFetch; });
 
-const item = { name: "gallery save", run: () => saveGalleryTemplate("token", 3), method: "POST", url: "/api/v1/gallery/templates/3/save", status: 201, code: "GALLERY201_1", result: copied, error: "TEMPLATE409_2", errorStatus: 409 };
+const item = { name: "gallery save", run: () => saveGalleryTemplate("token", 3), method: "POST", url: "https://api.sniptext.kr/api/v1/gallery/templates/3/save", status: 201, code: "GALLERY201_1", result: copied, error: "TEMPLATE409_2", errorStatus: 409 };
 
 describe(item.name + " API", () => {
   test("sends authenticated request and returns success", async () => {

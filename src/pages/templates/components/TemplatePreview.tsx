@@ -1,3 +1,4 @@
+import Notice from "components/notice/Notice";
 import TemplateDetail from "components/template/TemplateDetail";
 import "./TemplatePreview.css";
 import { FormEvent, useState } from "react";
@@ -56,7 +57,9 @@ export default function TemplatePreview({ template, error, saving, onClose, onSa
             {menuOpen && <div className="template-menu"><button type="button" disabled={saving} onClick={() => onDelete(template.templateId)}>삭제하기</button></div>}
           </div>
         </div>}
-      status={!draft ? <p role={error ? "alert" : "status"}>{error || "템플릿을 불러오고 있어요."}</p> : undefined}
+      status={!draft && (error
+        ? <Notice message={error} placement="inline" tone="error" />
+        : <p role="status">템플릿을 불러오고 있어요.</p>)}
       actions={<>
         <button type="button" disabled={saving || !changed} onClick={() => setDraft(baseline)}>되돌리기</button>
         <button type="submit" disabled={saving || !changed}>{saving ? "저장 중…" : "저장"}</button>

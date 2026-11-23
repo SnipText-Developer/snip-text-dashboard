@@ -1,3 +1,4 @@
+import { apiFetch } from "api/auth/session";
 import { FetchError } from "models/errorType";
 
 export interface GetTrashTemplatesRequest {
@@ -9,7 +10,7 @@ export interface GetTrashTemplatesRequest {
 export interface TrashTemplate {
   templateId: number;
   title: string;
-  shortcut: string;
+  shortcut?: string;
   deletedAt: string;
   purgeAt: string;
 }
@@ -53,7 +54,7 @@ const getTrashTemplates = async (
   if (input.size !== undefined) query.set("size", String(input.size));
   const queryString = query.toString();
 
-  const response = await fetch(
+  const response = await apiFetch(
     `/api/v1/trash/templates${queryString ? `?${queryString}` : ""}`,
     {
       method: "GET",
@@ -80,7 +81,7 @@ const getTrashTemplates = async (
       (template: TrashTemplate | null) =>
         typeof template?.templateId === "number" &&
         typeof template?.title === "string" &&
-        typeof template?.shortcut === "string" &&
+        (template.shortcut === undefined || typeof template.shortcut === "string") &&
         typeof template?.deletedAt === "string" &&
         typeof template?.purgeAt === "string"
     ) &&

@@ -2,6 +2,7 @@ import "components/template/TemplateSideList.css";
 import "./TemplateList.css";
 import { useState } from "react";
 import { Template } from "models/template";
+import Notice from "components/notice/Notice";
 import TemplateEmptyState from "./TemplateEmptyState";
 import copyIcon from "assets/icons/copy.svg";
 import moreIcon from "assets/icons/more.svg";
@@ -18,10 +19,9 @@ interface TemplateListProps {
   onCopy: (template: Template) => void;
   onEdit: (template: Template) => void;
   onDelete: (id: number) => Promise<void>;
-  onRetry: () => void;
 }
 
-export default function TemplateList({ templates, selectedId, saving, authenticated, loading, error, query, onSelect, onCopy, onEdit, onDelete, onRetry }: TemplateListProps) {
+export default function TemplateList({ templates, selectedId, saving, authenticated, loading, error, query, onSelect, onCopy, onEdit, onDelete }: TemplateListProps) {
   const [menuId, setMenuId] = useState<number | null>(null);
 
   async function remove(id: number) {
@@ -53,7 +53,7 @@ export default function TemplateList({ templates, selectedId, saving, authentica
         </div>
       ))}
       {!authenticated ? <div className="templates-empty">로그인 후 템플릿을 확인할 수 있어요.</div>
-        : error ? <div className="templates-empty" role="alert">{error}<button onClick={onRetry}>다시 시도</button></div>
+        : error ? <Notice message={error} placement="inline" tone="error" />
         : loading ? <div className="templates-empty" role="status">템플릿을 불러오고 있어요.</div>
         : !templates.length && <TemplateEmptyState searching={Boolean(query)} />}
     </div>

@@ -29,10 +29,10 @@ test("waits until enabled, omits credentials and uses HTTP caching", async () =>
   await act(async () => root.render(<Probe enabled id={3} />));
   expect(fetchMock).toHaveBeenCalledTimes(1);
   const [url, options] = fetchMock.mock.calls[0];
-  expect(url).toBe("/api/v1/gallery/templates/3");
+  expect(url).toBe("https://api.sniptext.kr/api/v1/gallery/templates/3");
   expect(options).toMatchObject({ credentials: "omit", cache: "default", headers: { "Content-Type": "application/json" } });
   expect(options.headers.Authorization).toBeUndefined();
   await act(async () => root.render(<Probe enabled id={4} />));
   expect(fetchMock).toHaveBeenCalledTimes(2);
-  expect(fetchMock.mock.calls[1][0]).toBe("/api/v1/gallery/templates/4");
+  expect(fetchMock.mock.calls[1][0]).toBe("https://api.sniptext.kr/api/v1/gallery/templates/4");
 });

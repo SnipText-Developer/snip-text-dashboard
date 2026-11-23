@@ -24,6 +24,7 @@
 }
 
 .notice {
+  border: 1px solid transparent;
   background: #202428;
   color: white;
   box-sizing: border-box;
@@ -39,8 +40,8 @@
   max-width: 100%;
 }
 
-.notice button {
-  color: white;
+.notice-close {
+  color: inherit;
   background: transparent;
   border: 0;
   font: inherit;
@@ -51,7 +52,7 @@
   cursor: pointer;
 }
 
-.notice > span {
+.notice-content {
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -77,4 +78,21 @@
   .notice-container {
     transition: none;
   }
+}
+
+
+.notice-content p {
+  margin: 6px 0 0;
+}
+
+.notice--error {
+  background: #fff1f0;
+  border-color: #f5c1bc;
+  color: #a12538;
+}
+
+.notice--warning {
+  background: #fffaeb;
+  border-color: #e6c573;
+  color: #795500;
 }

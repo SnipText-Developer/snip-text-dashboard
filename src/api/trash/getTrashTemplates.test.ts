@@ -9,7 +9,7 @@ function respond(status: number, data: unknown) {
 beforeEach(() => { global.fetch = fetchMock; fetchMock.mockReset(); });
 afterAll(() => { global.fetch = originalFetch; });
 
-const item = { name: "trash list", run: () => getTrashTemplates("token"), method: "GET", url: "/api/v1/trash/templates", status: 200, code: "TRASH200_1", result: { totalCount: 0, templates: [], hasNext: false, nextCursor: null }, error: "TRASH400_1", errorStatus: 400 };
+const item = { name: "trash list", run: () => getTrashTemplates("token"), method: "GET", url: "https://api.sniptext.kr/api/v1/trash/templates", status: 200, code: "TRASH200_1", result: { totalCount: 0, templates: [], hasNext: false, nextCursor: null }, error: "TRASH400_1", errorStatus: 400 };
 
 describe(item.name + " API", () => {
   test("sends authenticated request and returns success", async () => {
@@ -49,4 +49,20 @@ test("cursor is encoded without alteration and signal is forwarded", async () =>
   expect(query.get("cursor")).toBe("a+b/한글=");
   expect(query.get("size")).toBe("50");
   expect(options.signal).toBe(signal);
+});
+
+test("accepts a trash item without a shortcut as documented in Swagger", async () => {
+  const body = {
+    isSuccess: true,
+    code: "TRASH200_1",
+    message: "성공",
+    result: {
+      totalCount: 1,
+      templates: [{ templateId: 1, title: "보관 문장", deletedAt: "2026-11-22", purgeAt: "2026-12-22" }],
+      hasNext: false,
+      nextCursor: null,
+    },
+  };
+  respond(200, body);
+  await expect(getTrashTemplates("token")).resolves.toEqual(body);
 });

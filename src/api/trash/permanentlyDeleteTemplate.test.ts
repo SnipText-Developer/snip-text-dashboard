@@ -9,7 +9,7 @@ function respond(status: number, data: unknown) {
 beforeEach(() => { global.fetch = fetchMock; fetchMock.mockReset(); });
 afterAll(() => { global.fetch = originalFetch; });
 
-const item = { name: "permanent delete", run: () => permanentlyDeleteTemplate("token", 12), method: "DELETE", url: "/api/v1/trash/templates/12", status: 200, code: "TRASH200_3", result: { templateId: 12 }, error: "TRASH404_1", errorStatus: 404 };
+const item = { name: "permanent delete", run: () => permanentlyDeleteTemplate("token", 12), method: "DELETE", url: "https://api.sniptext.kr/api/v1/trash/templates/12", status: 200, code: "TRASH200_3", result: { templateId: 12 }, error: "TRASH404_1", errorStatus: 404 };
 
 describe(item.name + " API", () => {
   test("sends authenticated request and returns success", async () => {

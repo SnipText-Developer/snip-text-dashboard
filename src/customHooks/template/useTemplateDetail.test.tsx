@@ -25,7 +25,7 @@ test("template ID changes refetch and cancel previous requests", async () => {
   const signal = fetchMock.mock.calls[0][1].signal;
   await act(async () => root.render(<Probe id={18} />));
   expect(signal.aborted).toBe(true);
-  expect(fetchMock.mock.calls.map(([url]) => url)).toEqual(["/api/v1/templates/12", "/api/v1/templates/18"]);
+  expect(fetchMock.mock.calls.map(([url]) => url)).toEqual(["https://api.sniptext.kr/api/v1/templates/12", "https://api.sniptext.kr/api/v1/templates/18"]);
 });
 
 test.each(["TEMPLATE404_1", "TEMPLATE404_2"])("detail preserves %s error", async (code) => {

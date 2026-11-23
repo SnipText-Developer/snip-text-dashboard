@@ -1,8 +1,9 @@
+import { apiFetch } from "api/auth/session";
 import { FetchError } from "models/errorType";
 
 const toneStyles = [
   "BOSS_EXTERNAL", "REPORT_OFFICIAL", "MARKETING", "NOTICE",
-  "SOFT_POLITE", "CASUAL", "ESSAY",
+  "SOFT_POLITE", "CASUAL",
 ] as const;
 
 export type ToneStyle = typeof toneStyles[number];
@@ -63,7 +64,7 @@ const correctTone = async (
   input: CorrectToneRequest,
   signal?: AbortSignal
 ): Promise<CorrectToneResponse> => {
-  const response = await fetch("/api/v1/ai/tone-corrections", {
+  const response = await apiFetch("/api/v1/ai/tone-corrections", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,

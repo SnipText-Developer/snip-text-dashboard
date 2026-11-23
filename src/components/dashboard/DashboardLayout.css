@@ -24,9 +24,6 @@
 .upgrade-button { display: block; text-align: center; padding: 12px 8px; background: white; border: 1px solid #cbd0da; border-radius: 9px; font-size: 14px; font-weight: 700; }
 .account { position: relative; margin-top: 20px; }
 .account-button { border: 0; background: transparent; display: flex; align-items: center; gap: 12px; width: 100%; padding: 5px 8px; text-align: left; color: inherit; }
-.avatar { width: 36px; height: 36px; border-radius: 50%; background: #080808; color: white; display: grid; place-items: center; flex-shrink: 0; }
-.account-identity { display: grid; gap: 5px; flex: 1; }
-.account-identity > span { color: var(--muted); font-size: 12px; }
 .dashboard-main { display: flex; flex-direction: column; flex: 1; min-width: 0; }
 .dashboard-header { flex-shrink: 0; }
 .dashboard-footer { margin-top: auto; padding: 20px 28px; border-top: 1px solid var(--line); color: var(--muted); }
@@ -84,8 +81,6 @@
 .header-actions .install-button:disabled { opacity: 1; }
 .header-actions .account { margin: 0; }
 .header-actions .account-button { padding: 8px 10px; }
-.header-actions .account-identity { display: none; }
-.header-actions .avatar { width: 24px; height: 24px; background: #ffb1c9; color: #702c49; font-size: 11px; }
 .templates-search { position: absolute; left: 284px; top: 20px; transform: none; width: min(472px, calc(100% - 284px - 340px)); padding: 0; }
 .templates-search .search-field { height: 40px; padding: 0 12px; gap: 6px; border: 0; border-radius: 8px; background: #f2f4f6; }
 .templates-search .search-field .search-icon { display: block; flex-shrink: 0; }
@@ -114,3 +109,6 @@
   .sidebar { width: 100%; height: auto; padding: 12px; border-right: 0; }
   .workspace-nav { margin: 0; gap: 4px; }
   .workspace-nav a { margin: 0; padding: 8px; font-size: 12px; }}
+
+button.account-button { white-space: nowrap; font-weight: 600; }
+button.account-button:not(:disabled) { cursor: pointer; }

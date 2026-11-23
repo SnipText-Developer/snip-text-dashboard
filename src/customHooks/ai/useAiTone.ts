@@ -17,7 +17,7 @@ export default function useAiTone(accessToken: string) {
   useEffect(() => () => controller.current?.abort(), [accessToken]);
 
   async function correct() {
-    if (pending.current || !text.trim() || text.length > 3000 || !accessToken)
+    if (pending.current || !text.trim() || text.length > 1000 || !accessToken)
       return;
     pending.current = true;
     setBusy(true);
