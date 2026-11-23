@@ -1,0 +1,65 @@
+# main에 병합되면 대시보드를 빌드해 https://sniptext.kr 에 배포한다
+# 빌드 → S3 버킷에 올리기 → CloudFront 캐시 비우기
+# AWS 리소스와 배포 역할은 백엔드 저장소 infra/terraform/prod/dashboard.tf 에 있다
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Actions 탭에서 다시 배포할 때
+
+permissions:
+  contents: read
+  id-token: write # AWS 역할을 OIDC로 위임받기 위해
+
+# 배포가 겹치면 앞의 배포가 끝난 뒤 다음 배포를 한다 (중간에 끊지 않는다)
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # 역할 신뢰 조건이 environment:prod라 이 환경에서 도는 작업만 AWS 권한을 받는다.
+    # prod 환경은 main 브랜치에서만 쓸 수 있다 (저장소 Settings → Environments)
+    environment: prod
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      # CI=true(Actions 기본값)라 ESLint 경고가 있으면 빌드가 실패한다
+      - name: Build
+        run: npm run build
+        env:
+          REACT_APP_CHROME_EXTENSION_ID: ${{ vars.REACT_APP_CHROME_EXTENSION_ID }}
+
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      # 해시가 붙은 static/ 파일은 1년 캐시, 나머지(index.html 등)는 매번 새로 확인한다.
+      # static/을 먼저 올려야 새 index.html이 아직 없는 파일을 가리키는 순간이 생기지 않는다
+      # --delete는 마지막 단계에서만: 이전 버전 static/ 파일을 지우면 열려 있던 화면이 깨질 수 있어 남겨 둔다
+      - name: Upload
+        env:
+          BUCKET: ${{ vars.DASHBOARD_BUCKET }}
+        run: |
+          aws s3 sync build/static "s3://$BUCKET/static" \
+            --cache-control "public, max-age=31536000, immutable"
+          aws s3 sync build "s3://$BUCKET" --delete --exclude "static/*" \
+            --cache-control "no-cache"
+
+      - name: Invalidate cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/*" \
+            --query "Invalidation.Id" --output text
