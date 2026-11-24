@@ -110,5 +110,5 @@
   .workspace-nav { margin: 0; gap: 4px; }
   .workspace-nav a { margin: 0; padding: 8px; font-size: 12px; }}
 
-button.account-button { white-space: nowrap; font-weight: 600; }
+.account-button { white-space: nowrap; font-weight: 600; }
 button.account-button:not(:disabled) { cursor: pointer; }
