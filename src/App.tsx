@@ -21,8 +21,8 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path={googleCallbackPath} element={<GoogleCallback />} />
       <Route element={<DashboardLayout />}>
+        <Route path={googleCallbackPath} element={<GoogleCallback />} />
         <Route index element={<TemplatesPage />} />
         <Route path="templates" element={<TemplatesPage />} />
         <Route path="templates/new" element={<TemplatesPage />} />

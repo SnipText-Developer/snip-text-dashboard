@@ -18,7 +18,7 @@ export default function TemplatesContent({
   previewProps,
 }: TemplatesContentProps) {
   return (
-    <div className="templates-main">
+    <div className="templates-main status-panel-layout">
       {editing ? (
         <TemplateEditor
           key={editing.templateId ?? "new"}

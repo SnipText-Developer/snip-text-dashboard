@@ -1,4 +1,4 @@
-import { GalleryCategoryFilter, GalleryTemplate } from "./types";
+import type { GalleryCategoryFilter, GalleryTemplate } from "pages/templateGallery/types";
 
 export const galleryCategoryTabs: {
   value: GalleryCategoryFilter;

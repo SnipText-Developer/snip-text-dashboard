@@ -1,0 +1,30 @@
+.page-content:has(.status-panel-layout :is(.status-panel, .template-first-empty)) {
+  display: flex;
+  flex-direction: column;
+}
+
+.status-panel-layout:has(.status-panel, .template-first-empty) {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
+  align-items: start;
+  min-height: 0;
+}
+
+.status-panel {
+  grid-column: 1 / -1;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: min(100%, 680px);
+  min-height: 96px;
+  margin: 0 auto;
+  padding: 16px;
+  border-radius: 16px;
+  background: #f1f1f1;
+  color: #6b7480;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}

@@ -7,9 +7,10 @@ import callIcon from "assets/icons/call.svg";
 interface DashboardHeaderProps {
   query: string;
   onQueryChange: (query: string) => void;
+  showAccount: boolean;
 }
 
-export default function DashboardHeader({ query, onQueryChange }: DashboardHeaderProps) {
+export default function DashboardHeader({ query, onQueryChange, showAccount }: DashboardHeaderProps) {
   const { pathname } = useLocation();
   return (
     <header className="dashboard-header">
@@ -21,7 +22,7 @@ export default function DashboardHeader({ query, onQueryChange }: DashboardHeade
         <button type="button" className="install-button" disabled>Chrome에 추가</button>
         <span className="header-symbol"><img src={helpIcon} alt="도움말" width={24} height={24} /></span>
         <span className="header-symbol"><img src={callIcon} alt="문의" width={24} height={24} /></span>
-        <DashboardAccount />
+        {showAccount && <DashboardAccount />}
       </div>
     </header>
   );

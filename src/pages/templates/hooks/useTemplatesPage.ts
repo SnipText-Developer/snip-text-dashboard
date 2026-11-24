@@ -8,6 +8,7 @@ import updateTemplate from "api/template/updateTemplate";
 import deleteTemplate from "api/template/deleteTemplate";
 
 import { Template } from "models/template";
+import { searchTemplates } from "utils/searchTemplates";
 import { TemplateDraft } from "../types";
 export default function useTemplatesPage() {
   const { query = "", accessToken = "" } = useOutletContext<{ query: string; accessToken?: string }>();
@@ -42,7 +43,7 @@ export default function useTemplatesPage() {
   const editing: TemplateDraft | null = creating
     ? { templateId: null, title: "", shortcut: "", content: "" }
     : editingRoute && selected ? selected : null;
-  const filtered = templates.filter(template => `${template.title} ${template.shortcut} ${template.content}`.toLowerCase().includes(query.toLowerCase()));
+  const filtered = searchTemplates(templates, query);
 
   function copy(template: Template) {
     if (template.variables.length) {

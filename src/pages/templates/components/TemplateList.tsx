@@ -52,10 +52,10 @@ export default function TemplateList({ templates, selectedId, saving, authentica
           </div>
         </div>
       ))}
-      {!authenticated ? <div className="templates-empty">로그인 후 템플릿을 확인할 수 있어요.</div>
+      {!authenticated ? <TemplateEmptyState state="login" />
         : error ? <Notice message={error} placement="inline" tone="error" />
         : loading ? <div className="templates-empty" role="status">템플릿을 불러오고 있어요.</div>
-        : !templates.length && <TemplateEmptyState searching={Boolean(query)} />}
+        : !templates.length && <TemplateEmptyState state={query ? "search" : "first"} />}
     </div>
   );
 }

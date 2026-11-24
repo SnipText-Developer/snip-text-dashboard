@@ -1,0 +1,58 @@
+.page-content:has(.google-callback) {
+  padding: 40px 24px;
+}
+
+.google-callback h1 {
+  margin: 0;
+  color: #191f28;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.72px;
+}
+
+.google-callback-form {
+  display: grid;
+  gap: 20px;
+  max-width: 440px;
+  margin-top: 20px;
+}
+
+.google-callback-form .page-description {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.google-callback-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f2f4f6;
+  color: #4e5968;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.google-callback-consent input {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin: 1px 0 0;
+  accent-color: #1455d9;
+}
+
+.google-callback .primary-button {
+  min-height: 44px;
+}
+
+@media (max-width: 700px) {
+  .page-content:has(.google-callback) {
+    padding: 30px 20px;
+  }
+
+  .google-callback h1 {
+    font-size: 28px;
+  }
+}
