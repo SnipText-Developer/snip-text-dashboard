@@ -5,7 +5,7 @@ import Notice from "components/notice/Notice";
 interface ModalProps {
   eyebrow?: string;
   danger?: boolean;
-  variant?: "confirmation";
+  variant?: "confirmation" | "variables";
   closeDisabled?: boolean;
   error?: string;
   title: string;
@@ -33,7 +33,7 @@ export default function Modal({
   }, []);
 
   return (
-    <dialog ref={dialogRef} className={variant ? "modal modal--confirmation" : "modal"} aria-labelledby={titleId} aria-describedby={descriptionId} onCancel={event => { event.preventDefault(); if (!closeDisabled) onClose(); }}>
+    <dialog ref={dialogRef} className={variant ? `modal modal--${variant}` : "modal"} aria-labelledby={titleId} aria-describedby={descriptionId} onCancel={event => { event.preventDefault(); if (!closeDisabled) onClose(); }}>
       <form onSubmit={onSubmit} onInput={() => setValidationMessage("")} onInvalid={event => {
         event.preventDefault();
         const field = event.target as HTMLInputElement | HTMLTextAreaElement;

@@ -166,3 +166,73 @@
 
 .modal--confirmation .modal-submit { color: #2456c7; }
 .modal--confirmation .modal-submit--danger { color: #c7281b; }
+
+/* 변수 입력 모달 (v2 3_3, 4_3) */
+.modal--variables {
+  border: 1px solid #6d8edb;
+  border-radius: 24px;
+}
+
+.modal--variables .modal-header {
+  padding: 24px 24px 0;
+  border: 0;
+}
+
+.modal--variables .modal-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: #191f28;
+}
+
+.modal--variables .modal-body { padding: 8px 24px 0; }
+
+.modal--variables .modal-body > p {
+  color: #6b7684;
+  font-size: 15px;
+  line-height: 1.4;
+  letter-spacing: -.3px;
+}
+
+.modal--variables .modal-body label {
+  gap: 8px;
+  margin-top: 16px;
+  color: #4e5968;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.modal--variables .modal-body > p + label { margin-top: 40px; }
+
+.modal--variables .modal-body input {
+  border-color: #d1d6db;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.modal--variables .modal-body input::placeholder { color: #8b95a1; }
+
+.modal--variables .modal-footer {
+  gap: 8px;
+  padding: 40px 24px 24px;
+  background: white;
+}
+
+.modal--variables :is(.modal-cancel, .modal-submit) {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid #d1d6db;
+  border-radius: 8px;
+  background: white;
+  color: #4e5968;
+  font-size: 16px;
+  font-weight: 500 !important;
+}
+
+/* 디자인은 "입력하고 복사"가 "취소" 앞에 옵니다. */
+.modal--variables .modal-submit { order: -1; }

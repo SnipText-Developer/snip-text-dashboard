@@ -45,6 +45,7 @@ describe(item.name + " API", () => {
 
 test.each([
   { run: () => saveGalleryTemplate("token", 3), status: 403, code: "TEMPLATE403_1" },
+  { run: () => saveGalleryTemplate("token", 3), status: 409, code: "TEMPLATE409_1" },
   { run: () => saveGalleryTemplate("token", 3), status: 404, code: "GALLERY404_1" },
 ])("returns documented $code ($status)", async ({ run, status, code }) => {
   const body = { isSuccess: false, code, message: "실패", result: null };
