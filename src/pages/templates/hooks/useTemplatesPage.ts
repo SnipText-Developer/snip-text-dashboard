@@ -1,3 +1,4 @@
+import { toApiShortcut } from "utils/shortcuts";
 import { useState } from "react";
 import { useLocation, useNavigate, useParams, useSearchParams, useOutletContext } from "react-router-dom";
 
@@ -66,7 +67,7 @@ export default function useTemplatesPage() {
     if (saving || !accessToken) return false;
     setSaving(true);
     try {
-      const input = { title: draft.title, shortcut: `/${draft.shortcut.trim().replace(/^\/+/, "")}`, content: draft.content };
+      const input = { title: draft.title, shortcut: toApiShortcut(draft.shortcut), content: draft.content };
       const response = draft.templateId === null
         ? await createTemplate(accessToken, input)
         : await updateTemplate(accessToken, draft.templateId, input);

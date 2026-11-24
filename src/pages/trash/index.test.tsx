@@ -20,7 +20,7 @@ const template = {
 
 test.each([
   ["복구하기", "템플릿을 복구할까요?", restoreTemplate, ["token", 3],
-    { isSuccess: true, result: { shortcutChanged: true, shortcut: "/문의2" } }, "단축어가 /문의2"],
+    { isSuccess: true, result: { shortcutChanged: true, shortcut: "/문의2" } }, "단축어가 \\문의2"],
   ["영구 삭제", "템플릿을 영구 삭제할까요?", permanentlyDeleteTemplate, ["token", 3],
     { isSuccess: true }, "템플릿을 영구 삭제했어요."],
   ["전체 영구 삭제", "템플릿 1개를 영구 삭제할까요?", emptyTrash, ["token"],

@@ -1,3 +1,4 @@
+import { toApiShortcut } from "utils/shortcuts";
 import Notice from "components/notice/Notice";
 import TemplateDetail from "components/template/TemplateDetail";
 import "./TemplatePreview.css";
@@ -28,7 +29,7 @@ export default function TemplatePreview({ template, error, saving, onClose, onSa
     event.preventDefault();
     if (!draft || saving) return;
     if (await onSave(draft)) {
-      const saved = { ...draft, shortcut: `/${draft.shortcut.trim().replace(/^\/+/, "")}` };
+      const saved = { ...draft, shortcut: toApiShortcut(draft.shortcut) };
       setDraft(saved);
       setBaseline(saved);
     }

@@ -1,3 +1,4 @@
+import { formatShortcut } from "utils/shortcuts";
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
@@ -47,7 +48,7 @@ export default function useTemplateGalleryPage() {
       }
       const { title, shortcut, originalShortcut, shortcutChanged } = response.result;
       setNotice(shortcutChanged
-        ? `‘${title}’ 템플릿을 추가했어요. 이미 사용 중인 단축어라 ${originalShortcut} 대신 ${shortcut}로 저장했어요.`
+        ? `‘${title}’ 템플릿을 추가했어요. 이미 사용 중인 단축어라 ${formatShortcut(originalShortcut)} 대신 ${formatShortcut(shortcut)}로 저장했어요.`
         : `‘${title}’ 템플릿을 내 템플릿에 추가했어요.`);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "템플릿을 추가하지 못했어요.");

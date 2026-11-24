@@ -1,3 +1,4 @@
+import { formatShortcut } from "utils/shortcuts";
 import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
@@ -90,7 +91,7 @@ export default function TrashPage() {
           message = response.message;
         } else {
           message = response.result.shortcutChanged
-            ? `템플릿을 복구했어요. 단축어가 ${response.result.shortcut}(으)로 변경됐어요.`
+            ? `템플릿을 복구했어요. 단축어가 ${formatShortcut(response.result.shortcut)}(으)로 변경됐어요.`
             : "템플릿을 복구했어요.";
         }
       } else if (action.type === "delete") {
@@ -126,7 +127,7 @@ export default function TrashPage() {
       <tr key={id}>
         <td>
           {template.shortcut ? (
-            <span className="shortcut-pill" title={template.shortcut}>{template.shortcut}</span>
+            <span className="shortcut-pill" title={formatShortcut(template.shortcut)}>{formatShortcut(template.shortcut)}</span>
           ) : "—"}
         </td>
         <th scope="row">{template.title}</th>

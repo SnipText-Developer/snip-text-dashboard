@@ -1,3 +1,4 @@
+import { formatShortcut } from "utils/shortcuts";
 import type { GalleryCategoryFilter, GalleryTemplate } from "pages/templateGallery/types";
 
 export const galleryCategoryTabs: {
@@ -44,8 +45,7 @@ export const filterGalleryTemplates = (
     (template) =>
       (category === "ALL" || template.category === category) &&
       (!keyword ||
-        [template.title, template.content, template.shortcut].some((value) =>
-          value.toLowerCase().includes(keyword)
-        ))
+        [template.title, template.content].some((value) => value.toLowerCase().includes(keyword)) ||
+        formatShortcut(template.shortcut).toLowerCase().includes(formatShortcut(keyword)))
   );
 };

@@ -1,3 +1,4 @@
+import { toApiShortcut } from "utils/shortcuts";
 import { useEffect, useRef, useState } from "react";
 import correctTone, { CorrectToneResult, ToneStyle } from "api/ai/correctTone";
 import createTemplate from "api/template/createTemplate";
@@ -64,7 +65,7 @@ export default function useAiTone(accessToken: string) {
     try {
       const response = await createTemplate(accessToken, {
         title: draft.title,
-        shortcut: `/${draft.shortcut.trim().replace(/^\/+/, "")}`,
+        shortcut: toApiShortcut(draft.shortcut),
         content: draft.content,
       });
       if (!response.isSuccess) {
