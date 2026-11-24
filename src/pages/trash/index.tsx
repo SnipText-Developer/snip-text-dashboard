@@ -1,3 +1,4 @@
+import { formatShortcut } from "utils/shortcuts";
 import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
@@ -8,6 +9,8 @@ import restoreTemplate from "api/trash/restoreTemplate";
 import moreIcon from "assets/icons/more.svg";
 import Modal from "components/modal/Modal";
 import Notice from "components/notice/Notice";
+import "components/notice/StatusPanel.css";
+import { searchTemplates } from "utils/searchTemplates";
 import "./trash.css";
 
 type Action = { type: "restore" | "delete"; id: number } | { type: "empty"; count: number };
@@ -88,7 +91,7 @@ export default function TrashPage() {
           message = response.message;
         } else {
           message = response.result.shortcutChanged
-            ? `템플릿을 복구했어요. 단축어가 ${response.result.shortcut}(으)로 변경됐어요.`
+            ? `템플릿을 복구했어요. 단축어가 ${formatShortcut(response.result.shortcut)}(으)로 변경됐어요.`
             : "템플릿을 복구했어요.";
         }
       } else if (action.type === "delete") {
@@ -113,9 +116,7 @@ export default function TrashPage() {
     }
   }
 
-  const search = query.trim().toLowerCase();
-  const templates = list?.templates.filter(template =>
-    `${template.title} ${template.shortcut ?? ""}`.toLowerCase().includes(search)) ?? [];
+  const templates = searchTemplates(list?.templates ?? [], query);
   const count = list?.totalCount ?? 0;
   const restoring = action?.type === "restore";
   const clearing = action?.type === "empty";
@@ -124,7 +125,11 @@ export default function TrashPage() {
     const id = template.templateId;
     return (
       <tr key={id}>
-        <td>{template.shortcut ? <span className="shortcut-pill">{template.shortcut}</span> : "—"}</td>
+        <td>
+          {template.shortcut ? (
+            <span className="shortcut-pill" title={formatShortcut(template.shortcut)}>{formatShortcut(template.shortcut)}</span>
+          ) : "—"}
+        </td>
         <th scope="row">{template.title}</th>
         <td><time dateTime={template.deletedAt}>{displayDate(template.deletedAt)}</time></td>
         <td>
@@ -152,33 +157,35 @@ export default function TrashPage() {
   }
 
   return (
-    <section className="trash-page" aria-labelledby="trash-heading">
-      <header className="templates-heading">
-        <div>
-          <h1 id="trash-heading">삭제된 템플릿</h1>
-          <p className="page-description">삭제된 템플릿은 30일 후 자동으로 영구 삭제됩니다.</p>
+    <section className={templates.length ? "trash-page" : "trash-page status-panel-layout"} aria-labelledby="trash-heading">
+      <div>
+        <header className="templates-heading">
+          <div>
+            <h1 id="trash-heading">삭제된 템플릿</h1>
+            <p className="page-description">삭제된 템플릿은 30일 후 자동으로 영구 삭제됩니다.</p>
+          </div>
+        </header>
+        <div className="trash-toolbar">
+          <button type="button" disabled={!count || loading} onClick={() => confirm({ type: "empty", count })}>
+            전체 영구 삭제
+          </button>
         </div>
-      </header>
-      <div className="trash-toolbar">
-        <button type="button" disabled={!count || loading} onClick={() => confirm({ type: "empty", count })}>
-          전체 영구 삭제
-        </button>
+        {templates.length > 0 && (
+          <table className="trash-table" aria-label="삭제된 템플릿 목록">
+            <thead><tr><th scope="col">단축어</th><th scope="col">템플릿 제목</th><th scope="col">삭제일</th><th scope="col" aria-label="작업" /></tr></thead>
+            <tbody>{templates.map(renderRow)}</tbody>
+          </table>
+        )}
       </div>
-      {templates.length > 0 && (
-        <table className="trash-table" aria-label="삭제된 템플릿 목록">
-          <thead><tr><th scope="col">단축어</th><th scope="col">템플릿 제목</th><th scope="col">삭제일</th><th scope="col" aria-label="작업" /></tr></thead>
-          <tbody>{templates.map(renderRow)}</tbody>
-        </table>
-      )}
       {loadError ? (
-        <div className="trash-state" role="alert">
+        <div className="status-panel trash-state" role="alert">
           <span>{loadError}</span>
           <button type="button" onClick={() => load(request.cursor)}>다시 시도</button>
         </div>
       ) : loading ? (
-        <p className="trash-state" role="status">삭제 목록을 불러오는 중이에요.</p>
+        <p className="status-panel trash-state" role="status">삭제 목록을 불러오는 중이에요.</p>
       ) : templates.length === 0 && (
-        <p className="trash-state">
+        <p className="status-panel trash-state">
           {!accessToken ? "로그인하면 삭제된 템플릿을 확인할 수 있어요." :
             count ? (list?.hasNext ? "불러온 목록에 검색 결과가 없어요." : "검색 결과가 없어요.") : "삭제 목록이 비어 있어요"}
         </p>

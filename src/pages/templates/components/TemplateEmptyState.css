@@ -1,60 +1,33 @@
-.template-search-empty {
+:is(.template-search-empty, .template-login-empty) {
+  align-content: center;
+  gap: 8px;
+}
+
+.template-search-empty > h2,
+.template-login-empty > h2 {
+  margin: 0;
+  font: inherit;
+}
+
+.template-search-empty > p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.template-list:has(.status-panel, .template-first-empty) {
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: 0;
+}
+
+.template-first-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 340px;
-  padding: 48px 20px;
   text-align: center;
-}
-
-.template-search-empty-mark {
-  width: 64px;
-  height: 64px;
-  flex-shrink: 0;
-  background: #ccc;
-  margin-bottom: 30px;
-}
-
-.template-search-empty h2 {
-  margin: 0;
-  color: #191f29;
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -.5px;
-  line-height: 1.4;
-}
-
-.template-search-empty p {
-  margin: 16px 0 0;
-  color: #626a79;
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-.templates-workspace:not(.has-preview) .template-list:has(.template-first-empty) {
-  grid-template-columns: minmax(0, 1fr);
-  flex: 1;
-  align-content: center;
-  justify-items: center;
-  margin-top: 0;
-  padding: 32px 0;
-}
-
-.templates-main:has(.template-first-empty) {
-  display: flex;
-  flex-direction: column;
-}
-
-.templates-browser:has(.template-first-empty) {
-  display: flex;
-  flex: 1;
-  min-width: 0;
-}
-
-.template-first-empty {
   width: 100%;
   max-width: 680px;
+  margin-inline: auto;
   min-height: 146px;
   padding: 39px 24px;
   border: 1px solid #6d8edb;
@@ -63,6 +36,7 @@
 }
 
 .template-first-empty h2 {
+  margin: 0;
   color: #101010;
   font-size: 20px;
   font-weight: 600;
@@ -72,7 +46,7 @@
 }
 
 .template-first-empty p {
-  margin-top: 12px;
+  margin: 12px 0 0;
   color: #565656;
   font-size: 17px;
   font-weight: 600;
@@ -82,19 +56,6 @@
 }
 
 @media (max-width: 700px) {
-  .template-search-empty {
-    min-height: 300px;
-    padding: 36px 12px;
-  }
-
-  .template-search-empty h2 {
-    font-size: 20px;
-  }
-
-  .template-search-empty p {
-    font-size: 14px;
-  }
-
   .template-first-empty {
     width: 100%;
     min-height: 146px;

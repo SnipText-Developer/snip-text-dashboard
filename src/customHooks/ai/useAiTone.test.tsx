@@ -47,6 +47,18 @@ test("blocks duplicate requests and displays server errors without retry", async
   expect(page.error).toBe("교정 한도를 초과했어요.");
   expect(page.busy).toBe(false);
 });
+test("allows 3,000 UTF-16 code units and blocks 3,001", async () => {
+  correctMock.mockResolvedValue({ isSuccess: true, code: "AI200_1", message: "성공", result });
+  const textAtLimit = "가".repeat(2_998) + "😀";
+
+  await act(async () => page.setText(textAtLimit + "나"));
+  await act(async () => page.correct());
+  expect(correctMock).not.toHaveBeenCalled();
+
+  await act(async () => page.setText(textAtLimit));
+  await act(async () => page.correct());
+  expect(correctMock).toHaveBeenCalledWith("token", { text: textAtLimit, style: "CASUAL" }, expect.any(AbortSignal));
+});
 test("keeps the editor open when saving fails", async () => {
   saveMock.mockResolvedValue({ isSuccess: false, code: "TEMPLATE409_1", message: "중복 단축어", result: null });
   await act(async () => page.setEditing(true));

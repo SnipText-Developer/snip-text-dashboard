@@ -3,7 +3,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { completeGoogleLogin, googleCallbackPath, startGoogleLogin } from "api/auth/google";
 import Notice from "components/notice/Notice";
+import "components/notice/StatusPanel.css";
 import { signUpWithGoogle } from "api/auth/session";
+import "./GoogleCallback.css";
 
 type LoginResult = Awaited<ReturnType<typeof completeGoogleLogin>>;
 
@@ -68,18 +70,16 @@ export default function GoogleCallback() {
   }
 
   return (
-    <main className="page-content page-entry">
-      <h1>{signup ? "회원가입" : "구글 로그인"}</h1>
+    <section className="google-callback status-panel-layout" aria-labelledby="google-callback-title">
+      <h1 id="google-callback-title">{signup ? "회원가입" : "구글 로그인"}</h1>
       {error && <Notice message={error} placement="inline" tone="error" />}
       {signup ? (
-        <form onSubmit={handleSignup}>
-          {signup.email && <p>{signup.email}</p>}
-          <p>
-            <label>
-              <input type="checkbox" checked={agreed} onChange={event => setAgreed(event.target.checked)} />
-              {" "}서비스 이용약관에 동의합니다.
-            </label>
-          </p>
+        <form className="google-callback-form" onSubmit={handleSignup}>
+          {signup.email && <p className="page-description">{signup.email}</p>}
+          <label className="google-callback-consent">
+            <input type="checkbox" checked={agreed} onChange={event => setAgreed(event.target.checked)} />
+            서비스 이용약관에 동의합니다.
+          </label>
           <button className="primary-button" type="submit" disabled={!agreed || busy}>
             {busy ? "가입하는 중…" : "가입하기"}
           </button>
@@ -89,10 +89,10 @@ export default function GoogleCallback() {
           <button className="primary-button" type="button" disabled={busy} onClick={restartGoogleLogin}>
             Google로 다시 로그인
           </button>
-        ) : <Link to="/" replace>대시보드로 돌아가기</Link>
+        ) : <Link className="primary-button" to="/" replace>대시보드로 돌아가기</Link>
       ) : (
-        <p role="status">구글 로그인을 완료하는 중이에요.</p>
+        <p className="status-panel" role="status">구글 로그인을 완료하는 중이에요.</p>
       )}
-    </main>
+    </section>
   );
 }

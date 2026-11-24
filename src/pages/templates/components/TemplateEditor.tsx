@@ -1,3 +1,4 @@
+import { formatShortcut, shortcutInputPattern, stripShortcutPrefix } from "utils/shortcuts";
 import "./TemplateEditor.css";
 import { FormEvent, useLayoutEffect, useRef, useState } from "react";
 import { TemplateDraft } from "../types";
@@ -68,7 +69,7 @@ export default function TemplateEditor({ initialDraft, saving, onClose, onSave }
         <fieldset disabled={saving}>
         <div className="template-editor-fields">
       <label>제목<input autoFocus required placeholder="입력하세요." value={draft.title} onChange={event => setDraft({ ...draft, title: event.target.value })} /></label>
-      <label>단축어<input required pattern="/?[^\s/]+" placeholder="입력하세요." value={draft.shortcut} onChange={event => setDraft({ ...draft, shortcut: event.target.value })} /></label>
+      <label>단축어<input required pattern={shortcutInputPattern} placeholder="입력하세요." value={formatShortcut(draft.shortcut)} onChange={event => setDraft({ ...draft, shortcut: event.target.value })} /></label>
         </div>
       <label className="template-editor-content">내용<textarea ref={contentRef} required rows={5} placeholder="내용을 입력하세요." value={draft.content} onChange={event => setDraft({ ...draft, content: event.target.value })} /></label>
       <div className="template-editor-variables" aria-label="변수 삽입">
@@ -92,7 +93,7 @@ export default function TemplateEditor({ initialDraft, saving, onClose, onSave }
         </fieldset>
         <div className="template-editor-actions">
           <button type="button" disabled={saving} onClick={onClose}>취소</button>
-          <button type="submit" disabled={saving || !draft.title.trim() || !draft.shortcut.trim().replace(/^\/+/, "") || !draft.content.trim()}>{saving ? "저장 중…" : draft.templateId === null ? "생성하기" : "저장하기"}</button>
+          <button type="submit" disabled={saving || !draft.title.trim() || !stripShortcutPrefix(draft.shortcut.trim()) || !draft.content.trim()}>{saving ? "저장 중…" : draft.templateId === null ? "생성하기" : "저장하기"}</button>
         </div>
       </form>
     </section>

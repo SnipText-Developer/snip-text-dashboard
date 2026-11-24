@@ -10,6 +10,7 @@ interface TemplateDeleteDialogProps {
 export default function TemplateDeleteDialog({ saving, error, onClose, onDelete }: TemplateDeleteDialogProps) {
   return (
     <Modal
+      variant="confirmation"
       danger
       error={error}
       closeDisabled={saving}

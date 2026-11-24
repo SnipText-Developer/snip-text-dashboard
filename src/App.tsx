@@ -11,6 +11,7 @@ import "App.css";
 import { googleCallbackPath } from "api/auth/google";
 import GoogleCallback from "components/dashboard/GoogleCallback";
 import DashboardLayout from "components/dashboard/DashboardLayout";
+import LoginPage from "pages/login";
 import TrashPage from "pages/trash";
 import { TemplatesPage, TemplateGalleryPage, AiTonePage } from "pages";
 
@@ -21,8 +22,9 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path={googleCallbackPath} element={<GoogleCallback />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route element={<DashboardLayout />}>
+        <Route path={googleCallbackPath} element={<GoogleCallback />} />
         <Route index element={<TemplatesPage />} />
         <Route path="templates" element={<TemplatesPage />} />
         <Route path="templates/new" element={<TemplatesPage />} />

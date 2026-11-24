@@ -1,3 +1,4 @@
+import { toApiShortcut } from "utils/shortcuts";
 import { useState } from "react";
 import { useLocation, useNavigate, useParams, useSearchParams, useOutletContext } from "react-router-dom";
 
@@ -8,6 +9,7 @@ import updateTemplate from "api/template/updateTemplate";
 import deleteTemplate from "api/template/deleteTemplate";
 
 import { Template } from "models/template";
+import { searchTemplates } from "utils/searchTemplates";
 import { TemplateDraft } from "../types";
 export default function useTemplatesPage() {
   const { query = "", accessToken = "" } = useOutletContext<{ query: string; accessToken?: string }>();
@@ -42,7 +44,7 @@ export default function useTemplatesPage() {
   const editing: TemplateDraft | null = creating
     ? { templateId: null, title: "", shortcut: "", content: "" }
     : editingRoute && selected ? selected : null;
-  const filtered = templates.filter(template => `${template.title} ${template.shortcut} ${template.content}`.toLowerCase().includes(query.toLowerCase()));
+  const filtered = searchTemplates(templates, query);
 
   function copy(template: Template) {
     if (template.variables.length) {
@@ -65,7 +67,7 @@ export default function useTemplatesPage() {
     if (saving || !accessToken) return false;
     setSaving(true);
     try {
-      const input = { title: draft.title, shortcut: `/${draft.shortcut.trim().replace(/^\/+/, "")}`, content: draft.content };
+      const input = { title: draft.title, shortcut: toApiShortcut(draft.shortcut), content: draft.content };
       const response = draft.templateId === null
         ? await createTemplate(accessToken, input)
         : await updateTemplate(accessToken, draft.templateId, input);

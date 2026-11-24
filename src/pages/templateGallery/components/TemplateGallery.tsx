@@ -1,5 +1,4 @@
 import "components/template/TemplateSideList.css";
-import TemplateEmptyMessage from "components/template/TemplateEmptyMessage";
 import "./TemplateGallery.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -10,7 +9,7 @@ import {
   filterGalleryTemplates,
   galleryCategoryTabs,
   groupGalleryTemplatesByCategory,
-} from "../filterGalleryTemplates";
+} from "utils/filterGalleryTemplates";
 import { GalleryCategoryFilter, GalleryTemplate } from "../types";
 
 const PAGE_SIZE = 20;
@@ -127,7 +126,7 @@ export default function TemplateGallery({
 
   const renderSearchResults = () => {
     if (filteredTemplates.length === 0) {
-      return <TemplateEmptyState searching />;
+      return <TemplateEmptyState state="search" />;
     }
 
     return (
@@ -152,13 +151,10 @@ export default function TemplateGallery({
   const renderList = () => {
     if (filteredTemplates.length === 0) {
       return (
-        <TemplateEmptyMessage
-          className="template-gallery__empty"
-          titleClassName="template-gallery__empty-title"
-          descriptionClassName="template-gallery__empty-description"
-          title="검색된 템플릿이 없어요"
-          description="제목, 본문, 단축어를 입력해보세요"
-        />
+        <div className="status-panel template-gallery__empty" role="status">
+          <h2 className="template-gallery__empty-title">검색된 템플릿이 없어요</h2>
+          <p className="template-gallery__empty-description">제목, 본문, 단축어를 입력해보세요</p>
+        </div>
       );
     }
 
@@ -184,13 +180,39 @@ export default function TemplateGallery({
   };
 
   return (
-    <div ref={rootRef} className="template-gallery">
-      <header className="template-gallery__header">
-        <h1 className="template-gallery__title">템플릿 갤러리</h1>
-        <p className="template-gallery__description">
-          필요한 문장을 골라 내 템플릿에 바로 추가하세요.
-        </p>
-      </header>
+    <div ref={rootRef} className="template-gallery status-panel-layout">
+      <div>
+        <header className="template-gallery__header">
+          <h1 className="template-gallery__title">템플릿 갤러리</h1>
+          <p className="template-gallery__description">
+            필요한 문장을 골라 내 템플릿에 바로 추가하세요.
+          </p>
+        </header>
+        {!showSearchResults && !selectedTemplate && (
+          <div className="template-gallery__toolbar">
+            {/* 목록을 거르는 토글 버튼이므로 tab 역할 대신 aria-pressed를 사용합니다. */}
+            <div
+              className="template-gallery__tabs"
+              role="group"
+              aria-label="카테고리 필터"
+            >
+              {galleryCategoryTabs.map((tab) => (
+                <button
+                  key={tab.value}
+                  type="button"
+                  aria-pressed={category === tab.value}
+                  className={`template-gallery__tab${
+                    category === tab.value ? " is-active" : ""
+                  }`}
+                  onClick={() => setCategory(tab.value)}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
 
       {showSearchResults ? (
         renderSearchResults()
@@ -220,31 +242,7 @@ export default function TemplateGallery({
           />
         </div>
       ) : (
-        <>
-          <div className="template-gallery__toolbar">
-            {/* 목록을 거르는 토글 버튼이므로 tab 역할 대신 aria-pressed를 사용합니다. */}
-            <div
-              className="template-gallery__tabs"
-              role="group"
-              aria-label="카테고리 필터"
-            >
-              {galleryCategoryTabs.map((tab) => (
-                <button
-                  key={tab.value}
-                  type="button"
-                  aria-pressed={category === tab.value}
-                  className={`template-gallery__tab${
-                    category === tab.value ? " is-active" : ""
-                  }`}
-                  onClick={() => setCategory(tab.value)}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          {renderList()}
-        </>
+        renderList()
       )}
     </div>
   );

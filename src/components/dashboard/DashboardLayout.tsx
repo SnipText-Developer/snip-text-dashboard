@@ -1,6 +1,7 @@
 import { useState, useSyncExternalStore } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useMatch } from "react-router-dom";
 
+import { googleCallbackPath } from "api/auth/google";
 import { getSessionToken, subscribeToSession } from "api/auth/session";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardHeader from "./DashboardHeader";
@@ -10,17 +11,18 @@ export default function DashboardLayout() {
   const [query, setQuery] = useState("");
   const accessToken = useSyncExternalStore(subscribeToSession, getSessionToken);
   const { pathname } = useLocation();
+  const isGoogleCallback = Boolean(useMatch(googleCallbackPath));
 
   return (
     <div className="dashboard">
       <a className="skip-link" href="#main-content">
         본문으로 이동
       </a>
-      <DashboardHeader query={query} onQueryChange={setQuery} />
+      <DashboardHeader query={query} onQueryChange={setQuery} showAccount={!isGoogleCallback} />
       <DashboardSidebar />
       <div className="dashboard-main">
         <main
-          key={`${pathname}:${Boolean(accessToken)}`}
+          key={isGoogleCallback ? pathname : `${pathname}:${Boolean(accessToken)}`}
           id="main-content"
           className="page-content"
           tabIndex={-1}>

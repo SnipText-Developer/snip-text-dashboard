@@ -1,3 +1,4 @@
+import { formatShortcut } from "utils/shortcuts";
 import "components/template/TemplateSideList.css";
 import "./TemplateList.css";
 import { useState } from "react";
@@ -34,7 +35,7 @@ export default function TemplateList({ templates, selectedId, saving, authentica
       {templates.map(template => (
         <div className={`template-row ${selectedId === template.templateId ? "is-selected" : ""}`} key={template.templateId}>
           <button className="template-select" onClick={() => onSelect(template.templateId)} aria-pressed={selectedId === template.templateId}>
-            <span className="shortcut-pill">{template.shortcut}</span>
+            <span className="shortcut-pill">{formatShortcut(template.shortcut)}</span>
             <span className="template-info">
               <strong>{template.title}</strong>
               <span className="template-excerpt">{template.content}</span>
@@ -52,10 +53,10 @@ export default function TemplateList({ templates, selectedId, saving, authentica
           </div>
         </div>
       ))}
-      {!authenticated ? <div className="templates-empty">로그인 후 템플릿을 확인할 수 있어요.</div>
+      {!authenticated ? <TemplateEmptyState state="login" />
         : error ? <Notice message={error} placement="inline" tone="error" />
         : loading ? <div className="templates-empty" role="status">템플릿을 불러오고 있어요.</div>
-        : !templates.length && <TemplateEmptyState searching={Boolean(query)} />}
+        : !templates.length && <TemplateEmptyState state={query ? "search" : "first"} />}
     </div>
   );
 }

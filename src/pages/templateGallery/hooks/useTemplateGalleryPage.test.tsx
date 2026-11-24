@@ -79,7 +79,7 @@ test("saves the gallery template and shows a notice", async () => {
 test("tells the user when the server renumbered the shortcut", async () => {
   save.mockResolvedValue({ isSuccess: true, result: { ...saved, shortcut: "/견적2", shortcutChanged: true } });
   await add();
-  expect(page.noticeProps.message).toContain("/견적 대신 /견적2");
+  expect(page.noticeProps.message).toContain("\\견적 대신 \\견적2");
 });
 
 test("shows the server message for spec errors and thrown errors", async () => {

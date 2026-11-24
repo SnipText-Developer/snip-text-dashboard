@@ -1,3 +1,4 @@
+import { formatShortcut } from "utils/shortcuts";
 import "./GalleryTemplateCard.css";
 import { GalleryTemplate } from "../types";
 
@@ -29,7 +30,7 @@ export default function GalleryTemplateCard({
         aria-current={isSelected ? "true" : undefined}
         onClick={() => onOpen(template)}
       >
-        <span className="gallery-card__badge">{template.shortcut}</span>
+        <span className="gallery-card__badge">{formatShortcut(template.shortcut)}</span>
         <span className="gallery-card__title">{template.title}</span>
         <span className="gallery-card__content">{template.content}</span>
       </button>
@@ -41,7 +42,7 @@ export default function GalleryTemplateCard({
       className="gallery-card"
       data-gallery-template-id={template.galleryTemplateId}
     >
-      <span className="gallery-card__badge">{template.shortcut}</span>
+      <span className="gallery-card__badge">{formatShortcut(template.shortcut)}</span>
       <h3 className="gallery-card__title">{template.title}</h3>
       <p className="gallery-card__content">{template.content}</p>
       {/* v2 디자인은 카드 전체를 눌러 상세로 이동하므로 버튼을 카드 위에 겹쳐 둡니다. */}

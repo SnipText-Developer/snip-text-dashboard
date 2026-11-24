@@ -2,7 +2,7 @@ import { act } from "react";
 import { createRoot, Root } from "react-dom/client";
 import { MemoryRouter, useLocation, useNavigate } from "react-router-dom";
 import TemplateGallery from "./TemplateGallery";
-import { filterGalleryTemplates, groupGalleryTemplatesByCategory } from "../filterGalleryTemplates";
+import { filterGalleryTemplates, groupGalleryTemplatesByCategory } from "utils/filterGalleryTemplates";
 import { GalleryTemplate } from "../types";
 
 jest.mock("react-router-dom", () => {

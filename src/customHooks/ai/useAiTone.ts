@@ -1,7 +1,9 @@
+import { toApiShortcut } from "utils/shortcuts";
 import { useEffect, useRef, useState } from "react";
 import correctTone, { CorrectToneResult, ToneStyle } from "api/ai/correctTone";
 import createTemplate from "api/template/createTemplate";
 import { TemplateDraft } from "pages/templates/types";
+import { countToneTextCharacters, TONE_TEXT_MAX_LENGTH } from "utils/toneTextLength";
 
 export default function useAiTone(accessToken: string) {
   const [text, setText] = useState("");
@@ -17,7 +19,7 @@ export default function useAiTone(accessToken: string) {
   useEffect(() => () => controller.current?.abort(), [accessToken]);
 
   async function correct() {
-    if (pending.current || !text.trim() || text.length > 1000 || !accessToken)
+    if (pending.current || !text.trim() || countToneTextCharacters(text) > TONE_TEXT_MAX_LENGTH || !accessToken)
       return;
     pending.current = true;
     setBusy(true);
@@ -63,7 +65,7 @@ export default function useAiTone(accessToken: string) {
     try {
       const response = await createTemplate(accessToken, {
         title: draft.title,
-        shortcut: `/${draft.shortcut.trim().replace(/^\/+/, "")}`,
+        shortcut: toApiShortcut(draft.shortcut),
         content: draft.content,
       });
       if (!response.isSuccess) {

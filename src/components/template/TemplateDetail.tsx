@@ -1,3 +1,4 @@
+import { formatShortcut, shortcutInputPattern } from "utils/shortcuts";
 import { FormEventHandler, ReactNode, useEffect, useId, useRef } from "react";
 import TemplateDetailFrame from "./TemplateDetailFrame";
 import TemplateVariables from "./TemplateVariables";
@@ -47,10 +48,10 @@ export default function TemplateDetail({ title, shortcut, content, variables, la
           <div className="template-detail__fields">
             {editable ? <>
               <label>제목<input required value={title} onChange={event => onChange?.("title", event.target.value)} /></label>
-              <label>/단축어<input required pattern="/?[^\s/]+" value={shortcut} onChange={event => onChange?.("shortcut", event.target.value)} /></label>
+              <label>{"\\단축어"}<input required pattern={shortcutInputPattern} value={shortcut === undefined ? undefined : formatShortcut(shortcut)} onChange={event => onChange?.("shortcut", event.target.value)} /></label>
             </> : <>
               <h2 ref={titleRef} id={titleId} tabIndex={-1}>{title}</h2>
-              {shortcut && <p className="template-detail__shortcut"><span>단축어</span><strong>{shortcut}</strong></p>}
+              {shortcut && <p className="template-detail__shortcut"><span>단축어</span><strong>{formatShortcut(shortcut)}</strong></p>}
             </>}
           </div>
           <label className="template-detail__content">내용

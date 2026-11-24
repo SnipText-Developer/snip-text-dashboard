@@ -71,7 +71,7 @@
 }
 
 .trash-table thead th:first-child {
-  width: clamp(80px, 10%, 112px);
+  width: clamp(96px, 12%, 128px);
   border-top-left-radius: 11px;
 }
 
@@ -82,14 +82,18 @@
 .trash-table time { color: #4e5968; white-space: nowrap; }
 
 .trash-table .shortcut-pill {
+  display: inline-block;
+  box-sizing: border-box;
   max-width: 100%;
-  padding-inline: 10px;
+  padding: 4px 10px;
   border-radius: 8px;
   background: #dcecff;
   color: #0054ad;
   line-height: 16px;
-  word-break: normal;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .trash-row-actions {
@@ -139,17 +143,10 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 12px;
-  box-sizing: border-box;
-  width: min(100%, 680px);
-  min-height: 96px;
-  margin: clamp(48px, calc(50vh - 336px), 192px) auto 0;
-  padding: 16px;
-  border-radius: 16px;
-  background: #f1f1f1;
-  color: #6b7480;
-  font-size: 18px;
-  font-weight: 600;
-  text-align: center;
+}
+
+.trash-page:has(.trash-table) .trash-state {
+  margin-block-start: 16px;
 }
 
 .trash-load-more { display: block; margin: 20px auto 0; }
@@ -164,7 +161,7 @@
 @media (max-width: 850px) {
   .trash-table :is(th, td) { padding-inline: 6px; }
   .trash-table thead th { word-break: keep-all; }
-  .trash-table thead th:first-child { width: 58px; }
+  .trash-table thead th:first-child { width: 66px; }
   .trash-table thead th:nth-child(3) { width: 77px; }
   .trash-table thead th:last-child { width: 110px; }
   .trash-table .shortcut-pill { padding-inline: 5px; }
@@ -176,6 +173,6 @@
 
 @media (max-width: 700px) {
   .trash-table { font-size: 12px; }
-  .page-content:has(.trash-page) { padding: 30px 16px; }
+  .page-content:has(.trash-page) { padding: 30px 20px; }
   .trash-toolbar { margin-top: 20px; }
 }
