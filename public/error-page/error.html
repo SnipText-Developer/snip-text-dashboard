@@ -7,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- title start -->
-    <title>error 페이지/title>
-    <meta property="og:title" content="error 페이지" />
-    <meta name="apple-mobile-web-app-title" content="error 페이지" />
-    <meta name="twitter:title" content="error 페이지" />
+    <title>오류가 발생했습니다</title>
+    <meta property="og:title" content="오류가 발생했습니다" />
+    <meta name="apple-mobile-web-app-title" content="오류가 발생했습니다" />
+    <meta name="twitter:title" content="오류가 발생했습니다" />
     <!-- title end -->
 
     <!-- description start -->
@@ -66,6 +66,7 @@
       crossorigin="anonymous" />
 
     <script src="/error-page/error.js" defer></script>
+    <link rel="stylesheet" href="/noscript-page/noscript.css" />
     <link rel="stylesheet" href="/error-page/error.css" type="text/css" />
     <noscript>
       <meta
@@ -74,12 +75,11 @@
     </noscript>
   </head>
   <body>
-    <header></header>
     <main>
-      <h2>Ooops!</h2>
-      <h3>error 페이지</h3>
-      <p>에러가 발생하였습니다. 홈페이지로 리디렉트됩니다.</p>
-      <p id="redirectMsg">5초 후에 홈페이지로 이동합니다.</p>
+      <h1>오류가 발생했습니다</h1>
+      <p>요청을 처리하는 중 문제가 발생했습니다.</p>
+      <p id="redirectMsg">5초 뒤에 홈페이지로 이동합니다.</p>
+      <a class="home-link" href="/">홈페이지로 이동</a>
     </main>
   </body>
 </html>

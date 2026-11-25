@@ -8,12 +8,40 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 1rem;
   text-align: center;
+  min-height: 100vh;
   min-height: 100dvh;
-  min-width: 18.75rem;
-  width: 100%;
 }
 
 main {
-  padding: 0 5% 0 5%;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 42.5rem;
+  padding: clamp(1.75rem, 5vw, 2.5rem) clamp(1rem, 4vw, 1.5rem);
+  border: 1px solid #6d8edb;
+  border-radius: 1rem;
+  background-color: #fff;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.125rem, 3vw, 1.5rem);
+  letter-spacing: -0.025em;
+  line-height: 1.4;
+}
+
+p {
+  margin: 0.75rem 0 0;
+  color: #565656;
+  line-height: 1.6;
+}
+
+p + p {
+  margin-top: 0.25rem;
 }
