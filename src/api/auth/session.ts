@@ -5,7 +5,7 @@ import { clearExtensionAccessToken, sendAccessTokenToExtension } from "./extensi
 
 const apiPathPrefix = "/api/v1/";
 
-type AuthAction = "login" | "signup" | "reissue" | "logout";
+type AuthAction = "login" | "signup" | "logout";
 
 const signedOutKey = "sniptext.signedOut";
 
@@ -26,12 +26,9 @@ function rememberSignOut(signedOut: boolean) {
   }
 }
 
-async function withAuthCookie<T>(request: () => Promise<T>, needsLock = false) {
+async function withAuthCookie<T>(request: () => Promise<T>) {
   // Keep cookie rotations serialized until the browser has received the response.
   if (navigator.locks) return navigator.locks.request("sniptext-auth-cookie", request);
-  if (needsLock) {
-    throw new Error("이 브라우저에서는 로그인 상태를 갱신할 수 없어요. Chrome에서 다시 시도해 주세요.");
-  }
   return request();
 }
 
@@ -65,14 +62,11 @@ function readAccessToken(result: { accessToken?: unknown } | undefined): string 
 }
 
 interface Session {
-  initialToken: string;
   accessToken: string;
-  refresh?: Promise<void>;
   signingOut?: boolean;
 }
 
 let session: Session | undefined;
-let restoration: Promise<void> | undefined;
 let logoutRequest: Promise<LogoutResult> | undefined;
 
 interface LogoutResult {
@@ -82,7 +76,7 @@ interface LogoutResult {
 const listeners = new Set<() => void>();
 
 function setSession(accessToken = "") {
-  session = accessToken ? { initialToken: accessToken, accessToken } : undefined;
+  session = accessToken ? { accessToken } : undefined;
   listeners.forEach(listener => listener());
 }
 
@@ -96,28 +90,7 @@ export function subscribeToSession(listener: () => void) {
 }
 
 export function getSessionToken() {
-  return session?.initialToken ?? "";
-}
-
-async function reissueAccessToken() {
-  if (isSignedOut()) return;
-  return readAccessToken(await sendAuthRequest("reissue"));
-}
-
-export function restoreSession() {
-  if (session || isSignedOut() || logoutRequest) return Promise.resolve();
-  restoration ??= withAuthCookie(async () => {
-    const token = await reissueAccessToken();
-    if (token) {
-      setSession(token);
-      sendAccessTokenToExtension(token);
-    }
-  }, true)
-    .catch(error => {
-      if (!(error instanceof FetchError) || error.status !== 401) throw error;
-    })
-    .finally(() => { restoration = undefined; });
-  return restoration;
+  return session?.accessToken ?? "";
 }
 
 export async function loginWithGoogle(body: { code: string; codeVerifier: string; redirectUri: string }) {
@@ -178,25 +151,6 @@ export function logout() {
   return logoutRequest;
 }
 
-function refreshSession(current: Session) {
-  current.refresh ??= withAuthCookie(async () => {
-    if (session !== current || current.signingOut) return;
-    const token = await reissueAccessToken();
-    if (token) {
-      current.accessToken = token;
-      if (!current.signingOut) sendAccessTokenToExtension(token);
-    }
-  }, true)
-    .catch(error => {
-      if (session === current && error instanceof FetchError && error.status === 401) {
-        setSession();
-      }
-      throw error;
-    })
-    .finally(() => { current.refresh = undefined; });
-  return current.refresh;
-}
-
 export async function apiFetch(path: string, options?: RequestInit) {
   if (!path.startsWith(apiPathPrefix)) return fetch(path, options);
   const endpoint = path.slice(apiPathPrefix.length);
@@ -225,25 +179,19 @@ async function fetchWithSession(url: string, options?: RequestInit) {
   if (authorization && (current?.signingOut || isSignedOut())) {
     throw new FetchError(401, "다시 로그인해 주세요.");
   }
-  if (!current || authorization !== `Bearer ${current.initialToken}`) return fetch(url, options);
-
-  const send = (token: string) => {
-    headers.set("Authorization", `Bearer ${token}`);
-    return fetch(url, { ...options, headers });
-  };
-
-  const token = current.accessToken;
-  const response = await send(token);
-  if (response.status !== 401 || session !== current || current.signingOut || options?.signal?.aborted) {
-    return response;
+  const response = await fetch(url, options);
+  if (
+    current &&
+    authorization === `Bearer ${current.accessToken}` &&
+    response.status === 401 &&
+    session === current &&
+    !current.signingOut &&
+    !options?.signal?.aborted
+  ) {
+    const error = await response.clone().json().catch(() => null);
+    if (error?.code === "COMMON401_1" && session === current && !current.signingOut && !options?.signal?.aborted) {
+      setSession();
+    }
   }
-
-  const error = await response.clone().json().catch(() => null);
-  if (error?.code !== "COMMON401_1" || session !== current || current.signingOut || options?.signal?.aborted) {
-    return response;
-  }
-
-  if (token === current.accessToken) await refreshSession(current);
-  if (session !== current || current.signingOut || isSignedOut() || options?.signal?.aborted) return response;
-  return send(current.accessToken);
+  return response;
 }

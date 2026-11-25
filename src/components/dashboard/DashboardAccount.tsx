@@ -1,25 +1,14 @@
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Link } from "react-router-dom";
 
 import Notice from "components/notice/Notice";
-import { getSessionToken, logout, restoreSession, subscribeToSession } from "api/auth/session";
+import { getSessionToken, logout, subscribeToSession } from "api/auth/session";
 
 export default function DashboardAccount() {
   const accessToken = useSyncExternalStore(subscribeToSession, getSessionToken);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (process.env.NODE_ENV === "test" || accessToken) return;
-    let active = true;
-    restoreSession().catch(() => {
-      if (active) setError("로그인 상태를 확인할 수 없어요. 다시 로그인해 주세요.");
-    });
-    return () => { active = false; };
-    // Restore only when mounting the dashboard, including after an OAuth redirect.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   async function handleLogout() {
     setBusy(true);
