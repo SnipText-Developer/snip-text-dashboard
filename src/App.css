@@ -1,1 +1,11 @@
 .App { min-height: 100dvh; }
+
+.session-loading {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  place-items: center;
+  padding: 24px;
+  color: #6b7480;
+  text-align: center;
+}

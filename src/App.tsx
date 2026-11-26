@@ -1,11 +1,10 @@
-// React
-
 // External
 import { Route, Routes } from "react-router-dom";
 
 // Local
 import useCrossBrowsingPoliyfill from "customHooks/useCrossBrowsingPoliyfill";
 import useDesktopSafariBackFix from "customHooks/useDesktopSafariBackFix";
+import useRestoreSession from "customHooks/useRestoreSession";
 import useScrollToTop from "customHooks/useScrollToTop";
 import "App.css";
 import { googleCallbackPath } from "api/auth/google";
@@ -19,6 +18,15 @@ const App = () => {
   useCrossBrowsingPoliyfill();
   useDesktopSafariBackFix();
   useScrollToTop();
+  const isRestoringSession = useRestoreSession();
+
+  if (isRestoringSession) {
+    return (
+      <main className="session-loading">
+        <p role="status">로그인 상태를 확인하고 있어요.</p>
+      </main>
+    );
+  }
 
   return (
     <Routes>

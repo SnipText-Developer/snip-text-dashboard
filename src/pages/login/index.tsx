@@ -1,11 +1,13 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useSyncExternalStore } from "react";
+import { Link, Navigate } from "react-router-dom";
 
 import { startGoogleLogin } from "api/auth/google";
+import { getSessionToken, subscribeToSession } from "api/auth/session";
 import Notice from "components/notice/Notice";
 import "./login.css";
 
 export default function LoginPage() {
+  const accessToken = useSyncExternalStore(subscribeToSession, getSessionToken);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -19,6 +21,8 @@ export default function LoginPage() {
       setBusy(false);
     }
   }
+
+  if (accessToken) return <Navigate to="/" replace />;
 
   return (
     <main className="login-page">
