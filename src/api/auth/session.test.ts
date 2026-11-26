@@ -1,6 +1,6 @@
 import { requestExtensionTemplateRefresh } from "utils/extensionMessaging";
 import { clearExtensionAccessToken, sendAccessTokenToExtension } from "./extension";
-import { apiFetch, getSessionToken, loginWithGoogle, logout, restoreSession, signUpWithGoogle } from "./session";
+import { apiFetch, getSessionToken, loginWithGoogle, logout, signUpWithGoogle } from "./session";
 
 jest.mock("./extension");
 jest.mock("utils/extensionMessaging");
@@ -68,59 +68,24 @@ it("exchanges a Google code and requires consent before completing a new account
   expect(sendAccessTokenToExtension).toHaveBeenCalledWith("member");
 });
 
-it("shares a refresh across concurrent expired requests and retries with the renewed token", async () => {
-  fetchMock.mockResolvedValueOnce(success({ isCompletedSignUp: true, accessToken: "expired" }));
+it("clears the session and returns concurrent expired responses without retrying", async () => {
+  fetchMock
+    .mockResolvedValueOnce(success({ isCompletedSignUp: true, accessToken: "expired" }))
+    .mockResolvedValue(response(401, { code: "COMMON401_1" }));
   await loginWithGoogle(credentials);
-  expect(sendAccessTokenToExtension).toHaveBeenCalledWith("expired");
-
-  fetchMock.mockImplementation(async (path, options) => {
-    if (path === "https://api.sniptext.kr/api/v1/auth/reissue") return success({ accessToken: "renewed" });
-    if (options.headers.get("Authorization") === "Bearer renewed") return success({});
-    return response(401, { code: "COMMON401_1" });
-  });
 
   const options = { headers: { Authorization: "Bearer expired" } };
   const results = await Promise.all([
     apiFetch("/api/v1/templates", options),
     apiFetch("/api/v1/users/me", options),
   ]);
-  expect(results.map(result => result.status)).toEqual([200, 200]);
-  expect(jest.mocked(sendAccessTokenToExtension).mock.calls).toEqual([["expired"], ["renewed"]]);
-  const reissues = fetchMock.mock.calls.filter(([path]) => path === "https://api.sniptext.kr/api/v1/auth/reissue");
-  expect(reissues).toEqual([["https://api.sniptext.kr/api/v1/auth/reissue", expect.objectContaining({ credentials: "include" })]]);
+  expect(results.map(result => result.status)).toEqual([401, 401]);
+  expect(getSessionToken()).toBe("");
+  expect(fetchMock).toHaveBeenCalledTimes(3);
+  expect(sendAccessTokenToExtension).toHaveBeenCalledTimes(1);
 });
 
-it("queues cookie rotation when two separate tabs restore their sessions", async () => {
-  let firstTab!: typeof import("./session");
-  let secondTab!: typeof import("./session");
-  jest.isolateModules(() => { firstTab = require("./session"); });
-  jest.isolateModules(() => { secondTab = require("./session"); });
-
-  let finishFirst!: (result: ReturnType<typeof success>) => void;
-  fetchMock
-    .mockImplementationOnce(() => new Promise(resolve => { finishFirst = resolve; }))
-    .mockResolvedValueOnce(success({ accessToken: "second-tab-token" }));
-
-  const first = firstTab.restoreSession();
-  const second = secondTab.restoreSession();
-  await Promise.resolve();
-
-  expect(fetchMock).toHaveBeenCalledTimes(1);
-  expect(lockRequest.mock.calls.map(([name]) => name)).toEqual([
-    "sniptext-auth-cookie",
-    "sniptext-auth-cookie",
-  ]);
-
-  finishFirst(success({ accessToken: "first-tab-token" }));
-  await Promise.all([first, second]);
-  expect(fetchMock).toHaveBeenCalledTimes(2);
-  expect(firstTab.getSessionToken()).toBe("first-tab-token");
-  expect(secondTab.getSessionToken()).toBe("second-tab-token");
-  expect(sendAccessTokenToExtension).toHaveBeenCalledWith("first-tab-token");
-  expect(sendAccessTokenToExtension).toHaveBeenCalledWith("second-tab-token");
-});
-
-it("logs out across tabs and blocks cookie restoration when the server endpoint is unavailable", async () => {
+it("logs out across tabs when the server endpoint is unavailable", async () => {
   let otherTab!: typeof import("./session");
   jest.isolateModules(() => { otherTab = require("./session"); });
   fetchMock
@@ -130,7 +95,7 @@ it("logs out across tabs and blocks cookie restoration when the server endpoint 
   jest.mocked(clearExtensionAccessToken).mockResolvedValueOnce(true);
 
   await loginWithGoogle(credentials);
-  await otherTab.restoreSession();
+  await otherTab.loginWithGoogle(credentials);
   expect(otherTab.getSessionToken()).toBe("other-tab-token");
 
   const first = logout();
@@ -147,8 +112,6 @@ it("logs out across tabs and blocks cookie restoration when the server endpoint 
 
   window.dispatchEvent(new StorageEvent("storage", { key: "sniptext.signedOut", newValue: "1" }));
   expect(otherTab.getSessionToken()).toBe("");
-  await restoreSession();
-  await otherTab.restoreSession();
   await expect(apiFetch("/api/v1/templates", { headers: { Authorization: "Bearer member" } }))
     .rejects.toMatchObject({ status: 401 });
   expect(fetchMock).toHaveBeenCalledTimes(3);
@@ -191,21 +154,4 @@ it.each([
   } else {
     expect(requestExtensionTemplateRefresh).not.toHaveBeenCalled();
   }
-});
-
-it("notifies the extension once after a template mutation succeeds on token retry", async () => {
-  fetchMock
-    .mockResolvedValueOnce(success({ isCompletedSignUp: true, accessToken: "expired" }))
-    .mockResolvedValueOnce(response(401, { code: "COMMON401_1" }))
-    .mockResolvedValueOnce(success({ accessToken: "renewed" }))
-    .mockResolvedValueOnce(response(201, { isSuccess: true }));
-
-  await loginWithGoogle(credentials);
-  await apiFetch("/api/v1/templates", {
-    method: "POST",
-    headers: { Authorization: "Bearer expired" },
-  });
-
-  expect(fetchMock).toHaveBeenCalledTimes(4);
-  expect(requestExtensionTemplateRefresh).toHaveBeenCalledTimes(1);
 });
