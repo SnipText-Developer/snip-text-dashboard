@@ -1,7 +1,8 @@
 import { formatShortcut, shortcutInputPattern, stripShortcutPrefix } from "utils/shortcuts";
 import "./TemplateEditor.css";
-import { FormEvent, useLayoutEffect, useRef, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { TemplateDraft } from "../types";
+import TemplateVariableInput, { useTemplateVariableInput } from "./TemplateVariableInput";
 
 interface TemplateEditorProps {
   initialDraft: TemplateDraft;
@@ -12,45 +13,11 @@ interface TemplateEditorProps {
 
 export default function TemplateEditor({ initialDraft, saving, onClose, onSave }: TemplateEditorProps) {
   const [draft, setDraft] = useState(initialDraft);
-  const [addingVariable, setAddingVariable] = useState(false);
-  const [variableName, setVariableName] = useState("");
   const variables = Array.from(new Set(
     Array.from(draft.content.matchAll(/\{\{\s*([^{}]+?)\s*\}\}/g), match => match[1].trim()).filter(Boolean),
   ));
-  const insertionRangeRef = useRef({ start: 0, end: 0 });
   const contentRef = useRef<HTMLTextAreaElement>(null);
-  const variableSelectionRef = useRef<number | null>(null);
-
-  useLayoutEffect(() => {
-    const start = variableSelectionRef.current;
-    if (start === null) return;
-    contentRef.current?.focus();
-    contentRef.current?.setSelectionRange(start, start);
-    variableSelectionRef.current = null;
-  });
-
-  function openVariableInput() {
-    const content = contentRef.current;
-    if (!content) return;
-    insertionRangeRef.current = { start: content.selectionStart, end: content.selectionEnd };
-    setAddingVariable(true);
-  }
-
-  function addVariable(preset?: string) {
-    const name = (preset ?? variableName).trim();
-    if (!name || /[{}\r\n]/.test(name)) return;
-    const { start, end } = preset && contentRef.current
-      ? { start: contentRef.current.selectionStart, end: contentRef.current.selectionEnd }
-      : insertionRangeRef.current;
-    const variable = `{{${name}}}`;
-    variableSelectionRef.current = start + variable.length;
-    setDraft(current => ({
-      ...current,
-      content: current.content.slice(0, start) + variable + current.content.slice(end),
-    }));
-    setVariableName("");
-    setAddingVariable(false);
-  }
+  const variableInput = useTemplateVariableInput(contentRef, draft.content, content => setDraft(current => ({ ...current, content })));
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -73,26 +40,17 @@ export default function TemplateEditor({ initialDraft, saving, onClose, onSave }
         </div>
       <label className="template-editor-content">내용<textarea ref={contentRef} required rows={5} placeholder="내용을 입력하세요." value={draft.content} onChange={event => setDraft({ ...draft, content: event.target.value })} /></label>
       <div className="template-editor-variables" aria-label="변수 삽입">
-        <button type="button" className="template-editor-add-variable" onClick={openVariableInput}>+ 변수 추가</button>
+        <button type="button" className="template-editor-add-variable" onClick={variableInput.open}>+ 변수 추가</button>
         {Array.from(new Set(["날짜", "이름", ...variables])).map(variable => (
-          <button type="button" className="template-editor-variable-chip" key={variable} onClick={() => addVariable(variable)}>{`{{${variable}}}`}</button>
+          <button type="button" className="template-editor-variable-chip" key={variable} onClick={() => variableInput.add(variable)}>{`{{${variable}}}`}</button>
         ))}
       </div>
-      {addingVariable && <div className="template-editor-variable-input">
-        <label><span className="template-editor-variable-label">변수명</span><input autoFocus placeholder="예: 이름, 회사명" value={variableName} onChange={event => setVariableName(event.target.value)} onKeyDown={event => {
-          if (event.key === "Enter" && !event.nativeEvent.isComposing) {
-            event.preventDefault();
-            addVariable();
-          }
-        }} /></label>
-        <div className="template-editor-variable-actions">
-          <button type="button" className="template-editor-add-variable" disabled={!variableName.trim() || /[{}\r\n]/.test(variableName)} onClick={() => addVariable()}>추가</button>
-          <button type="button" className="modal-cancel" onClick={() => { setAddingVariable(false); setVariableName(""); contentRef.current?.focus(); }}>취소</button>
-        </div>
-      </div>}
+      <TemplateVariableInput variable={variableInput} />
         </fieldset>
         <div className="template-editor-actions">
-          <button type="button" disabled={saving} onClick={onClose}>취소</button>
+          {draft.templateId === null
+            ? <button type="button" disabled={saving || (draft.title === initialDraft.title && draft.shortcut === initialDraft.shortcut && draft.content === initialDraft.content)} onClick={() => { setDraft(initialDraft); variableInput.cancel(); }}>초기화</button>
+            : <button type="button" disabled={saving} onClick={onClose}>취소</button>}
           <button type="submit" disabled={saving || !draft.title.trim() || !stripShortcutPrefix(draft.shortcut.trim()) || !draft.content.trim()}>{saving ? "저장 중…" : draft.templateId === null ? "생성하기" : "저장하기"}</button>
         </div>
       </form>
