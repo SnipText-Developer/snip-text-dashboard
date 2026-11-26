@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 
 // Local
 import App from "App";
+import { appBasePath } from "config";
 import { LoadingProvider } from "contexts/LoadingProvider";
 import usePromiseRejectionErrorHandler from "customHooks/usePromiseRejectionErrorHandler";
 import ErrorBoundary from "components/error/ErrorBoundary";
@@ -22,7 +23,7 @@ const Root = () => {
 
   return (
     <ErrorBoundary>
-      <BrowserRouter>
+      <BrowserRouter basename={appBasePath}>
         <LoadingProvider>
           <App />
         </LoadingProvider>

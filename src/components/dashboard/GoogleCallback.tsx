@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import { completeGoogleLogin, googleCallbackPath, startGoogleLogin } from "api/auth/google";
+import { completeGoogleLogin, googleCallbackUrlPath, startGoogleLogin } from "api/auth/google";
 import Notice from "components/notice/Notice";
 import "components/notice/StatusPanel.css";
 import { signUpWithGoogle } from "api/auth/session";
@@ -23,7 +23,7 @@ export default function GoogleCallback() {
     let active = true;
     if (!request.current) {
       request.current = completeGoogleLogin(search);
-      window.history.replaceState(window.history.state, "", googleCallbackPath);
+      window.history.replaceState(window.history.state, "", googleCallbackUrlPath);
     }
     request.current.then(
       result => {

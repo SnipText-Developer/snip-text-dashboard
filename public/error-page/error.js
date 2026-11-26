@@ -1,4 +1,4 @@
-const redirectUrl = "/";
+const redirectUrl = document.querySelector(".home-link").href;
 let countdown = 5;
 
 const startCountdown = () => {

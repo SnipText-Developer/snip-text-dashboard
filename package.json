@@ -2,6 +2,7 @@
   "name": "snip-text-dashboard",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://sniptext.kr/dashboard",
   "type": "module",
   "dependencies": {
     "css-vars-ponyfill": "^2.4.9",
@@ -15,7 +16,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "tsc --noEmit && CI=true TSC_COMPILE_ON_ERROR=false DISABLE_ESLINT_PLUGIN=false GENERATE_SOURCEMAP=false react-scripts build",
-    "dev": "node ./scripts/start.js",
+    "dev": "react-scripts start",
     "test": "react-scripts test"
   },
   "eslintConfig": {

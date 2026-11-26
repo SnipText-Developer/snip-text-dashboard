@@ -5,7 +5,7 @@ import { apiFetch, getSessionToken, loginWithGoogle, logout, signUpWithGoogle } 
 jest.mock("./extension");
 jest.mock("utils/extensionMessaging");
 
-const redirectUri = "http://localhost:3000/auth/google/callback";
+const redirectUri = "http://localhost:3000/dashboard/auth/google/callback";
 const credentials = { code: "google-code", codeVerifier: "verifier", redirectUri };
 const response = (status: number, data: object) => ({
   ok: status < 400,
