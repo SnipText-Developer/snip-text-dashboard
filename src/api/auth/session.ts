@@ -1,13 +1,31 @@
 import { apiBaseUrl } from "config";
 import { requestExtensionTemplateRefresh } from "utils/extensionMessaging";
 import { FetchError } from "models/errorType";
-import { clearExtensionAccessToken, sendAccessTokenToExtension } from "./extension";
+import { clearExtensionAccessToken, getExtensionAccessToken, sendAccessTokenToExtension } from "./extension";
 
 const apiPathPrefix = "/api/v1/";
 
 type AuthAction = "login" | "signup" | "logout";
 
 const signedOutKey = "sniptext.signedOut";
+const tabAccessTokenKey = "sniptext.tabAccessToken";
+
+function readTabAccessToken() {
+  try {
+    return window.sessionStorage.getItem(tabAccessTokenKey) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function rememberTabAccessToken(token = "") {
+  try {
+    if (token) window.sessionStorage.setItem(tabAccessTokenKey, token);
+    else window.sessionStorage.removeItem(tabAccessTokenKey);
+  } catch {
+    // The current page can still log in when tab storage is unavailable.
+  }
+}
 
 function isSignedOut() {
   try {
@@ -67,6 +85,7 @@ interface Session {
 }
 
 let session: Session | undefined;
+let restoration: Promise<void> | undefined;
 let logoutRequest: Promise<LogoutResult> | undefined;
 
 interface LogoutResult {
@@ -81,7 +100,10 @@ function setSession(accessToken = "") {
 }
 
 window.addEventListener("storage", event => {
-  if (event.key === signedOutKey && isSignedOut() && session) setSession();
+  if (event.key === signedOutKey && isSignedOut()) {
+    rememberTabAccessToken();
+    if (session) setSession();
+  }
 });
 
 export function subscribeToSession(listener: () => void) {
@@ -91,6 +113,40 @@ export function subscribeToSession(listener: () => void) {
 
 export function getSessionToken() {
   return session?.accessToken ?? "";
+}
+
+export function restoreSession() {
+  if (session || logoutRequest || isSignedOut()) return Promise.resolve();
+
+  restoration ??= restoreStoredSession()
+    .catch(() => {})
+    .finally(() => { restoration = undefined; });
+  return restoration;
+}
+
+async function restoreStoredSession() {
+  const backgroundToken = await getExtensionAccessToken();
+  const token = backgroundToken ?? readTabAccessToken();
+  if (!token || session || logoutRequest || isSignedOut()) return;
+
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 8000);
+  try {
+    const response = await apiFetch("/api/v1/users/me", {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    const data = response.ok ? await response.json() : null;
+    if (data?.isSuccess === true && data.code === "USER200_1" && !session && !logoutRequest && !isSignedOut()) {
+      if (backgroundToken) rememberTabAccessToken();
+      setSession(token);
+    } else if (response.status === 401 && !backgroundToken && readTabAccessToken() === token) {
+      rememberTabAccessToken();
+    }
+  } finally {
+    window.clearTimeout(timeout);
+  }
 }
 
 export async function loginWithGoogle(body: { code: string; codeVerifier: string; redirectUri: string }) {
@@ -103,7 +159,7 @@ export async function loginWithGoogle(body: { code: string; codeVerifier: string
       return { signupToken: result.signupToken, email: typeof result.email === "string" ? result.email : "" };
     }
 
-    completeLogin(readAccessToken(result));
+    await completeLogin(readAccessToken(result));
     return null;
   });
 }
@@ -111,14 +167,17 @@ export async function loginWithGoogle(body: { code: string; codeVerifier: string
 export async function signUpWithGoogle(signupToken: string) {
   await withAuthCookie(async () => {
     const result = await sendAuthRequest("signup", { signupToken, termsAgreed: true });
-    completeLogin(readAccessToken(result));
+    await completeLogin(readAccessToken(result));
   });
 }
 
-function completeLogin(accessToken: string) {
+async function completeLogin(accessToken: string) {
+  const sentToBackground = await sendAccessTokenToExtension(accessToken);
+  const savedInBackground = sentToBackground && (await getExtensionAccessToken()) === accessToken;
+  if (logoutRequest) return;
+  rememberTabAccessToken(savedInBackground ? "" : accessToken);
   rememberSignOut(false);
   setSession(accessToken);
-  sendAccessTokenToExtension(accessToken);
 }
 
 async function endServerSession(accessToken?: string) {
@@ -136,10 +195,13 @@ async function endServerSession(accessToken?: string) {
 
 export function logout() {
   if (logoutRequest) return logoutRequest;
+  const tokenAtSignOut = session?.accessToken;
+  rememberSignOut(true);
+  rememberTabAccessToken();
   if (session) session.signingOut = true;
 
   logoutRequest = withAuthCookie(async () => {
-    const accessToken = session?.accessToken;
+    const accessToken = session?.accessToken ?? tokenAtSignOut;
     rememberSignOut(true);
     setSession();
     const [serverEnded, extensionCleared] = await Promise.all([
@@ -190,6 +252,7 @@ async function fetchWithSession(url: string, options?: RequestInit) {
   ) {
     const error = await response.clone().json().catch(() => null);
     if (error?.code === "COMMON401_1" && session === current && !current.signingOut && !options?.signal?.aborted) {
+      rememberTabAccessToken();
       setSession();
     }
   }

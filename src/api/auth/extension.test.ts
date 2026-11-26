@@ -1,5 +1,5 @@
 import { requestExtensionTemplateRefresh } from "utils/extensionMessaging";
-import { clearExtensionAccessToken, sendAccessTokenToExtension } from "./extension";
+import { clearExtensionAccessToken, getExtensionAccessToken, sendAccessTokenToExtension } from "./extension";
 
 const extensionId = "deijpelidjmefllaonjkdcndkologogo";
 const sendMessage = jest.fn();
@@ -27,6 +27,32 @@ it("sends the access token directly to the configured extension background", () 
     path: "/auth/token",
     data: { vendor: "GOOGLE", token: "access-token" },
   }, expect.any(Function));
+});
+
+it("reads the Google token from the extension background", async () => {
+  sendMessage.mockImplementationOnce((_id, _message, callback) => {
+    callback({ statusCode: 200, data: { vendor: "GOOGLE", token: "access-token" } });
+  });
+
+  await expect(getExtensionAccessToken()).resolves.toBe("access-token");
+  expect(sendMessage).toHaveBeenCalledWith(extensionId, {
+    dst: "BACKGROUND",
+    method: "GET",
+    path: "/auth/token",
+    data: { vendor: "GOOGLE" },
+  }, expect.any(Function));
+});
+
+it("sends the JWT expiry to the background for token retention", async () => {
+  const exp = Math.floor(Date.now() / 1000) + 3600;
+  const payload = btoa(JSON.stringify({ exp })).replace(/=+$/, "");
+  const token = `header.${payload}.signature`;
+
+  await sendAccessTokenToExtension(token);
+
+  expect(sendMessage).toHaveBeenCalledWith(extensionId, expect.objectContaining({
+    data: { vendor: "GOOGLE", token, expiresAt: exp * 1000 },
+  }), expect.any(Function));
 });
 
 it("reports messaging as unavailable when the Chrome runtime is missing", async () => {

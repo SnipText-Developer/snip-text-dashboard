@@ -79,7 +79,7 @@ Google OAuth 공개 클라이언트 ID는 기본 설정에 포함되어 있습�
 
 Google 앱이 테스트 상태인 동안에는 등록된 Gmail 계정으로 로그인합니다.
 
-접근 토큰은 메모리에 보관합니다. 페이지를 새로고침하거나 접근 토큰이 만료되면 다시 로그인해야 합니다. 로그인 API가 `AUTH502_1`을 반환하면 로그인 화면에서 Google 인증을 새로 시작합니다.
+대시보드는 접근 토큰을 메모리에 보관합니다. 새로고침하면 Chrome 확장 프로그램 background에서 저장된 Google 토큰을 조회하고 `GET /api/v1/users/me`로 확인한 뒤 세션을 복원합니다. 토큰 조회는 서비스의 최상위 대시보드 페이지에서 지원됩니다. 로그인 API가 `AUTH502_1`을 반환하면 로그인 화면에서 Google 인증을 새로 시작합니다.
 
 `package.json`의 `homepage`가 빌드 시 `PUBLIC_URL`을 설정합니다. 배포 워크플로는 `PUBLIC_URL=/dashboard`로 빌드하고 S3 버킷의 `dashboard/` 아래에 파일을 업로드합니다. CloudFront에서 `/dashboard`와 앱 내부 경로는 `dashboard/index.html`에 연결하고, 정적 파일 요청은 `dashboard/` 아래의 해당 S3 객체로 전달합니다.
 
@@ -94,7 +94,7 @@ curl -X POST 'https://api.sniptext.kr/api/v1/auth/dev-token' \
 
 ### Chrome 확장 프로그램 로그인 연결
 
-Chrome에서 로그인이나 신규 가입을 완료하면 대시보드가 확장 프로그램 background의 `PUT /auth/token`으로 최신 SnipText 접근 토큰을 전달합니다. 확장 프로그램 ID가 없거나 메시지가 실패해도 대시보드 로그인은 정상적으로 완료됩니다.
+Chrome에서 로그인이나 신규 가입을 완료하면 대시보드가 확장 프로그램 background의 `PUT /auth/token`으로 최신 SnipText 접근 토큰과 JWT에 포함된 만료 시각을 전달합니다. background에서 저장한 토큰을 다시 읽을 수 없는 환경에서는 같은 탭의 `sessionStorage`에 토큰을 보관합니다. 새로고침 후에는 background를 먼저 조회하고, 토큰을 받지 못하면 같은 탭의 토큰을 조회합니다. 어느 경로에서 읽었든 서버 검증을 통과해야 로그인 상태가 복원되며, 로그아웃하면 탭에 보관한 토큰도 지웁니다.
 
 
 ### 로그아웃

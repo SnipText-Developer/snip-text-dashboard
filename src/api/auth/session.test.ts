@@ -1,6 +1,6 @@
 import { requestExtensionTemplateRefresh } from "utils/extensionMessaging";
-import { clearExtensionAccessToken, sendAccessTokenToExtension } from "./extension";
-import { apiFetch, getSessionToken, loginWithGoogle, logout, signUpWithGoogle } from "./session";
+import { clearExtensionAccessToken, getExtensionAccessToken, sendAccessTokenToExtension } from "./extension";
+import { apiFetch, getSessionToken, loginWithGoogle, logout, restoreSession, signUpWithGoogle } from "./session";
 
 jest.mock("./extension");
 jest.mock("utils/extensionMessaging");
@@ -29,9 +29,12 @@ afterAll(() => {
 
 beforeEach(() => {
   localStorage.clear();
+  sessionStorage.clear();
   global.fetch = fetchMock;
   fetchMock.mockReset();
   jest.clearAllMocks();
+  jest.mocked(getExtensionAccessToken).mockReset();
+  jest.mocked(sendAccessTokenToExtension).mockReset().mockResolvedValue(false);
   let tail = Promise.resolve();
   lockRequest.mockReset().mockImplementation((_name, callback) => {
     const pending = tail.then(callback);
@@ -44,6 +47,96 @@ afterEach(async () => {
   fetchMock.mockResolvedValue(success({}));
   if (getSessionToken()) await logout();
   global.fetch = originalFetch;
+});
+
+it("restores the background token once the server confirms it", async () => {
+  jest.mocked(getExtensionAccessToken).mockResolvedValue("background-token");
+  fetchMock.mockResolvedValueOnce(response(200, { isSuccess: true, code: "USER200_1" }));
+
+  const pending = restoreSession();
+  expect(restoreSession()).toBe(pending);
+  expect(getSessionToken()).toBe("");
+  await pending;
+
+  expect(getSessionToken()).toBe("background-token");
+  expect(getExtensionAccessToken).toHaveBeenCalledTimes(1);
+  expect(fetchMock).toHaveBeenCalledWith("https://api.sniptext.kr/api/v1/users/me", expect.objectContaining({
+    headers: { Authorization: "Bearer background-token" },
+  }));
+  expect(sendAccessTokenToExtension).not.toHaveBeenCalled();
+});
+
+it("waits for background registration before exposing a newly logged in session", async () => {
+  let confirmRegistration!: (success: boolean) => void;
+  let registrationStarted!: () => void;
+  const started = new Promise<void>(resolve => { registrationStarted = resolve; });
+  jest.mocked(sendAccessTokenToExtension).mockImplementationOnce(() => {
+    registrationStarted();
+    return new Promise<boolean>(resolve => { confirmRegistration = resolve; });
+  });
+  fetchMock.mockResolvedValueOnce(success({ accessToken: "member" }));
+
+  const login = loginWithGoogle(credentials);
+  await started;
+  expect(getSessionToken()).toBe("");
+  confirmRegistration(true);
+  await login;
+  expect(getSessionToken()).toBe("member");
+});
+
+it.each([false, true])("restores after reload when background registration reports %s but cannot read the token", async registered => {
+  jest.mocked(sendAccessTokenToExtension).mockResolvedValue(registered);
+  fetchMock.mockResolvedValueOnce(success({ accessToken: "member" }));
+  await loginWithGoogle(credentials);
+
+  let reloaded!: typeof import("./session");
+  jest.isolateModules(() => { reloaded = require("./session"); });
+  expect(reloaded.getSessionToken()).toBe("");
+  fetchMock.mockResolvedValueOnce(response(200, { isSuccess: true, code: "USER200_1" }));
+
+  await reloaded.restoreSession();
+
+  expect(reloaded.getSessionToken()).toBe("member");
+  expect(fetchMock).toHaveBeenLastCalledWith("https://api.sniptext.kr/api/v1/users/me", expect.objectContaining({
+    headers: { Authorization: "Bearer member" },
+  }));
+});
+
+it("keeps the token only in background when it can be read back successfully", async () => {
+  jest.mocked(sendAccessTokenToExtension).mockResolvedValue(true);
+  jest.mocked(getExtensionAccessToken).mockResolvedValue("member");
+  fetchMock.mockResolvedValueOnce(success({ accessToken: "member" }));
+
+  await loginWithGoogle(credentials);
+
+  expect(sessionStorage.getItem("sniptext.tabAccessToken")).toBeNull();
+});
+
+it("clears the tab token as soon as logout starts", async () => {
+  fetchMock.mockResolvedValueOnce(success({ accessToken: "member" }));
+  await loginWithGoogle(credentials);
+  expect(sessionStorage.getItem("sniptext.tabAccessToken")).toBe("member");
+  fetchMock.mockResolvedValueOnce({ ok: true, status: 204 });
+
+  const pending = logout();
+  expect(sessionStorage.getItem("sniptext.tabAccessToken")).toBeNull();
+  expect(localStorage.getItem("sniptext.signedOut")).toBe("1");
+  await pending;
+});
+
+it("keeps the session signed out when the background token is rejected", async () => {
+  jest.mocked(getExtensionAccessToken).mockResolvedValue("expired");
+  fetchMock.mockResolvedValueOnce(response(401, { code: "COMMON401_1" }));
+
+  await restoreSession();
+
+  expect(getSessionToken()).toBe("");
+});
+
+it("does not restore while the browser is explicitly signed out", async () => {
+  localStorage.setItem("sniptext.signedOut", "1");
+  await restoreSession();
+  expect(getExtensionAccessToken).not.toHaveBeenCalled();
 });
 
 it("exchanges a Google code and requires consent before completing a new account", async () => {
