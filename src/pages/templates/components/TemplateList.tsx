@@ -7,6 +7,8 @@ import Notice from "components/notice/Notice";
 import TemplateEmptyState from "./TemplateEmptyState";
 import copyIcon from "assets/icons/copy.svg";
 import moreIcon from "assets/icons/more.svg";
+import editIcon from "assets/icons/menu-edit.svg";
+import deleteIcon from "assets/icons/menu-delete.svg";
 
 interface TemplateListProps {
   templates: Template[];
@@ -46,8 +48,8 @@ export default function TemplateList({ templates, selectedId, saving, authentica
             <button className="more-button" aria-label={`${template.title} 더 보기`} aria-expanded={menuId === template.templateId} onClick={() => setMenuId(menuId === template.templateId ? null : template.templateId)}><img src={moreIcon} alt="" width={24} height={24} /></button>
             {menuId === template.templateId && (
               <div className="template-menu">
-                <button onClick={() => { onEdit(template); setMenuId(null); }}>편집하기</button>
-                <button disabled={saving} onClick={() => remove(template.templateId)}>삭제하기</button>
+                <button onClick={() => { onEdit(template); setMenuId(null); }}><img src={editIcon} alt="" width={20} height={20} />편집</button>
+                <button className="template-menu-delete" disabled={saving} onClick={() => remove(template.templateId)}><img src={deleteIcon} alt="" width={20} height={20} />삭제</button>
               </div>
             )}
           </div>
