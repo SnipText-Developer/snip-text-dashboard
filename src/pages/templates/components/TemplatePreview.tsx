@@ -7,6 +7,7 @@ import { Template } from "models/template";
 import { TemplateDraft } from "../types";
 import copyIcon from "assets/icons/detail-copy.svg";
 import moreIcon from "assets/icons/detail-more.svg";
+import deleteIcon from "assets/icons/menu-delete.svg";
 
 interface TemplatePreviewProps {
   template?: Template;
@@ -55,7 +56,7 @@ export default function TemplatePreview({ template, error, saving, onClose, onSa
           </button>
           <div className="preview-more">
             <button type="button" aria-label="템플릿 더 보기" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><img src={moreIcon} alt="" width={32} height={32} /></button>
-            {menuOpen && <div className="template-menu"><button type="button" disabled={saving} onClick={() => onDelete(template.templateId)}>삭제하기</button></div>}
+            {menuOpen && <div className="template-menu"><button type="button" className="template-menu-delete" disabled={saving} onClick={() => onDelete(template.templateId)}><img src={deleteIcon} alt="" width={20} height={20} />삭제</button></div>}
           </div>
         </div>}
       status={!draft && (error
