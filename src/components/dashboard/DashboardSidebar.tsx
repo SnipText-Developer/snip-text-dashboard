@@ -14,7 +14,7 @@ export default function DashboardSidebar() {
   return (
     <aside className="sidebar" aria-label="워크스페이스">
       <nav className="workspace-nav" aria-label="주 메뉴">
-        <NavLink to="/templates" className={() => (templatesActive ? "active" : "")}>
+        <NavLink to="/" className={() => (templatesActive ? "active" : "")}>
           <img className="nav-icon" src={templatesActive ? templatesActiveIcon : templatesIcon} alt="" width={20} height={20} />
           <span className="nav-label">내 템플릿</span>
         </NavLink>

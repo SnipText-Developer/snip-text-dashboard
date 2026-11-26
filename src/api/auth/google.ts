@@ -1,6 +1,8 @@
+import { appBasePath } from "config";
 import { loginWithGoogle } from "./session";
 
 export const googleCallbackPath = "/auth/google/callback";
+export const googleCallbackUrlPath = appBasePath + googleCallbackPath;
 const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID?.trim() ||
   "164905697149-1ddv7or5qhcha44isoakjq5ksag4sfq0.apps.googleusercontent.com";
 const origins = ["https://sniptext.kr", "http://localhost:3000"];
@@ -11,7 +13,7 @@ function getRedirectUri() {
   if (!origins.includes(origin)) {
     throw new Error("sniptext.kr 또는 localhost:3000에서 구글 로그인을 시작해 주세요.");
   }
-  return origin + googleCallbackPath;
+  return origin + googleCallbackUrlPath;
 }
 
 function toBase64Url(bytes: Uint8Array) {

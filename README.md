@@ -65,23 +65,23 @@ Mac의 트랙패드 뒤로가기와 iPhone의 뒤로가기 제스처(이하 ‘�
 
 로컬 개발과 운영 화면은 `https://api.sniptext.kr/api/v1/`을 API 기본 주소로 사용합니다.
 
-API·훅·주요 UI 테스트 파일이 작성되어 있습니다. 이 문서 작성 시 테스트·빌드·브라우저 검증은 실행하지 않았습니다. 오류 리다이렉트 설정(`src/config.ts`)은 현재 `"url"` 임시 값입니다.
+API·훅·주요 UI 테스트 파일이 작성되어 있습니다. 이 문서 작성 시 테스트·빌드·브라우저 검증은 실행하지 않았습니다.
 
 
 ## 구글 로그인
 
 Google OAuth 공개 클라이언트 ID는 기본 설정에 포함되어 있습니다. 다른 웹 클라이언트로 테스트할 때는 `.env.local` 또는 빌드 환경에서 `REACT_APP_GOOGLE_CLIENT_ID`를 지정합니다.
 
-`npm run dev`를 실행한 후 Chrome에서 `http://localhost:3000`으로 접속합니다. 포트 3000을 사용 중이면 해당 프로세스를 종료한 뒤 다시 실행합니다. Google Cloud에는 아래 리디렉션 URI를 끝 슬래시 없이 등록합니다.
+`npm run dev`를 실행한 후 Chrome에서 `http://localhost:3000/dashboard`로 접속합니다. 포트 3000을 사용 중이면 해당 프로세스를 종료한 뒤 다시 실행합니다. Google Cloud에는 아래 리디렉션 URI를 끝 슬래시 없이 등록합니다.
 
-- `http://localhost:3000/auth/google/callback`
-- `https://sniptext.kr/auth/google/callback`
+- `http://localhost:3000/dashboard/auth/google/callback`
+- `https://sniptext.kr/dashboard/auth/google/callback`
 
 Google 앱이 테스트 상태인 동안에는 등록된 Gmail 계정으로 로그인합니다.
 
 접근 토큰은 메모리에 보관합니다. 페이지를 새로고침하거나 접근 토큰이 만료되면 다시 로그인해야 합니다. 로그인 API가 `AUTH502_1`을 반환하면 로그인 화면에서 Google 인증을 새로 시작합니다.
 
-운영 정적 호스팅에서는 콜백 경로를 SPA의 `index.html`로 연결해야 합니다.
+`package.json`의 `homepage`가 빌드 시 `PUBLIC_URL`을 설정합니다. 배포 워크플로는 `PUBLIC_URL=/dashboard`로 빌드하고 S3 버킷의 `dashboard/` 아래에 파일을 업로드합니다. CloudFront에서 `/dashboard`와 앱 내부 경로는 `dashboard/index.html`에 연결하고, 정적 파일 요청은 `dashboard/` 아래의 해당 S3 객체로 전달합니다.
 
 개발용 API만 확인하려면 아래 요청의 `result.accessToken`을 Swagger의 **Authorize** 또는 API 요청의 `Authorization: Bearer <토큰>` 헤더에 사용합니다. 시드 회원 ID는 `1`, `2`입니다.
 
