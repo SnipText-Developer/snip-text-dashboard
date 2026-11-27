@@ -89,7 +89,7 @@ export default function GoogleCallback() {
           <button className="primary-button" type="button" disabled={busy} onClick={restartGoogleLogin}>
             Google로 다시 로그인
           </button>
-        ) : <Link className="primary-button" to="/" replace>대시보드로 돌아가기</Link>
+        ) : <Link className="primary-button" to="/login" replace>로그인으로 돌아가기</Link>
       ) : (
         <p className="status-panel" role="status">구글 로그인을 완료하는 중이에요.</p>
       )}

@@ -30,15 +30,15 @@ test("preset variable replaces selected text and submits the resulting content",
 test("new template reset restores the initial draft without leaving or saving", async () => {
   const input = container.querySelector("input")!;
   expect(button("취소")).toBeUndefined();
-  expect(button("초기화").disabled).toBe(true);
+  expect(button("되돌리기").disabled).toBe(true);
   await act(async () => {
     Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "바뀐 제목");
     input.dispatchEvent(new Event("input", { bubbles: true }));
   });
-  expect(button("초기화").disabled).toBe(false);
-  await act(async () => button("초기화").click());
+  expect(button("되돌리기").disabled).toBe(false);
+  await act(async () => button("되돌리기").click());
   expect(input.value).toBe("안내");
-  expect(button("초기화").disabled).toBe(true);
+  expect(button("되돌리기").disabled).toBe(true);
   expect(onClose).not.toHaveBeenCalled();
   expect(onSave).not.toHaveBeenCalled();
 });

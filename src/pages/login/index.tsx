@@ -1,5 +1,5 @@
 import { useState, useSyncExternalStore } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import { startGoogleLogin } from "api/auth/google";
 import { getSessionToken, subscribeToSession } from "api/auth/session";
@@ -42,7 +42,6 @@ export default function LoginPage() {
           {busy ? "Google로 이동 중…" : "Google 로그인"}
         </button>
         {error && <Notice message={error} placement="inline" tone="error" />}
-        <Link className="login-back" to="/">대시보드로 돌아가기</Link>
       </section>
     </main>
   );
