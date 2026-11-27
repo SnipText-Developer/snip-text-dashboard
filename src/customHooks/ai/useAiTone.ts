@@ -7,7 +7,7 @@ import { countToneTextCharacters, TONE_TEXT_MAX_LENGTH } from "utils/toneTextLen
 
 export default function useAiTone(accessToken: string) {
   const [text, setText] = useState("");
-  const [style, setStyle] = useState<ToneStyle>("CASUAL");
+  const [style, setStyle] = useState<ToneStyle>("BOSS_EXTERNAL");
   const [result, setResult] = useState<CorrectToneResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");

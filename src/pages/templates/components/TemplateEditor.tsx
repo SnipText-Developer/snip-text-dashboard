@@ -49,7 +49,7 @@ export default function TemplateEditor({ initialDraft, saving, onClose, onSave }
         </fieldset>
         <div className="template-editor-actions">
           {draft.templateId === null
-            ? <button type="button" disabled={saving || (draft.title === initialDraft.title && draft.shortcut === initialDraft.shortcut && draft.content === initialDraft.content)} onClick={() => { setDraft(initialDraft); variableInput.cancel(); }}>초기화</button>
+            ? <button type="button" disabled={saving || (draft.title === initialDraft.title && draft.shortcut === initialDraft.shortcut && draft.content === initialDraft.content)} onClick={() => { setDraft(initialDraft); variableInput.cancel(); }}>되돌리기</button>
             : <button type="button" disabled={saving} onClick={onClose}>취소</button>}
           <button type="submit" disabled={saving || !draft.title.trim() || !stripShortcutPrefix(draft.shortcut.trim()) || !draft.content.trim()}>{saving ? "저장 중…" : draft.templateId === null ? "생성하기" : "저장하기"}</button>
         </div>

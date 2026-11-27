@@ -1,5 +1,5 @@
 import { useState, useSyncExternalStore } from "react";
-import { Outlet, useLocation, useMatch } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useMatch } from "react-router-dom";
 
 import { googleCallbackPath } from "api/auth/google";
 import { getSessionToken, subscribeToSession } from "api/auth/session";
@@ -12,6 +12,8 @@ export default function DashboardLayout() {
   const accessToken = useSyncExternalStore(subscribeToSession, getSessionToken);
   const { pathname } = useLocation();
   const isGoogleCallback = Boolean(useMatch(googleCallbackPath));
+
+  if (!accessToken && !isGoogleCallback) return <Navigate to="/login" replace />;
 
   return (
     <div className="dashboard">
