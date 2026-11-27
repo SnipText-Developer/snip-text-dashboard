@@ -57,7 +57,7 @@ test("allows 3,000 UTF-16 code units and blocks 3,001", async () => {
 
   await act(async () => page.setText(textAtLimit));
   await act(async () => page.correct());
-  expect(correctMock).toHaveBeenCalledWith("token", { text: textAtLimit, style: "CASUAL" }, expect.any(AbortSignal));
+  expect(correctMock).toHaveBeenCalledWith("token", { text: textAtLimit, style: "BOSS_EXTERNAL" }, expect.any(AbortSignal));
 });
 test("keeps the editor open when saving fails", async () => {
   saveMock.mockResolvedValue({ isSuccess: false, code: "TEMPLATE409_1", message: "중복 단축어", result: null });
